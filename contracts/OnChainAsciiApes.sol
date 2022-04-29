@@ -7,8 +7,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Base64.sol";
 import "hardhat/console.sol";
 
-//todo add a revert if nft create is not succesfull: if(!success) revert mintNft_Revert();
-//need to define what mintNft_Revert does then, check: https://www.youtube.com/watch?v=pgh74-XulXg
+//todo need to check if special apes have always same eye types and colors, if we dont need to transfer both eyes and adapt special ape generation
+//todo need to add properties
+//todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
+//todo the eye array need to fix with the ApeGenerator name assertion
 
 contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
@@ -52,7 +54,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     uint256 randomNumMouthUpper;
     uint256 randomNumMouthLower;
     uint256 mintPriceWei;
-
+    /*
     string[13] apeEyes = [
         "&#x20;",
         "&#x2588;",
@@ -68,7 +70,29 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         "&#x25c9;",
         "&#x2686;" //" ", "█","♥","¬","˘","^","X","◔","◕","✿","ಥ","◉","⚆"
         //could think about adding flowers &#x2740; ->❀ but we have already flowers
+    ];*/
+
+    string[13] apeEyes = [
+        " ",
+        "&#x2588;", //█
+        "&#x2665;", //♥
+        "&#xac;", //¬
+        "&#x2d8;", //˘
+        "&#x5e;", //^
+        "X", //X
+        "&#x20BF;", //₿
+        "&#x39E;", //Ξ -> eth symbol
+        "0", //the zero ape could be a special ape with the first mint
+        "&#xD2;", //Ò
+        "&#xB4;", //´
+        "$"
+
+        //"&#x27E0;", //⟠ -> eth symbol does not work, borders moved, no 100% fit
+        //" ", "█","♥","¬","˘","^","X", ₿
+        //could think about adding flowers &#x2740; ->❀ but we have already flowers
     ];
+
+    //12 with special ape eyes would make 144 combinations + 5 special apes
 
     struct st_specialApes {
         uint256 tokenId;
@@ -76,16 +100,19 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         string textFillColor;
         string leftEye;
         string rightEye;
+        uint8 eyesColor; //0=red, 1=gold, 2=pink
     }
 
     st_specialApes[] ast_specialApes;
+
+    bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     constructor(
         bool _useSeedWithTestnet,
         address _apeGeneratorContractAddress,
         address _accessControlContractAddress,
         uint256 _mintPriceWei
-    ) ERC721("Ape", "^.^") {
+    ) ERC721("OnChainAsciiApes", "^.^") {
         //create seed on contract deploying, this is used for random generation later ToDo
         UseSeedWithTestnet = _useSeedWithTestnet;
         if (UseSeedWithTestnet) {
@@ -115,21 +142,23 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         ast_specialApes.push(
             st_specialApes(
-                11,
-                "Harry the banana power love eyed ape #1",
-                "hsl(56,100%,39%)",
-                "&#x2665;",
-                "&#x2665;"
+                0,
+                "Zero the first erver minted 0 eyed ape #0",
+                "#c7ba00", //banana yellow
+                "&#x2665;", //♥
+                "&#x2665;", //♥
+                0 //red eye color
             )
         );
 
         ast_specialApes.push(
             st_specialApes(
-                99,
-                "Groot the leaf eyed ape",
-                "hsl(310,65%,22%)",
-                "&#x1f340;",
-                "&#x1f340;" //"&#x2740;" ->❀
+                11,
+                "Harry the banana power love eyed ape #11",
+                "#c7ba00", //banana yellow
+                "&#x2665;", //♥
+                "&#x2665;", //♥
+                0 //red eye color
             )
         );
 
@@ -137,59 +166,65 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             st_specialApes(
                 3,
                 "Piu the golden empty eyed ape #3",
-                "gold",
+                "#ffd900", //golden
                 "&#x20;",
-                "&#x20;"
+                "&#x20;",
+                1 //gold eye color
             )
         );
 
         ast_specialApes.push(
             st_specialApes(
                 4,
-                "ApeNorris the angry eyed rarest toughest mf ape",
-                "hsl(6, 100%, 52%)",
-                "&#x22cb;", //⋋
-                "&#x22cc;" //⋌  leads to ⋋ ⋌
-            )
-        );
-
-        ast_specialApes.push(
-            st_specialApes(
-                5,
-                "Chill ape the mariuhana eyed chilling ape",
-                "hsl(6, 100%, 52%)",
-                "&#1F341;", //⋋
-                "&#1F341;" //⋌  leads to ⋋ ⋌
+                "ApeNorris the angry eyed rarest toughest mf ape #4",
+                "#ff230a", //red
+                "&#x60;", //`
+                "&#xB4;", //´ -> leads to ` ´
+                0 //
             )
         );
 
         ast_specialApes.push(
             st_specialApes(
                 6,
-                "Bruce the bat eyed ape",
-                "white",
-                "&#x1f987;", //🦇
-                "&#x1f987;" //🦇
+                "Carl the dead invisible ape #6",
+                "#000000", //black->invisible
+                "X", //X
+                "X", //X
+                2 //pink eye color
             )
         );
 
         ast_specialApes.push(
             st_specialApes(
                 7,
-                "Satoshi the btc eyed ape",
-                "white",
+                "Satoshi the btc eyed ape #7",
+                "#ff33cc", //pink
                 "&#x20BF;", //₿
-                "&#x20BF;" //₿
+                "&#x20BF;", //₿
+                1 //gold eye color
             )
         );
 
         ast_specialApes.push(
             st_specialApes(
-                7,
-                "Vitalik the ethereum eyed ape",
-                "white",
+                8,
+                "Vitalik the ethereum eyed ape #8",
+                "#ffd900", //gold
                 "&#x39E;", //Ξ
-                "&#x39E;" //Ξ
+                "&#x39E;", //Ξ
+                2 //pink eye color
+            )
+        );
+
+        ast_specialApes.push(
+            st_specialApes(
+                9,
+                "Dollari the inflationary dollar eyed ape #9",
+                "#ff0000", //red
+                "$",
+                "$",
+                0 //red eye color
             )
         );
 
@@ -217,6 +252,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             accessControlContractAddress
         );
         return (accessControl.isAccessGranted(_addressToBeChecked));
+    }
+
+    function enablePublicMint() public onlyOwner {
+        publicMintActive = true;
     }
 
     function totalSupply() public view override returns (uint256) {
@@ -350,7 +389,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         return createRandomNumber() % _range;
     }
 
-    function createNft() public payable returns (bool success) {
+    function mint() public payable returns (bool success) {
         //at first we should check if enough money was sent to mint nft
         //ToDo: outcomment this line and define mint price
         //require(msg.value >= 1e15, "insufficient amount for nft minting given"); //0.001 eth
@@ -363,6 +402,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             msg.value >= mintPriceWei,
             "given eth amount too low for minting"
         );
+        if (!publicMintActive) {
+            //check if access is granted
+            require(checkIfWhitelisted(msg.sender), "not whitelisted");
+        }
 
         //call ape generatore contract functions
         ApeGeneratorImpl apeGenerator = ApeGeneratorImpl(
@@ -399,14 +442,16 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         if (currentActiveSpecialApeIndex != ast_specialApes.length) {
             //we want to create special ape
+            //lefteye, righteye, specialape, textfillcolor, lefteyecolor, righteyecolor
             createdApe = apeGenerator.getGeneratedApe(
                 ast_specialApes[currentActiveSpecialApeIndex].leftEye,
                 ast_specialApes[currentActiveSpecialApeIndex].rightEye,
                 true, //special ape generation
-                ast_specialApes[currentActiveSpecialApeIndex].textFillColor, //text fill color not needed, default used
-                0,
-                0
+                ast_specialApes[currentActiveSpecialApeIndex].textFillColor,
+                ast_specialApes[currentActiveSpecialApeIndex].eyesColor,
+                ast_specialApes[currentActiveSpecialApeIndex].eyesColor
             );
+            createdApeName = ast_specialApes[currentActiveSpecialApeIndex].name;
         } else {
             randomCreatedMintCombinationIndex = createRandomNumberInRange(
                 arrayOfAvailableMintCombinations.length
@@ -429,8 +474,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 ],
                 false, //special ape generation
                 "", //text fill color not needed, default used
-                createRandomNumberInRange(3),
-                createRandomNumberInRange(3)
+                createRandomNumberInRange(3), //a little "random" eye colors
+                createRandomNumberInRange(3) //a little "random" eye colors
             );
 
             //lets require ApeNameGeneration here first, otherwise we could end up in a fallback error (happened if we define ApeGenerator function with 3 inputs here and in ApeGenerator it has 4 inputs)
@@ -453,6 +498,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //empty string means ape generation failed
         require(createdSvgNft.length != 0, "ape generation failed");
+        require(
+            bytes(createdApeName).length != 0,
+            "ape name generation failed"
+        );
 
         _safeMint(msg.sender, tokensAlreadyMinted.current());
 

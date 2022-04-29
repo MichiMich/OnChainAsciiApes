@@ -4,8 +4,6 @@ const { ethers } = require("hardhat");
 
 async function main() {
 
-    let accessControl;
-    let nftContract;
     const mintPrice = ethers.utils.parseUnits("1", 15);
 
     //get available accounts from hardhat
@@ -25,21 +23,34 @@ async function main() {
     //deploying contracts - start
     //apeGenerator
     const ApeGenerator = await hre.ethers.getContractFactory("ApeGenerator");
-    const apeGenerator_contract = await ApeGenerator.deploy();
+    const apeGenerator = await ApeGenerator.deploy();
+    await apeGenerator.deployed();
+    console.log("ApeGenerator deployed at: ", apeGenerator.address);
 
     //accessControl
     const AccessControl = await hre.ethers.getContractFactory("AccessControl");
-    const AccessControl_contract = await AccessControl.deploy();
+    const accessControl = await AccessControl.deploy();
+    await accessControl.deployed();
+    console.log("AccessControl deployed at: ", accessControl.address);
 
     //nftContract
     const OnChainAsciiApes = await hre.ethers.getContractFactory("OnChainAsciiApes"); //ChainApes
-    const onChainAsciiApes_contract = await OnChainAsciiApes.deploy(false, apeGenerator_contract.address, AccessControl_contract.address, 1e15);
+    const onChainAsciiApes = await OnChainAsciiApes.deploy(false, apeGenerator.address, accessControl.address, 1e15);
+    await onChainAsciiApes.deployed();
+    console.log("OnChainAsciiApes deployed at: ", onChainAsciiApes.address);
 
     //deploying contracts - end
 
     //contract linking - start
-    AccessControl_contract.linkNftContractAddress(onChainAsciiApes_contract.address);
+    accessControl_contract.linkNftContractAddress(onChainAsciiApes.address);
     //contract linking - end
 
 
 }
+
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
