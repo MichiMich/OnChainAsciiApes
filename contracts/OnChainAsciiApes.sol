@@ -11,6 +11,8 @@ import "hardhat/console.sol";
 //todo need to add properties
 //todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
 //todo the eye array need to fix with the ApeGenerator name assertion
+//todo check if creator fees are available
+//todo add a banana score
 
 contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
