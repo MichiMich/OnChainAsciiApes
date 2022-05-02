@@ -48,13 +48,13 @@ describe("Mint and accessControl test", function () {
     })
 
 
-    it("MintAndAccess, try adding address while not the owner", async function () {
+    it("RevertNotAllowed, try adding address while not the owner", async function () {
         //add address, not by owner
         await expect(accessControl.connect(accounts[1]).addAddressToAccessAllowed(accounts[3].address, 1)).to.be.reverted;
         await expect(accessControl.connect(accounts[2]).addAddressToAccessAllowed(accounts[3].address, 1)).to.be.reverted;
     });
 
-    it("MintAndAccess, link, add address, check access", async function () {
+    it("AllowOne, link, add address, check access", async function () {
         await accessControl.linkNftContractAddress(nftContract.address);
         //add address, by owner
         await accessControl.addAddressToAccessAllowed(accounts[1].address, 1);
@@ -64,7 +64,6 @@ describe("Mint and accessControl test", function () {
         expect(await accessControl.getNrOfAllowedElementsPerAddress(accounts[1].address)).to.be.equal(1);
 
     });
-
 
     it("MintAndAccess, add multiple, mint, check nr and access again", async function () {
         const allowedNrOfMints = 3;
@@ -96,6 +95,41 @@ describe("Mint and accessControl test", function () {
             //nr of left ones
             expect(await accessControl.getRemainingNrOfElementsPerAddress(accounts[2].address)).to.be.equal(allowedNrOfMints - i);
         }
+
+    });
+
+    it("MintOut, mint out all apes", async function () {
+        const totalSupplyOfNfts = await nftContract.totalSupply();
+        console.log("total supply of nfts: ", totalSupplyOfNfts);
+        let queriedTokenUri;
+        console.log("total supply: ", totalSupplyOfNfts);
+
+
+        await nftContract.enablePublicMint();
+
+
+        await nftContract.mint({ value: mintPrice });
+
+        let apeName = await nftContract.getNameOfApe(1);
+
+        console.log("apeName: ", apeName);
+
+        queriedTokenUri = await nftContract.tokenURI(1);
+
+        console.log("queried tokenURI: ", queriedTokenUri);
+        /*
+        for (let i = 0; i < 1; i++) {
+            await nftContract.mint({ value: mintPrice });
+
+            //queriedTokenUri = await nftContract.tokenURI(i);
+
+            //console.log("fetched token: ", queriedTokenUri);
+
+
+        };
+        */
+
+
 
     });
 

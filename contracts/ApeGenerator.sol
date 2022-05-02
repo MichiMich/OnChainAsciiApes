@@ -44,14 +44,16 @@ contract ApeGenerator {
 
     string[] eyeColor = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
 
-    string[7] apeNames = [
+    string[9] apeNames = [
         "Arti",
         "Abu",
         "Aldo",
         "Bingo",
         "Krabs",
         "DC",
-        "Groot"
+        "Groot",
+        "Phaedrus",
+        "D-Sasta"
     ];
 
     function generateApeName(

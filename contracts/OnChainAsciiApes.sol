@@ -277,11 +277,11 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     }
 
     function getApe(uint256 _tokenId) public view returns (string memory) {
-        require(
-            _tokenId <= maxTokenSupply, //Todo do we want a zero ape? if yes it can be like it is, otherwise we need to check for >0
-            "given tokenId is invalid"
-        );
-
+        require(_exists(_tokenId), "nonexistent token");
+        // require(
+        //     _tokenId <= maxTokenSupply, //Todo do we want a zero ape? if yes it can be like it is, otherwise we need to check for >0
+        //     "given tokenId is invalid"
+        // );
         return id_to_asciiApe[_tokenId];
     }
 
@@ -290,7 +290,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         view
         returns (string memory)
     {
-        require(_tokenId <= maxTokenSupply, "given tokenId is invalid");
+        //require(_tokenId <= maxTokenSupply, "given tokenId is invalid");
+        require(_exists(_tokenId), "nonexistent token");
         return id_to_apeName[_tokenId];
     }
 
@@ -326,10 +327,11 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         override
         returns (string memory)
     {
-        require(
-            _exists(_tokenId),
-            "ERC721Metadata: URI query for nonexistent token"
-        );
+        // require(
+        //     _exists(_tokenId),
+        //     "ERC721Metadata: URI query for nonexistent token"
+        // );
+        require(bytes(id_to_apeName[_tokenId]).length != 0, "nonexistendtoken");
         return buildMetadata(_tokenId);
     }
 
@@ -346,12 +348,29 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     Base64.encode(
                         bytes(
                             abi.encodePacked(
+                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
+                                id_to_asciiApe[_tokenId],
+                                '","name":"',
+                                id_to_apeName[_tokenId],
+                                '","attributes":[{"trait_type":"Facesymmetry","value":"',
+                                //facesymmetry value
+                                "100",
+                                '"},{"trait_type":"EyeLeft","value":"',
+                                "X", //eye left value
+                                '"},{"trait_type":"EyeRight","value":"',
+                                "O", //eye right value
+                                '"}]}'
+                            )
+
+                            /*
+                        bytes(
+                            abi.encodePacked(
                                 '{"name": "',
                                 id_to_apeName[_tokenId],
                                 '", "description": "Fully onchain generated AsciiApe", "image": "data:image/svg+xml;base64,',
                                 id_to_asciiApe[_tokenId],
                                 '"}'
-                            )
+                            )*/
                         )
                     )
                 )
