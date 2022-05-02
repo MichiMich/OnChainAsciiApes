@@ -116,6 +116,11 @@ describe("Mint and accessControl test", function () {
 
         queriedTokenUri = await nftContract.tokenURI(1);
 
+        let ownerOf = await nftContract.ownerOf(1);
+        console.log("ownerOf: ", ownerOf);
+
+
+
         console.log("queried tokenURI: ", queriedTokenUri);
         /*
         for (let i = 0; i < 1; i++) {

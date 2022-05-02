@@ -13,6 +13,7 @@ import "hardhat/console.sol";
 //todo the eye array need to fix with the ApeGenerator name assertion
 //todo check if creator fees are available
 //todo add a banana score
+//todo can we switch to a struct which holds all ape details like, left- and right eye, name, bananascore, svg...
 
 contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
@@ -30,6 +31,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         uint256 apeRightEye;
     }
 
+    //dynamical array, will created by constructor and elements deleted after mint
     mintCombination[] arrayOfAvailableMintCombinations;
 
     uint256 private maxTokenSupply;
@@ -43,7 +45,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     mapping(uint256 => string) id_to_asciiApe;
     mapping(uint256 => string) id_to_apeName;
-
+    mapping(uint256 => mintCombination) id_to_mintCombination;
+    //todo: is this still needed
     mapping(uint256 => uint256) createdCombinationMapping; //eyebrows and eyes for example
 
     // mapping(uint256 => mapping(uint256 => uint256) would be with 3 values
@@ -74,7 +77,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //could think about adding flowers &#x2740; ->❀ but we have already flowers
     ];*/
 
-    string[13] apeEyes = [
+    string[14] apeEyes = [
         " ",
         "&#x2588;", //█
         "&#x2665;", //♥
@@ -87,8 +90,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         "0", //the zero ape could be a special ape with the first mint
         "&#xD2;", //Ò
         "&#xB4;", //´
+        "&#x60;", //`
         "$"
-
         //"&#x27E0;", //⟠ -> eth symbol does not work, borders moved, no 100% fit
         //" ", "█","♥","¬","˘","^","X", ₿
         //could think about adding flowers &#x2740; ->❀ but we have already flowers
@@ -100,8 +103,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         uint256 tokenId;
         string name;
         string textFillColor;
-        string leftEye;
-        string rightEye;
+        uint8 leftEyeIndex;
+        uint8 rightEyeIndex;
         uint8 eyesColor; //0=red, 1=gold, 2=pink
     }
 
@@ -141,14 +144,13 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //define tokenId start with 1, so first ape = tokenId1
         tokensAlreadyMinted.increment();
-
         ast_specialApes.push(
             st_specialApes(
                 0,
                 "Zero the first erver minted 0 eyed ape #0",
                 "#c7ba00", //banana yellow
-                "&#x2665;", //♥
-                "&#x2665;", //♥
+                9, //0
+                9, //0
                 0 //red eye color
             )
         );
@@ -158,8 +160,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 11,
                 "Harry the banana power love eyed ape #11",
                 "#c7ba00", //banana yellow
-                "&#x2665;", //♥
-                "&#x2665;", //♥
+                2, //♥
+                2, //♥
                 0 //red eye color
             )
         );
@@ -169,8 +171,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 3,
                 "Piu the golden empty eyed ape #3",
                 "#ffd900", //golden
-                "&#x20;",
-                "&#x20;",
+                0,
+                0,
                 1 //gold eye color
             )
         );
@@ -180,8 +182,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 4,
                 "ApeNorris the angry eyed rarest toughest mf ape #4",
                 "#ff230a", //red
-                "&#x60;", //`
-                "&#xB4;", //´ -> leads to ` ´
+                12, //`
+                11, //´ -> leads to ` ´
                 0 //
             )
         );
@@ -191,8 +193,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 6,
                 "Carl the dead invisible ape #6",
                 "#000000", //black->invisible
-                "X", //X
-                "X", //X
+                9, //X
+                9, //X
                 2 //pink eye color
             )
         );
@@ -202,8 +204,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 7,
                 "Satoshi the btc eyed ape #7",
                 "#ff33cc", //pink
-                "&#x20BF;", //₿
-                "&#x20BF;", //₿
+                7, //₿
+                7, //₿
                 1 //gold eye color
             )
         );
@@ -213,8 +215,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 8,
                 "Vitalik the ethereum eyed ape #8",
                 "#ffd900", //gold
-                "&#x39E;", //Ξ
-                "&#x39E;", //Ξ
+                8, //Ξ
+                8, //Ξ
                 2 //pink eye color
             )
         );
@@ -224,8 +226,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 9,
                 "Dollari the inflationary dollar eyed ape #9",
                 "#ff0000", //red
-                "$",
-                "$",
+                13,
+                13,
                 0 //red eye color
             )
         );
@@ -264,6 +266,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         return maxTokenSupply;
     }
 
+    //todo: can be cleared in the future
     function getAvailableMintCombinations()
         public
         view
@@ -309,15 +312,21 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     function registerGeneratedToken(
         uint256 _tokenID,
         string memory _generatedData,
-        string memory _generatedName
+        string memory _generatedName,
+        mintCombination memory _mintCombination
     ) private {
+        //todo: here this should become a struct with all data stored, maybe generatedData is not needed in there
+
         //add values to mapping, can be a struct mapping or single data mapping, single data will then return created data
         id_to_asciiApe[_tokenID] = _generatedData;
 
         //register name of this one
         id_to_apeName[_tokenID] = _generatedName;
 
-        //add parameters like rarity, symmetry, ....
+        //register the combination of eyes
+        id_to_mintCombination[_tokenID] = _mintCombination;
+
+        //todo: add parameters like rarity, symmetry, ....
     }
 
     function tokenURI(uint256 _tokenId)
@@ -356,9 +365,13 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                                 //facesymmetry value
                                 "100",
                                 '"},{"trait_type":"EyeLeft","value":"',
-                                "X", //eye left value
+                                apeEyes[
+                                    id_to_mintCombination[_tokenId].apeLeftEye
+                                ], //eye left value
                                 '"},{"trait_type":"EyeRight","value":"',
-                                "O", //eye right value
+                                apeEyes[
+                                    id_to_mintCombination[_tokenId].apeLeftEye
+                                ], //eye right value
                                 '"}]}'
                             )
 
@@ -465,8 +478,12 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             //we want to create special ape
             //lefteye, righteye, specialape, textfillcolor, lefteyecolor, righteyecolor
             createdApe = apeGenerator.getGeneratedApe(
-                ast_specialApes[currentActiveSpecialApeIndex].leftEye,
-                ast_specialApes[currentActiveSpecialApeIndex].rightEye,
+                apeEyes[
+                    ast_specialApes[currentActiveSpecialApeIndex].leftEyeIndex
+                ],
+                apeEyes[
+                    ast_specialApes[currentActiveSpecialApeIndex].rightEyeIndex
+                ],
                 true, //special ape generation
                 ast_specialApes[currentActiveSpecialApeIndex].textFillColor,
                 ast_specialApes[currentActiveSpecialApeIndex].eyesColor,
@@ -528,11 +545,14 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //removing only if all data generated, otherwise generated data does not fix with name and we could get access problems
         if (currentActiveSpecialApeIndex == ast_specialApes.length) {
-            //ape of mint combinations created
+            //ape of mint combinations wanted, currentActiveSpecialApeIndex = counter in for loop and counted to end
             registerGeneratedToken(
                 tokensAlreadyMinted.current(),
                 string(Base64.encode(createdSvgNft)),
-                createdApeName
+                createdApeName,
+                arrayOfAvailableMintCombinations[
+                    randomCreatedMintCombinationIndex
+                ]
             );
 
             //remove used mint combination from available ones
@@ -542,7 +562,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             registerGeneratedToken(
                 tokensAlreadyMinted.current(),
                 string(Base64.encode(createdSvgNft)),
-                ast_specialApes[currentActiveSpecialApeIndex].name
+                ast_specialApes[currentActiveSpecialApeIndex].name,
+                arrayOfAvailableMintCombinations[
+                    randomCreatedMintCombinationIndex
+                ]
             );
         }
 
