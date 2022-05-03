@@ -15,7 +15,7 @@ import "hardhat/console.sol";
 //todo add a banana score
 //todo can we switch to a struct which holds all ape details like, left- and right eye, name, bananascore, svg...
 
-contract OnChainAsciiApes is ERC721Enumerable, Ownable {
+contract OnChainAsciiApesv1 is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
     // variable packing only occurs in storage
 
@@ -26,7 +26,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     bool UseSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
 
-    //defines nr of mint combinations
     struct mintCombination {
         uint256 apeLeftEye;
         uint256 apeRightEye;
@@ -44,24 +43,13 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //     uint256 nrUsedInSequence;
     // }
 
+    mapping(uint256 => string) id_to_asciiApe;
+    mapping(uint256 => string) id_to_apeName;
+    mapping(uint256 => mintCombination) id_to_mintCombination;
     //todo: is this still needed?
     mapping(uint256 => uint256) createdCombinationMapping; //eyebrows and eyes for example
 
-    mapping(uint256 => st_apeDetails) id_to_apeDetails;
     // mapping(uint256 => mapping(uint256 => uint256) would be with 3 values
-
-    struct st_apeDetails {
-        string name;
-        uint8 leftEyeIndex;
-        uint8 rightEyeIndex;
-        uint8 eyeColorLeft;
-        uint8 eyeColorRight;
-        string apeColor;
-        string svg;
-        bytes base64EncodedSvg;
-        string[3] symmetry;
-        string[3] bananascore;
-    }
 
     //only for testing, should be done in metadata then
     uint256 randomNumEyebrowLeft;
@@ -111,19 +99,16 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     //what defines an ape
     //apeName, apeEyesIndexLeft, apeEyesIndexRight, apeEyesColor, apeColor, symmetry (left=right eye=100, else 50)
-    struct st_specialApeDetails {
+    struct st_specialApes {
         uint256 tokenId;
-        st_apeDetails _apeDetails;
-        /*
         string name;
         string textFillColor;
         uint8 leftEyeIndex;
         uint8 rightEyeIndex;
         uint8 eyesColor; //0=red, 1=gold, 2=pink
-        */
     }
 
-    st_specialApeDetails[] ast_specialApeDetails;
+    st_specialApes[] ast_specialApes;
 
     bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
@@ -159,22 +144,19 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //define tokenId start with 1, so first ape = tokenId1
         tokensAlreadyMinted.increment();
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 0,
-                st_apeDetails(
-                    "Zero the first erver minted 0 eyed ape #0",
-                    9, //0
-                    9, //0
-                    0, //red eye color left
-                    0, //red eye color right
-                    "#c7ba00" //banana yellow
-                )
+                "Zero the first erver minted 0 eyed ape #0",
+                "#c7ba00", //banana yellow
+                9, //0
+                9, //0
+                0 //red eye color
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 11,
                 "Harry the banana power love eyed ape #11",
                 "#c7ba00", //banana yellow
@@ -184,8 +166,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 3,
                 "Piu the golden empty eyed ape #3",
                 "#ffd900", //golden
@@ -195,8 +177,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 4,
                 "ApeNorris the angry eyed rarest toughest mf ape #4",
                 "#ff230a", //red
@@ -206,8 +188,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 6,
                 "Carl the dead invisible ape #6",
                 "#000000", //black->invisible
@@ -217,8 +199,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 7,
                 "Satoshi the btc eyed ape #7",
                 "#ff33cc", //pink
@@ -228,8 +210,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 8,
                 "Vitalik the ethereum eyed ape #8",
                 "#ffd900", //gold
@@ -239,8 +221,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        ast_specialApeDetails.push(
-            st_specialApeDetails(
+        ast_specialApes.push(
+            st_specialApes(
                 9,
                 "Dollari the inflationary dollar eyed ape #9",
                 "#ff0000", //red
@@ -251,7 +233,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         );
 
         //Add special apes to max token supply
-        maxTokenSupply += ast_specialApeDetails.length;
+        maxTokenSupply += ast_specialApes.length;
     }
 
     function withdraw() public payable onlyOwner {
@@ -327,19 +309,24 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         }
     }
 
-    //toDo: register should have st_apeDetails, non other needed
-    function registerGeneratedToken(uint256 _tokenID, st_apeDetails _apeDetails)
-        private
-    {
+    function registerGeneratedToken(
+        uint256 _tokenID,
+        string memory _generatedData,
+        string memory _generatedName,
+        mintCombination memory _mintCombination
+    ) private {
         //todo: here this should become a struct with all data stored, maybe generatedData is not needed in there
-        if (_apeDetails.leftEyeIndex == _apeDetails.rightEyeindex) {
-            _apeDetails.symmetry = "100";
-        } else {
-            _apeDetails.symmetry = "50";
-        }
-        //todo: add banana score with random number
 
-        id_to_apeDetails[_tokenID] = _apeDetails;
+        //add values to mapping, can be a struct mapping or single data mapping, single data will then return created data
+        id_to_asciiApe[_tokenID] = _generatedData;
+
+        //register name of this one
+        id_to_apeName[_tokenID] = _generatedName;
+
+        //register the combination of eyes
+        id_to_mintCombination[_tokenID] = _mintCombination;
+
+        //todo: add parameters like rarity, symmetry, ....
     }
 
     function tokenURI(uint256 _tokenId)
@@ -353,10 +340,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //     _exists(_tokenId),
         //     "ERC721Metadata: URI query for nonexistent token"
         // );
-        require(
-            bytes(id_to_apeDetails[_tokenId].name) != 0,
-            "nonexistendtoken"
-        );
+        require(bytes(id_to_apeName[_tokenId]).length != 0, "nonexistendtoken");
         return buildMetadata(_tokenId);
     }
 
@@ -374,23 +358,20 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                         bytes(
                             abi.encodePacked(
                                 '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                id_to_apeDetails[_tokenId].base64EncodedSvg,
+                                id_to_asciiApe[_tokenId],
                                 '","name":"',
-                                id_to_apeDetails[_tokenId].name,
+                                id_to_apeName[_tokenId],
                                 '","attributes":[{"trait_type":"Facesymmetry","value":"',
                                 //facesymmetry value
-                                id_to_apeDetails[_tokenId].symmetry,
+                                "100",
                                 '"},{"trait_type":"EyeLeft","value":"',
                                 apeEyes[
-                                    id_to_apeDetails[_tokenId].leftEyeIndex
+                                    id_to_mintCombination[_tokenId].apeLeftEye
                                 ], //eye left value
                                 '"},{"trait_type":"EyeRight","value":"',
                                 apeEyes[
-                                    id_to_apeDetails[_tokenId]
-                                        .leftEyeIndex
-                                        .rightEyeindex
+                                    id_to_mintCombination[_tokenId].apeRightEye
                                 ], //eye right value
-                                //todo: add symmetry and bananascore value
                                 '"}]}'
                             )
 
@@ -417,9 +398,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     keccak256(
                         abi.encodePacked(
                             (msg.sender),
-                            ast_specialApeDetails[
+                            ast_specialApes[
                                 uint256(blockhash(block.number - 1)) %
-                                    ast_specialApeDetails.length
+                                    ast_specialApes.length
                             ].name,
                             blockhash(block.number - 1),
                             block.timestamp,
@@ -471,7 +452,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         );
 
         //used data for mint
-        bool apeNameCreationSuccesfull; //todo: can be removed?
+        string memory createdApe;
+        string memory createdApeName;
+        bool apeNameCreationSuccesfull;
         uint256 currentActiveSpecialApeIndex;
         uint256 randomCreatedMintCombinationIndex;
 
@@ -479,11 +462,11 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         for (
             currentActiveSpecialApeIndex = 0;
-            currentActiveSpecialApeIndex < ast_specialApeDetails.length;
+            currentActiveSpecialApeIndex < ast_specialApes.length;
             currentActiveSpecialApeIndex++
         ) {
             if (
-                ast_specialApeDetails[currentActiveSpecialApeIndex].tokenId ==
+                ast_specialApes[currentActiveSpecialApeIndex].tokenId ==
                 tokensAlreadyMinted.current()
             ) {
                 //we want to create an special ape now
@@ -491,34 +474,22 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             }
         }
 
-        st_apeDetails currentUsedApeDetails;
-        if (currentActiveSpecialApeIndex != ast_specialApeDetails.length) {
-            //build ape Details from special ape data
-            currentUsedApeDetails = ast_specialApeDetails[
-                currentActiveSpecialApeIndex
-            ]._apeDetails;
-
+        if (currentActiveSpecialApeIndex != ast_specialApes.length) {
             //we want to create special ape
             //lefteye, righteye, specialape, textfillcolor, lefteyecolor, righteyecolor
-            //todo: we could adapt apeGenerator with st_apeDetails, this would result in 2 inputs
-            currentUsedApeDetails.svg = apeGenerator.getGeneratedApe(
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .leftEyeIndex,
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .rightEyeindex,
+            createdApe = apeGenerator.getGeneratedApe(
+                apeEyes[
+                    ast_specialApes[currentActiveSpecialApeIndex].leftEyeIndex
+                ],
+                apeEyes[
+                    ast_specialApes[currentActiveSpecialApeIndex].rightEyeIndex
+                ],
                 true, //special ape generation
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .apeColor,
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .eyeColorLeft,
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .eyeColorRight
+                ast_specialApes[currentActiveSpecialApeIndex].textFillColor,
+                ast_specialApes[currentActiveSpecialApeIndex].eyesColor,
+                ast_specialApes[currentActiveSpecialApeIndex].eyesColor
             );
+            createdApeName = ast_specialApes[currentActiveSpecialApeIndex].name;
         } else {
             randomCreatedMintCombinationIndex = createRandomNumberInRange(
                 arrayOfAvailableMintCombinations.length
@@ -528,76 +499,74 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 apeGenerator.getLengthOfApeNamesArray()
             );
 
-            //define apeDetails
-            currentUsedApeDetails
-                .leftEyeIndex = arrayOfAvailableMintCombinations[
-                randomCreatedMintCombinationIndex
-            ].apeLeftEye;
-            currentUsedApeDetails
-                .rightEyeIndex = arrayOfAvailableMintCombinations[
-                randomCreatedMintCombinationIndex
-            ].apeRightEye;
-            currentUsedApeDetails.eyeColorLeft = createRandomNumberInRange(3);
-            currentUsedApeDetails.eyeColorRight = createRandomNumberInRange(3);
-            currentUsedApeDetails.apeColor = "white";
-
-            currentUsedApeDetails.svg = apeGenerator.getGeneratedApe(
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .leftEyeIndex,
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .rightEyeindex,
+            createdApe = apeGenerator.getGeneratedApe(
+                apeEyes[
+                    arrayOfAvailableMintCombinations[
+                        randomCreatedMintCombinationIndex
+                    ].apeLeftEye
+                ],
+                apeEyes[
+                    arrayOfAvailableMintCombinations[
+                        randomCreatedMintCombinationIndex
+                    ].apeRightEye
+                ],
                 false, //special ape generation
-                "",
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .eyeColorLeft,
-                ast_specialApeDetails[currentActiveSpecialApeIndex]
-                    ._apeDetails
-                    .eyeColorRight
+                "", //text fill color not needed, default used
+                createRandomNumberInRange(3), //a little "random" eye colors
+                createRandomNumberInRange(3) //a little "random" eye colors
             );
 
             //lets require ApeNameGeneration here first, otherwise we could end up in a fallback error (happened if we define ApeGenerator function with 3 inputs here and in ApeGenerator it has 4 inputs)
-            (
-                currentUsedApeDetails.name,
-                apeNameCreationSuccesfull
-            ) = apeGenerator.generateApeName(
-                randomCreatedApeNameIndex,
-                arrayOfAvailableMintCombinations[
-                    randomCreatedMintCombinationIndex
-                ].apeLeftEye,
-                arrayOfAvailableMintCombinations[
-                    randomCreatedMintCombinationIndex
-                ].apeRightEye,
-                tokensAlreadyMinted.current()
-            );
+            (createdApeName, apeNameCreationSuccesfull) = apeGenerator
+                .generateApeName(
+                    randomCreatedApeNameIndex,
+                    arrayOfAvailableMintCombinations[
+                        randomCreatedMintCombinationIndex
+                    ].apeLeftEye,
+                    arrayOfAvailableMintCombinations[
+                        randomCreatedMintCombinationIndex
+                    ].apeRightEye,
+                    tokensAlreadyMinted.current()
+                );
 
             require(apeNameCreationSuccesfull, "ape name creation failed");
         }
 
-        currentUsedApeDetails.base64EncodedSvg = Base64.encode(
-            currentUsedApeDetails.svg
-        );
+        bytes memory createdSvgNft = bytes(abi.encodePacked(createdApe));
 
         //empty string means ape generation failed
+        require(createdSvgNft.length != 0, "ape generation failed");
         require(
-            currentUsedApeDetails.base64EncodedSvg.length != 0,
-            "ape generation failed"
+            bytes(createdApeName).length != 0,
+            "ape name generation failed"
         );
 
         _safeMint(msg.sender, tokensAlreadyMinted.current());
 
-        registerGeneratedToken(
-            tokensAlreadyMinted.current(),
-            currentUsedApeDetails
-        );
-
         //removing only if all data generated, otherwise generated data does not fix with name and we could get access problems
-        if (currentActiveSpecialApeIndex == ast_specialApeDetails.length) {
-            //ape of mint combinations was wanted, currentActiveSpecialApeIndex = counter in for loop and counted to end
+        if (currentActiveSpecialApeIndex == ast_specialApes.length) {
+            //ape of mint combinations wanted, currentActiveSpecialApeIndex = counter in for loop and counted to end
+            registerGeneratedToken(
+                tokensAlreadyMinted.current(),
+                string(Base64.encode(createdSvgNft)),
+                createdApeName,
+                arrayOfAvailableMintCombinations[
+                    randomCreatedMintCombinationIndex
+                ]
+            );
+
             //remove used mint combination from available ones
             removeMintCombinationUnordered(randomCreatedMintCombinationIndex);
+        } else {
+            //special ape does not need to be removed of anywhere, because one tokenId=one special ape, so tokenId decrementation and struct defination of special apes guarantee this ->human input errors possible^^ sure, its code written by me^^
+            registerGeneratedToken(
+                tokensAlreadyMinted.current(),
+                string(Base64.encode(createdSvgNft)),
+                ast_specialApes[currentActiveSpecialApeIndex].name,
+                arrayOfAvailableMintCombinations[
+                    randomCreatedMintCombinationIndex
+                ]
+            );
         }
 
         tokensAlreadyMinted.increment();
