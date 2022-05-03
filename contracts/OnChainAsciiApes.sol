@@ -232,7 +232,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             )
         );
 
-        //Add special apes to max token suppl
+        //Add special apes to max token supply
         maxTokenSupply += ast_specialApes.length;
     }
 
@@ -370,7 +370,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                                 ], //eye left value
                                 '"},{"trait_type":"EyeRight","value":"',
                                 apeEyes[
-                                    id_to_mintCombination[_tokenId].apeLeftEye
+                                    id_to_mintCombination[_tokenId].apeRightEye
                                 ], //eye right value
                                 '"}]}'
                             )
