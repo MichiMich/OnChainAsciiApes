@@ -50,13 +50,18 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     mapping(uint256 => st_apeDetails) id_to_apeDetails;
     // mapping(uint256 => mapping(uint256 => uint256) would be with 3 values
 
-    struct st_apeDetails {
+    struct st_ApeCoreElements {
+        uint256 tokenId;
         string name;
         uint8 leftEyeIndex;
         uint8 rightEyeIndex;
         uint8 eyeColorLeft;
         uint8 eyeColorRight;
         string apeColor;
+    }
+
+    struct st_apeDetails {
+        st_ApeCoreElements apeCoreElements;
         string svg;
         bytes base64EncodedSvg;
         string[3] symmetry;
@@ -88,7 +93,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         "&#x2686;" //" ", "█","♥","¬","˘","^","X","◔","◕","✿","ಥ","◉","⚆"
         //could think about adding flowers &#x2740; ->❀ but we have already flowers
     ];*/
-
+    /*
     string[14] apeEyes = [
         " ",
         "&#x2588;", //█
@@ -108,22 +113,12 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //" ", "█","♥","¬","˘","^","X", ₿
         //could think about adding flowers &#x2740; ->❀ but we have already flowers
     ];
+*/
 
     //what defines an ape
     //apeName, apeEyesIndexLeft, apeEyesIndexRight, apeEyesColor, apeColor, symmetry (left=right eye=100, else 50)
-    struct st_specialApeDetails {
-        uint256 tokenId;
-        st_apeDetails _apeDetails;
-        /*
-        string name;
-        string textFillColor;
-        uint8 leftEyeIndex;
-        uint8 rightEyeIndex;
-        uint8 eyesColor; //0=red, 1=gold, 2=pink
-        */
-    }
 
-    st_specialApeDetails[] ast_specialApeDetails;
+    st_ApeCoreElements[] ast_specialApeDetails;
 
     bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
@@ -160,93 +155,98 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //define tokenId start with 1, so first ape = tokenId1
         tokensAlreadyMinted.increment();
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 0,
-                st_apeDetails(
-                    "Zero the first erver minted 0 eyed ape #0",
-                    9, //0
-                    9, //0
-                    0, //red eye color left
-                    0, //red eye color right
-                    "#c7ba00" //banana yellow
-                )
+                "Zero the first erver minted 0 eyed ape #0",
+                9, //0 lefteyeIndex
+                9, //0 rightEyeIndex
+                0, //red eye color left
+                0, //red eye color right
+                "#c7ba00" //banana yellow //todo: define another color?
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 11,
                 "Harry the banana power love eyed ape #11",
-                "#c7ba00", //banana yellow
                 2, //♥
                 2, //♥
-                0 //red eye color
+                0, //red eye color
+                0,
+                "#c7ba00" //banana yellow
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 3,
                 "Piu the golden empty eyed ape #3",
-                "#ffd900", //golden
                 0,
                 0,
-                1 //gold eye color
+                1, //eye color left
+                1, //eye color right
+                "#ffd900" //golden
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 4,
                 "ApeNorris the angry eyed rarest toughest mf ape #4",
-                "#ff230a", //red
                 12, //`
                 11, //´ -> leads to ` ´
-                0 //
+                0, //
+                0,
+                "#ff230a" //red
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 6,
                 "Carl the dead invisible ape #6",
-                "#000000", //black->invisible
                 9, //X
                 9, //X
-                2 //pink eye color
+                2, //pink left eye
+                2, //pink right eye
+                "#000000" //black->invisible
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 7,
                 "Satoshi the btc eyed ape #7",
-                "#ff33cc", //pink
                 7, //₿
                 7, //₿
-                1 //gold eye color
+                1, //gold left eye
+                1, //gold right eye
+                "#ff33cc" //pink
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 8,
                 "Vitalik the ethereum eyed ape #8",
-                "#ffd900", //gold
                 8, //Ξ
                 8, //Ξ
-                2 //pink eye color
+                2, //pink left eye
+                2, //pink right eye
+                "#ffd900" //gold
             )
         );
 
         ast_specialApeDetails.push(
-            st_specialApeDetails(
+            st_ApeCoreElements(
                 9,
                 "Dollari the inflationary dollar eyed ape #9",
-                "#ff0000", //red
                 13,
                 13,
-                0 //red eye color
+                0, //red left eye
+                0, //red right eye
+                "#ff0000" //red
             )
         );
 
@@ -303,7 +303,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //     _tokenId <= maxTokenSupply, //Todo do we want a zero ape? if yes it can be like it is, otherwise we need to check for >0
         //     "given tokenId is invalid"
         // );
-        return id_to_asciiApe[_tokenId];
+        return id_to_apeDetails[_tokenId].svg;
     }
 
     function getNameOfApe(uint256 _tokenId)
@@ -313,7 +313,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     {
         //require(_tokenId <= maxTokenSupply, "given tokenId is invalid");
         require(_exists(_tokenId), "nonexistent token");
-        return id_to_apeName[_tokenId];
+        return id_to_apeDetails[_tokenId].apeCoreElements.name;
     }
 
     /* getters - end*/
@@ -328,9 +328,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     }
 
     //toDo: register should have st_apeDetails, non other needed
-    function registerGeneratedToken(uint256 _tokenID, st_apeDetails _apeDetails)
-        private
-    {
+    function registerGeneratedToken(
+        uint256 _tokenID,
+        st_apeDetails memory _apeDetails
+    ) private {
         //todo: here this should become a struct with all data stored, maybe generatedData is not needed in there
         if (_apeDetails.leftEyeIndex == _apeDetails.rightEyeindex) {
             _apeDetails.symmetry = "100";
@@ -390,7 +391,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                                         .leftEyeIndex
                                         .rightEyeindex
                                 ], //eye right value
-                                //todo: add symmetry and bananascore value
+                                //todo: add bananascore value
                                 '"}]}'
                             )
 
@@ -491,7 +492,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             }
         }
 
-        st_apeDetails currentUsedApeDetails;
+        st_apeDetails memory currentUsedApeDetails;
         if (currentActiveSpecialApeIndex != ast_specialApeDetails.length) {
             //build ape Details from special ape data
             currentUsedApeDetails = ast_specialApeDetails[
