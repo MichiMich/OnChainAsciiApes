@@ -4,7 +4,7 @@ pragma solidity ^0.8.0; //>=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Base64.sol";
+import "../Base64.sol";
 import "hardhat/console.sol";
 
 //todo need to check if special apes have always same eye types and colors, if we dont need to transfer both eyes and adapt special ape generation
