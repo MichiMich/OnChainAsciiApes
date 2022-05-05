@@ -135,6 +135,7 @@ contract ApeGenerator is Ownable {
                 return (currentActiveSpecialApeIndex);
             }
         }
+        return (maxTokenSupply + 1);
 
         //this avoids gas, because we dont need to change a value of a counter
         //on a programmatic point of view it should be done with for loop
@@ -346,7 +347,7 @@ contract ApeGenerator is Ownable {
         uint256 _tokenId,
         uint256 _apeNameIndex
     ) public view returns (bytes memory, string memory) {
-        if (_specialApeIndex != 0) {
+        if (_randomNumber == 0) {
             //needed tmp otherwise compile says stack too deep when used in encodePacked
             string memory rightEyeColor = eyeColor[
                 ast_specialApeDetails[_specialApeIndex].eyeColorRight

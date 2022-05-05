@@ -99,6 +99,26 @@ describe("Mint and accessControl test", function () {
             });
         }
 
+        function createAndAdaptSvgFromTokenURI(tokenURI, pathAndFilename, apeName) {
+            const jsonData = tokenURI_to_JSON(tokenURI);
+            const imageDataBase64 = jsonData.image;
+            const svgData = imageDataBase64.substring(26);
+            const decodedSvgData = atob(svgData);
+
+            const SvgDataPart1 = decodedSvgData.substring(0, decodedSvgData.indexOf("</text>"));
+            const AddedSvgNamePart = '<tspan x="0%" y="92%">' + apeName + '</tspan>';
+            const SvgWithName = SvgDataPart1 + AddedSvgNamePart + '</text></svg>'
+
+            //write svg to file
+            fs.writeFile(pathAndFilename, SvgWithName, err => {
+                if (err) {
+                    console.error(err);
+                }
+                // file written successfully
+            });
+
+        }
+
         function tokenURI_to_JSON(tokenURI) {
             const json = atob(tokenURI.substring(29));
             return (JSON.parse(json));
@@ -106,7 +126,7 @@ describe("Mint and accessControl test", function () {
 
 
         let filename;
-        for (let i = 1; i <= totalSupplyOfNfts; i++) {
+        for (let i = 0; i < 5; i++) {
             await nftContract.mint({ value: mintPrice });
 
             let apeName = await nftContract.getNameOfApe(i);
@@ -117,13 +137,13 @@ describe("Mint and accessControl test", function () {
 
             //console.log("\n\nfetched token: ", queriedTokenUri);
 
-            filename = './GenApes/' + apeName + '.svg';
-            createSvgFromTokenURI(queriedTokenUri, filename);
+            //filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes' + apeName + '.svg';
 
+            filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes/ApesWithName/' + apeName + '.svg';
+
+            //createSvgFromTokenURI(queriedTokenUri, filename);
+            createAndAdaptSvgFromTokenURI(queriedTokenUri, filename, apeName);
         };
-
-
-
 
 
     });

@@ -99,7 +99,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         accessControlContractAddress = _accessControlContractAddress;
 
         //define tokenId start with 1, so first ape = tokenId1
-        tokensAlreadyMinted.increment();
+        //tokensAlreadyMinted.increment();
     }
 
     function withdraw() public payable onlyOwner {
@@ -318,7 +318,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             currentTokenId
         );
 
-        if (specialApeIndex != 0) {
+        if (specialApeIndex != totalSupply() + 1) {
             //special ape wanted, no random number needed
             //currentUsedApeDetails.svg = apeGenerator.generateApe(currentTokenId, 0);
             (
