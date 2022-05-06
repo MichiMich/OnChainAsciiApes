@@ -41,7 +41,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     // mapping(uint256 => mapping(uint256 => uint256) would be with 3 values
     //todo in apeGenerator already, could we get rid of this here?
     struct st_ApeCoreElements {
-        uint256 tokenId;
+        uint8 tokenId;
         string name;
         uint8 leftEyeIndex;
         uint8 rightEyeIndex;
@@ -222,10 +222,12 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //     _exists(_tokenId),
         //     "ERC721Metadata: URI query for nonexistent token"
         // );
+        /*todo: uncomment this again
         require(
             bytes(id_to_apeDetails[_tokenId].apeCoreElements.name).length != 0,
             "nonexistendtoken"
         );
+        */
         return buildMetadata(_tokenId);
     }
 
@@ -234,7 +236,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         view
         returns (string memory)
     {
+        console.log("before exists");
         require(_exists(_tokenId), "Nonexistent token"); //ToDo: this is already checked by tokenURI call, we could leave this out
+        console.log("after exists");
         return
             string(
                 abi.encodePacked(
@@ -341,25 +345,33 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //check if current id should lead to special ape
 
-        uint256 randomCreatedMintCombinationIndex = createRandomNumberInRange(
+        uint8 randomCreatedMintCombinationIndex = createRandomNumberInRange(
             apeGenerator.nrOfAvailableMintCombinations()
         );
 
         st_apeDetails memory currentUsedApeDetails;
-        uint256 currentTokenId = tokensAlreadyMinted.current();
-        uint256 specialApeIndex = apeGenerator.getSpecialApeIndex(
-            currentTokenId
-        );
+        uint8 currentTokenId = uint8(tokensAlreadyMinted.current());
+        uint8 specialApeIndex = apeGenerator.getSpecialApeIndex(currentTokenId);
 
         if (specialApeIndex != totalSupply() + 1) {
             //special ape wanted, no random number needed
             //currentUsedApeDetails.svg = apeGenerator.generateApe(currentTokenId, 0);
+            currentUsedApeDetails.base64EncodedSvg = apeGenerator.generateApe(
+                specialApeIndex,
+                0,
+                0,
+                0,
+                0,
+                0
+            );
+            /*
             (
                 currentUsedApeDetails.base64EncodedSvg,
                 currentUsedApeDetails.apeCoreElements.name,
                 currentUsedApeDetails.apeCoreElements.leftEyeIndex,
                 currentUsedApeDetails.apeCoreElements.rightEyeIndex
             ) = apeGenerator.generateApe(specialApeIndex, 0, 0, 0, 0, 0);
+            */
         } else {
             currentUsedApeDetails.apeCoreElements.tokenId = currentTokenId;
             currentUsedApeDetails
@@ -369,7 +381,18 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 .apeCoreElements
                 .eyeColorRight = createRandomNumberInRange(3);
 
+            currentUsedApeDetails.base64EncodedSvg = apeGenerator.generateApe(
+                0,
+                randomCreatedMintCombinationIndex,
+                currentUsedApeDetails.apeCoreElements.eyeColorLeft,
+                currentUsedApeDetails.apeCoreElements.eyeColorRight,
+                currentUsedApeDetails.apeCoreElements.tokenId,
+                createRandomNumberInRange(
+                    apeGenerator.getLengthOfApeNamesArray()
+                )
+            );
             //create and call with random number in available range
+            /*
             (
                 currentUsedApeDetails.base64EncodedSvg,
                 currentUsedApeDetails.apeCoreElements.name,
@@ -384,7 +407,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 createRandomNumberInRange(
                     apeGenerator.getLengthOfApeNamesArray()
                 ) //apeNameIndex
-            );
+            );*/
         }
 
         console.log(
@@ -400,10 +423,13 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             bytes(currentUsedApeDetails.base64EncodedSvg).length != 0,
             "ape creation failed"
         );
+        //todo enable?
+        /*
         require(
             bytes(currentUsedApeDetails.apeCoreElements.name).length != 0,
             "name creation failed"
         );
+        */
 
         _safeMint(msg.sender, currentTokenId);
 
@@ -440,29 +466,20 @@ abstract contract ApeGeneratorImpl {
         virtual
         returns (uint8);
 
-    function getSpecialApeIndex(uint256 _tokenId)
+    function getSpecialApeIndex(uint8 _tokenId)
         public
         view
         virtual
-        returns (uint256);
+        returns (uint8);
 
     function generateApe(
-        uint256 _specialApeIndex,
-        uint256 _randomNumber,
-        uint256 _eyeColorIndexLeft,
-        uint256 _eyeColorIndexRight,
-        uint256 _tokenId,
-        uint256 _apeNameIndex
-    )
-        public
-        view
-        virtual
-        returns (
-            bytes memory,
-            string memory,
-            uint8,
-            uint8
-        );
+        uint8 _specialApeIndex,
+        uint8 _randomNumber,
+        uint8 _eyeColorIndexLeft,
+        uint8 _eyeColorIndexRight,
+        uint8 _tokenId,
+        uint8 _apeNameIndex
+    ) public view virtual returns (bytes memory);
 
     /*
     function getGeneratedApe(

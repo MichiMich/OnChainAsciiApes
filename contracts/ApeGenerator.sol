@@ -93,7 +93,7 @@ contract ApeGenerator is Ownable {
     mintCombination[] arrayOfAvailableMintCombinations;
 
     struct st_ApeCoreElements {
-        uint256 tokenId;
+        uint8 tokenId;
         string name;
         uint8 leftEyeIndex;
         uint8 rightEyeIndex;
@@ -105,7 +105,7 @@ contract ApeGenerator is Ownable {
     //special ape
     st_ApeCoreElements[] ast_specialApeDetails;
 
-    uint256 private maxTokenSupply;
+    uint8 private maxTokenSupply;
 
     constructor() {
         defineMintCombinations();
@@ -117,13 +117,9 @@ contract ApeGenerator is Ownable {
     }
 
     //this will cost gas, because of our counter
-    function getSpecialApeIndex(uint256 _tokenId)
-        public
-        view
-        returns (uint256)
-    {
+    function getSpecialApeIndex(uint8 _tokenId) public view returns (uint8) {
         for (
-            uint256 currentActiveSpecialApeIndex = 0;
+            uint8 currentActiveSpecialApeIndex = 0;
             currentActiveSpecialApeIndex < ast_specialApeDetails.length;
             currentActiveSpecialApeIndex++
         ) {
@@ -288,7 +284,7 @@ contract ApeGenerator is Ownable {
         );
 
         //Add special apes to max token supply
-        maxTokenSupply += ast_specialApeDetails.length;
+        maxTokenSupply += uint8(ast_specialApeDetails.length);
     }
 
     function totalSupply() public view returns (uint256) {
@@ -344,87 +340,71 @@ contract ApeGenerator is Ownable {
         return uint8(apeNames.length);
     }
 
-    function generateApe(
-        uint256 _specialApeIndex,
-        uint256 _randomNumber,
-        uint256 _eyeColorIndexLeft,
-        uint256 _eyeColorIndexRight,
-        uint256 _tokenId,
-        uint256 _apeNameIndex
-    )
-        public
+    function generateSpecialApeSvg(uint8 _specialApeIndex)
+        private
         view
-        returns (
-            bytes memory,
-            string memory,
-            uint8,
-            uint8
-        )
+        returns (bytes memory)
     {
+        //gen special ape, plain string
+        return (
+            abi.encodePacked(
+                svgStartToTextFill,
+                ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
+                svgTextFillToEye,
+                eyeColor[ast_specialApeDetails[_specialApeIndex].eyeColorLeft],
+                apeEyes[ast_specialApeDetails[_specialApeIndex].leftEyeIndex], //leftEye,
+                svgEyeToEye,
+                eyeColor[ast_specialApeDetails[_specialApeIndex].eyeColorLeft],
+                apeEyes[ast_specialApeDetails[_specialApeIndex].rightEyeIndex], //rightEye,
+                svgEyeToEnd
+            )
+        );
+    }
+
+    function generateApeSvg(
+        uint8 _eyeColorIndexLeft,
+        uint8 _eyeColorIndexRight,
+        uint8 _randomNumber
+    ) private view returns (bytes memory) {
+        return (
+            abi.encodePacked(
+                svgStartToTextFill,
+                "white",
+                svgTextFillToEye,
+                eyeColor[_eyeColorIndexLeft],
+                apeEyes[
+                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye
+                ],
+                svgEyeToEye,
+                eyeColor[_eyeColorIndexRight],
+                apeEyes[
+                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye
+                ],
+                svgEyeToEnd
+            )
+        );
+    }
+
+    function generateApe(
+        uint8 _specialApeIndex,
+        uint8 _randomNumber,
+        uint8 _eyeColorIndexLeft,
+        uint8 _eyeColorIndexRight,
+        uint8 _tokenId,
+        uint8 _apeNameIndex
+    ) public view returns (bytes memory) {
         if (_randomNumber == 0) {
-            //needed tmp otherwise compile says stack too deep when used in encodePacked
-            string memory rightEyeColor = eyeColor[
-                ast_specialApeDetails[_specialApeIndex].eyeColorRight
-            ];
-            string memory rightEye = apeEyes[
-                ast_specialApeDetails[_specialApeIndex].rightEyeIndex
-            ];
-            string memory eyeColorLeft = eyeColor[
-                ast_specialApeDetails[_specialApeIndex].eyeColorLeft
-            ];
-            string memory leftEye = apeEyes[
-                ast_specialApeDetails[_specialApeIndex].leftEyeIndex
-            ];
-            uint8 leftEyeIndex = ast_specialApeDetails[_specialApeIndex]
-                .leftEyeIndex;
-            uint8 rightEyeIndex = ast_specialApeDetails[_specialApeIndex]
-                .leftEyeIndex;
             //gen special ape, plain string
-            return (
-                abi.encodePacked(
-                    svgStartToTextFill,
-                    ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
-                    svgTextFillToEye,
-                    eyeColorLeft,
-                    leftEye, //leftEye,
-                    svgEyeToEye,
-                    rightEyeColor,
-                    rightEye, //rightEye,
-                    svgEyeToEnd
-                ),
-                ast_specialApeDetails[_specialApeIndex].name,
-                leftEyeIndex,
-                rightEyeIndex
-            );
+            return (generateSpecialApeSvg(_specialApeIndex));
         } else {
             //gen ape of mint combinations
             //use randomNumber here
             return (
-                abi.encodePacked(
-                    svgStartToTextFill,
-                    "white",
-                    svgTextFillToEye,
-                    eyeColor[_eyeColorIndexLeft],
-                    apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeLeftEye
-                    ],
-                    svgEyeToEye,
-                    eyeColor[_eyeColorIndexRight],
-                    apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeRightEye
-                    ],
-                    svgEyeToEnd
-                ),
-                generateApeName(
-                    _apeNameIndex,
-                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
-                    arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
-                    _tokenId
-                ),
-                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye, //left eye index
-                arrayOfAvailableMintCombinations[_randomNumber].apeRightEye //right eye index
+                generateApeSvg(
+                    _eyeColorIndexLeft,
+                    _eyeColorIndexRight,
+                    _randomNumber
+                )
             );
         }
     }
