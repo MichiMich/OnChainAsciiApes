@@ -86,8 +86,8 @@ contract ApeGenerator is Ownable {
     ];
 
     struct mintCombination {
-        uint256 apeLeftEye;
-        uint256 apeRightEye;
+        uint8 apeLeftEye;
+        uint8 apeRightEye;
     }
     //dynamical array, will created by constructor and elements deleted after mint
     mintCombination[] arrayOfAvailableMintCombinations;
@@ -152,16 +152,16 @@ contract ApeGenerator is Ownable {
     }
 
     function defineMintCombinations() private {
-        for (uint256 j = 0; j < apeEyes.length; j++) {
-            for (uint256 i = 0; i < apeEyes.length; i++) {
+        for (uint8 j = 0; j < apeEyes.length; j++) {
+            for (uint8 i = 0; i < apeEyes.length; i++) {
                 arrayOfAvailableMintCombinations.push(mintCombination(j, i));
                 maxTokenSupply += 1;
             }
         }
     }
 
-    function nrOfAvailableMintCombinations() public view returns (uint256) {
-        return arrayOfAvailableMintCombinations.length;
+    function nrOfAvailableMintCombinations() public view returns (uint8) {
+        return uint8(arrayOfAvailableMintCombinations.length);
     }
 
     function removeMintCombinationUnordered(uint256 _indexToRemove)
@@ -340,8 +340,8 @@ contract ApeGenerator is Ownable {
         );
     }
 
-    function getLengthOfApeNamesArray() public view returns (uint256) {
-        return apeNames.length;
+    function getLengthOfApeNamesArray() public view returns (uint8) {
+        return uint8(apeNames.length);
     }
 
     function generateApe(
@@ -351,7 +351,16 @@ contract ApeGenerator is Ownable {
         uint256 _eyeColorIndexRight,
         uint256 _tokenId,
         uint256 _apeNameIndex
-    ) public view returns (bytes memory, string memory) {
+    )
+        public
+        view
+        returns (
+            bytes memory,
+            string memory,
+            uint8,
+            uint8
+        )
+    {
         if (_randomNumber == 0) {
             //needed tmp otherwise compile says stack too deep when used in encodePacked
             string memory rightEyeColor = eyeColor[
@@ -360,24 +369,32 @@ contract ApeGenerator is Ownable {
             string memory rightEye = apeEyes[
                 ast_specialApeDetails[_specialApeIndex].rightEyeIndex
             ];
+            string memory eyeColorLeft = eyeColor[
+                ast_specialApeDetails[_specialApeIndex].eyeColorLeft
+            ];
+            string memory leftEye = apeEyes[
+                ast_specialApeDetails[_specialApeIndex].leftEyeIndex
+            ];
+            uint8 leftEyeIndex = ast_specialApeDetails[_specialApeIndex]
+                .leftEyeIndex;
+            uint8 rightEyeIndex = ast_specialApeDetails[_specialApeIndex]
+                .leftEyeIndex;
             //gen special ape, plain string
             return (
                 abi.encodePacked(
                     svgStartToTextFill,
                     ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
                     svgTextFillToEye,
-                    eyeColor[
-                        ast_specialApeDetails[_specialApeIndex].eyeColorLeft
-                    ],
-                    apeEyes[
-                        ast_specialApeDetails[_specialApeIndex].leftEyeIndex
-                    ], //leftEye,
+                    eyeColorLeft,
+                    leftEye, //leftEye,
                     svgEyeToEye,
                     rightEyeColor,
                     rightEye, //rightEye,
                     svgEyeToEnd
                 ),
-                ast_specialApeDetails[_specialApeIndex].name
+                ast_specialApeDetails[_specialApeIndex].name,
+                leftEyeIndex,
+                rightEyeIndex
             );
         } else {
             //gen ape of mint combinations
@@ -405,7 +422,9 @@ contract ApeGenerator is Ownable {
                     arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
                     arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
                     _tokenId
-                )
+                ),
+                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye, //left eye index
+                arrayOfAvailableMintCombinations[_randomNumber].apeRightEye //right eye index
             );
         }
     }

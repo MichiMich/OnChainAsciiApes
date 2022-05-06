@@ -176,8 +176,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             _apeDetails.symmetry = "50";
         }
         //todo: add banana score with random number
-        //fill information
-        _apeDetails.apeCoreElements.tokenId = _tokenID;
 
         id_to_apeDetails[_tokenID] = _apeDetails;
 
@@ -305,11 +303,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         return lastGetRandomNumber;
     }
 
-    function createRandomNumberInRange(uint256 _range)
-        private
-        returns (uint256)
-    {
-        return createRandomNumber() % _range;
+    function createRandomNumberInRange(uint8 _range) private returns (uint8) {
+        //the range varies under 255 so we can convert to uint8 without problems
+        return uint8(createRandomNumber() % _range);
     }
 
     //todo if this is not set as private, it could be changed during mint, so this could result in a proxy, if sth fails,
@@ -360,22 +356,34 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             //currentUsedApeDetails.svg = apeGenerator.generateApe(currentTokenId, 0);
             (
                 currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name
+                currentUsedApeDetails.apeCoreElements.name,
+                currentUsedApeDetails.apeCoreElements.leftEyeIndex,
+                currentUsedApeDetails.apeCoreElements.rightEyeIndex
             ) = apeGenerator.generateApe(specialApeIndex, 0, 0, 0, 0, 0);
         } else {
+            currentUsedApeDetails.apeCoreElements.tokenId = currentTokenId;
+            currentUsedApeDetails
+                .apeCoreElements
+                .eyeColorLeft = createRandomNumberInRange(3);
+            currentUsedApeDetails
+                .apeCoreElements
+                .eyeColorRight = createRandomNumberInRange(3);
+
             //create and call with random number in available range
             (
                 currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name
+                currentUsedApeDetails.apeCoreElements.name,
+                currentUsedApeDetails.apeCoreElements.leftEyeIndex,
+                currentUsedApeDetails.apeCoreElements.rightEyeIndex
             ) = apeGenerator.generateApe(
                 0,
                 randomCreatedMintCombinationIndex,
-                createRandomNumberInRange(3),
-                createRandomNumberInRange(3),
-                currentTokenId,
+                currentUsedApeDetails.apeCoreElements.eyeColorLeft,
+                currentUsedApeDetails.apeCoreElements.eyeColorRight,
+                currentUsedApeDetails.apeCoreElements.tokenId,
                 createRandomNumberInRange(
                     apeGenerator.getLengthOfApeNamesArray()
-                )
+                ) //apeNameIndex
             );
         }
 
@@ -418,7 +426,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
 /*other contract implemenations - start*/
 abstract contract ApeGeneratorImpl {
-    function getLengthOfApeNamesArray() public view virtual returns (uint256);
+    function getLengthOfApeNamesArray() public view virtual returns (uint8);
 
     function totalSupply() public view virtual returns (uint256);
 
@@ -430,7 +438,7 @@ abstract contract ApeGeneratorImpl {
         public
         view
         virtual
-        returns (uint256);
+        returns (uint8);
 
     function getSpecialApeIndex(uint256 _tokenId)
         public
@@ -445,7 +453,16 @@ abstract contract ApeGeneratorImpl {
         uint256 _eyeColorIndexRight,
         uint256 _tokenId,
         uint256 _apeNameIndex
-    ) public view virtual returns (bytes memory, string memory);
+    )
+        public
+        view
+        virtual
+        returns (
+            bytes memory,
+            string memory,
+            uint8,
+            uint8
+        );
 
     /*
     function getGeneratedApe(
