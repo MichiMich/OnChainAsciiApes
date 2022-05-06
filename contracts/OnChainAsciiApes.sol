@@ -356,14 +356,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         if (specialApeIndex != totalSupply() + 1) {
             //special ape wanted, no random number needed
             //currentUsedApeDetails.svg = apeGenerator.generateApe(currentTokenId, 0);
-            currentUsedApeDetails.base64EncodedSvg = apeGenerator.generateApe(
-                specialApeIndex,
-                0,
-                0,
-                0,
-                0,
-                0
-            );
+            (
+                currentUsedApeDetails.base64EncodedSvg,
+                currentUsedApeDetails.apeCoreElements.name
+            ) = apeGenerator.generateApe(specialApeIndex, 0, 0, 0, 0, 0);
             /*
             (
                 currentUsedApeDetails.base64EncodedSvg,
@@ -381,7 +377,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 .apeCoreElements
                 .eyeColorRight = createRandomNumberInRange(3);
 
-            currentUsedApeDetails.base64EncodedSvg = apeGenerator.generateApe(
+            (
+                currentUsedApeDetails.base64EncodedSvg,
+                currentUsedApeDetails.apeCoreElements.name
+            ) = apeGenerator.generateApe(
                 0,
                 randomCreatedMintCombinationIndex,
                 currentUsedApeDetails.apeCoreElements.eyeColorLeft,
@@ -479,7 +478,7 @@ abstract contract ApeGeneratorImpl {
         uint8 _eyeColorIndexRight,
         uint8 _tokenId,
         uint8 _apeNameIndex
-    ) public view virtual returns (bytes memory);
+    ) public view virtual returns (bytes memory, string memory);
 
     /*
     function getGeneratedApe(

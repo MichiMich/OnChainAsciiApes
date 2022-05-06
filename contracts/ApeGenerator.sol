@@ -292,10 +292,10 @@ contract ApeGenerator is Ownable {
     }
 
     function generateApeName(
-        uint256 _apeNameIndex,
-        uint256 _leftEyeIndex,
-        uint256 _rightEyeIndex,
-        uint256 _tokenId
+        uint8 _apeNameIndex,
+        uint8 _leftEyeIndex,
+        uint8 _rightEyeIndex,
+        uint8 _tokenId
     ) public view returns (string memory generatedApeName) {
         require(_apeNameIndex < apeNames.length, "name index out of range");
         require(
@@ -378,7 +378,7 @@ contract ApeGenerator is Ownable {
                 svgEyeToEye,
                 eyeColor[_eyeColorIndexRight],
                 apeEyes[
-                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye
+                    arrayOfAvailableMintCombinations[_randomNumber].apeRightEye
                 ],
                 svgEyeToEnd
             )
@@ -392,10 +392,13 @@ contract ApeGenerator is Ownable {
         uint8 _eyeColorIndexRight,
         uint8 _tokenId,
         uint8 _apeNameIndex
-    ) public view returns (bytes memory) {
+    ) public view returns (bytes memory, string memory) {
         if (_randomNumber == 0) {
             //gen special ape, plain string
-            return (generateSpecialApeSvg(_specialApeIndex));
+            return (
+                generateSpecialApeSvg(_specialApeIndex),
+                ast_specialApeDetails[_specialApeIndex].name
+            );
         } else {
             //gen ape of mint combinations
             //use randomNumber here
@@ -404,10 +407,17 @@ contract ApeGenerator is Ownable {
                     _eyeColorIndexLeft,
                     _eyeColorIndexRight,
                     _randomNumber
+                ),
+                generateApeName(
+                    _apeNameIndex,
+                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
+                    arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
+                    _tokenId
                 )
             );
         }
     }
+
     /*
     //todo can be removed, generateApe makes the work now
     function getGeneratedApe(

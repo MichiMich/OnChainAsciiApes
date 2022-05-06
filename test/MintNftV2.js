@@ -134,12 +134,12 @@ describe("Mint and accessControl test", function () {
             await nftContract.mint({ value: mintPrice });
 
             console.log("left tokens after mint", await nftContract.getNrOfLeftTokens())
-            /*
-                        let apeName = await nftContract.getNameOfApe(i);
-            
-                        console.log("apeName of : ", i, " ", apeName);
-            */
-            let apeName = "api" + i;
+
+            let apeName = await nftContract.getNameOfApe(i);
+
+            console.log("apeName of : ", i, " ", apeName);
+
+
             queriedTokenUri = await nftContract.tokenURI(i);
 
             //console.log("\n\nfetched token: ", queriedTokenUri);
