@@ -168,6 +168,7 @@ contract ApeGenerator is Ownable {
         public
         onlyOwner
     {
+        console.log("wanted index to remove", _indexToRemove);
         require(
             _indexToRemove <= arrayOfAvailableMintCombinations.length ||
                 arrayOfAvailableMintCombinations.length > 0,
@@ -183,13 +184,17 @@ contract ApeGenerator is Ownable {
             ];
             arrayOfAvailableMintCombinations.pop();
         }
+        console.log(
+            "left mint combionations",
+            arrayOfAvailableMintCombinations.length
+        );
     }
 
     function addSpecialApes() private {
         ast_specialApeDetails.push(
             st_ApeCoreElements(
                 0,
-                "Zero the first erver minted 0 eyed ape #0",
+                "Zero the first ever minted 0 eyed ape #0",
                 9, //0 lefteyeIndex
                 9, //0 rightEyeIndex
                 0, //red eye color left

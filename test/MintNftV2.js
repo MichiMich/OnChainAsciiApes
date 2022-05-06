@@ -126,12 +126,18 @@ describe("Mint and accessControl test", function () {
 
 
         let filename;
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
+            console.log("\n\n");
+            console.log("loop counter: ", i);
+            console.log("left tokens before mint", await nftContract.getNrOfLeftTokens())
+
             await nftContract.mint({ value: mintPrice });
+
+            console.log("left tokens after mint", await nftContract.getNrOfLeftTokens())
 
             let apeName = await nftContract.getNameOfApe(i);
 
-            console.log("\n\napeName: ", apeName);
+            console.log("apeName of : ", i, " ", apeName);
 
             queriedTokenUri = await nftContract.tokenURI(i);
 
@@ -143,9 +149,10 @@ describe("Mint and accessControl test", function () {
 
             //createSvgFromTokenURI(queriedTokenUri, filename);
             createAndAdaptSvgFromTokenURI(queriedTokenUri, filename, apeName);
+
         };
 
-
+        console.log("\n\n Mint done, left tokens: ", await nftContract.getNrOfLeftTokens());
     });
 
 

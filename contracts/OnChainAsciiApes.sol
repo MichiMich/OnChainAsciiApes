@@ -54,6 +54,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         st_ApeCoreElements apeCoreElements;
         //string svg; //not needed, base64 encoded svg holds data
         bytes base64EncodedSvg;
+        string leftEye;
+        string rightEye;
         string symmetry;
         string[3] bananascore;
     }
@@ -174,8 +176,41 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             _apeDetails.symmetry = "50";
         }
         //todo: add banana score with random number
+        //fill information
+        _apeDetails.apeCoreElements.tokenId = _tokenID;
 
         id_to_apeDetails[_tokenID] = _apeDetails;
+
+        console.log("\nMappingTokenId: ", _tokenID);
+
+        console.log(
+            "\nregistered apeName: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.name
+        );
+        console.log(
+            "\nregistered apeTokenId: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.tokenId
+        );
+        console.log(
+            "\nleftEyeIndex: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.leftEyeIndex
+        );
+        console.log(
+            "\nrightEyeIndex: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.rightEyeIndex
+        );
+        console.log(
+            "\neyeColorLeft: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.eyeColorLeft
+        );
+        console.log(
+            "\neyeColorRight: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.eyeColorRight
+        );
+        console.log(
+            "\napeColor: ",
+            id_to_apeDetails[_tokenID].apeCoreElements.apeColor
+        );
     }
 
     function tokenURI(uint256 _tokenId)
@@ -310,7 +345,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //check if current id should lead to special ape
 
-        uint256 randomCreatedMintCombinationIndex;
+        uint256 randomCreatedMintCombinationIndex = createRandomNumberInRange(
+            apeGenerator.nrOfAvailableMintCombinations()
+        );
 
         st_apeDetails memory currentUsedApeDetails;
         uint256 currentTokenId = tokensAlreadyMinted.current();
@@ -332,9 +369,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 currentUsedApeDetails.apeCoreElements.name
             ) = apeGenerator.generateApe(
                 0,
-                createRandomNumberInRange(
-                    apeGenerator.nrOfAvailableMintCombinations()
-                ),
+                randomCreatedMintCombinationIndex,
                 createRandomNumberInRange(3),
                 createRandomNumberInRange(3),
                 currentTokenId,
@@ -343,6 +378,11 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 )
             );
         }
+
+        console.log(
+            "apeName in contract: ",
+            currentUsedApeDetails.apeCoreElements.name
+        );
 
         currentUsedApeDetails.base64EncodedSvg = bytes(
             Base64.encode(currentUsedApeDetails.base64EncodedSvg)
@@ -363,8 +403,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
         //todo: should we add requirement for removing so it needs to be removed before called again
         //removing only if all data generated, otherwise generated data does not fix with name and we could get access problems
-        if (specialApeIndex == 0) {
-            //ape of mint combinations was wanted, currentActiveSpecialApeIndex = counter in for loop and counted to end
+        if (specialApeIndex == totalSupply() + 1) {
+            //ape of mint combinations was wanted
             //remove used mint combination from available ones
             apeGenerator.removeMintCombinationUnordered(
                 randomCreatedMintCombinationIndex
