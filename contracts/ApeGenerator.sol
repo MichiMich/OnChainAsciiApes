@@ -555,6 +555,4 @@ contract ApeGenerator is Ownable {
     function getTokenURI(uint8 _tokenId) public view returns (string memory) {
         return id_to_apeDetails[_tokenId].metaData;
     }
-
-    //todo: remove, only tmp for observing
 }

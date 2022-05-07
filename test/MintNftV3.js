@@ -10,8 +10,41 @@ describe("Mint and accessControl test", function () {
     let nftContract;
     const mintPrice = ethers.utils.parseUnits("1", 15);
 
+    const filePathForTaxLogging = "./createdData/GasOptimization.txt";
+
+    async function getUsedTaxForLastBlock() {
+        const block = await hre.ethers.provider.getBlock();
+        console.log("GasUsed", parseInt(block.gasUsed._hex, 16));
+        return (parseInt(block.gasUsed._hex, 16));
+    }
+
+    function addDataToFile(pathAndFilename, data) {
+        fs.appendFile(pathAndFilename, data, err => {
+            if (err) {
+                console.error(err);
+            }
+            // file written successfully
+        });
+    }
+
+    async function getTaxAppendToFile(pathAndFilename) {
+        const gasData = await getUsedTaxForLastBlock();
+        const fileData = "Date: " + new Date().toLocaleString() + " GasUsed: " + gasData + " github commit: " + getLastGithubCommit(); + "\n";
+        addDataToFile(pathAndFilename, fileData);
+    }
+
+    function getLastGithubCommit() {
+        const rev = fs.readFileSync('.git/HEAD').toString().trim();
+        if (rev.indexOf(':') === -1) {
+            return rev;
+        } else {
+            return fs.readFileSync('.git/' + rev.substring(5)).toString().trim();
+        }
+    }
+
     //Deploying contract before running tests
     beforeEach(async function () {
+
         //get available accounts from hardhat
         accounts = await hre.ethers.getSigners();
 
@@ -20,6 +53,9 @@ describe("Mint and accessControl test", function () {
         const ApeGenerator = await hre.ethers.getContractFactory("ApeGenerator");
         apeGenerator = await ApeGenerator.deploy();
         await apeGenerator.deployed();
+
+        getTaxAppendToFile(filePathForTaxLogging);
+
         console.log("ApeGenerator deployed at: ", apeGenerator.address);
 
 
@@ -28,7 +64,8 @@ describe("Mint and accessControl test", function () {
         accessControl = await AccessControl.deploy();
         await accessControl.deployed();
         console.log("AccessControl deployed to:", accessControl.address);
-
+        getUsedTaxForLastBlock();
+        return;
 
         //nft mint contract specific
         const networkName = hre.network.name
@@ -86,52 +123,15 @@ describe("Mint and accessControl test", function () {
 
         }
 
-        function tokenURI_to_JSON(tokenURI) {
-            const json = atob(tokenURI.substring(29));
-            return (JSON.parse(json));
-        }
 
 
-        function createSvgFromTokenURI(tokenURI, pathAndFilename) {
-            const jsonData = tokenURI_to_JSON(tokenURI);
-            const imageDataBase64 = jsonData.image;
-            const svgData = imageDataBase64.substring(26);
-            const decodedSvgData = atob(svgData);
-            //console.log("decoded svg: \n\n", decodedSvgData);
-
-            //write svg to file
-            fs.writeFile(pathAndFilename, decodedSvgData, err => {
-                if (err) {
-                    console.error(err);
-                }
-                // file written successfully
-            });
-        }
-
-        let filename;
-        for (let i = 0; i < 5; i++) {
-            console.log("\n\n");
-            console.log("loop counter: ", i);
-            console.log("left tokens before mint", await nftContract.getNrOfLeftTokens())
-
-            await nftContract.mint({ value: mintPrice });
-
-            console.log("left tokens after mint", await nftContract.getNrOfLeftTokens())
 
 
-            queriedTokenUri = await nftContract.tokenURI(i);
-            console.log("\n\nqueried token uri for nr: ", i, "\n", queriedTokenUri);
-
-            let fileName = "C:/Projects/BlockChainDev/_tmp/GenApes/" + i + ".svg";
-            createSvgFromTokenURI(queriedTokenUri, fileName);
-
-        };
-
-        console.log("\n\n Mint done, left tokens: ", await nftContract.getNrOfLeftTokens());
     });
 
+    it("Deploy, deploy all needed contracts", async function () {
+        console.log("I did nothing, beforeEach hook fired^^");
 
-
-
+    });
 
 });

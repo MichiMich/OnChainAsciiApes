@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0; //>=0.8.0 <0.9.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Base64.sol";
 
 //todo need to check if special apes have always same eye types and colors, if we dont need to transfer both eyes and adapt special ape generation
 //todo need to add properties
@@ -21,17 +19,15 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     address accessControlContractAddress;
     ApeGeneratorImpl apeGenerator;
+    bool UseSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
+    bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     using Counters for Counters.Counter;
-
-    bool UseSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
 
     Counters.Counter private tokensAlreadyMinted;
     uint256 private lastGetRandomNumber;
 
     uint256 mintPriceWei;
-
-    bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     constructor(
         bool _useSeedWithTestnet,
