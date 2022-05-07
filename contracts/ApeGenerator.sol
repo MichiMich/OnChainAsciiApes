@@ -447,7 +447,12 @@ contract ApeGenerator is Ownable {
                 ast_specialApeDetails[_specialApeIndex].leftEyeIndex,
                 ast_specialApeDetails[_specialApeIndex].rightEyeIndex,
                 ast_specialApeDetails[_specialApeIndex].eyeColorLeft,
-                ast_specialApeDetails[_specialApeIndex].eyeColorRight
+                ast_specialApeDetails[_specialApeIndex].eyeColorRight,
+                substring(
+                    ast_specialApeDetails[_specialApeIndex].apeColor,
+                    1,
+                    7
+                )
             );
         } else {
             newApe.base64EncodedSvg = generateApeSvg(
@@ -468,7 +473,8 @@ contract ApeGenerator is Ownable {
                 arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
                 arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
                 _eyeColorIndexLeft,
-                _eyeColorIndexRight
+                _eyeColorIndexRight,
+                "white"
             );
         }
 
@@ -488,7 +494,8 @@ contract ApeGenerator is Ownable {
         uint8 _leftEyeIndex,
         uint8 _rightEyeIndex,
         uint8 _eyeColorIndexLeft,
-        uint8 _eyeColorIndexRight
+        uint8 _eyeColorIndexRight,
+        string memory _apeColor
     ) private returns (string memory) {
         //build, register token
         console.log("\n\nbuildTokenUri triggered");
@@ -517,6 +524,12 @@ contract ApeGenerator is Ownable {
                                 '"},{"trait_type":"EyeRight","value":"',
                                 apeEyes[_rightEyeIndex], //eye right value
                                 //todo: add bananascore value
+                                '"},{"trait_type":"EyeColorLeft","value":"',
+                                substring(eyeColor[_eyeColorIndexLeft], 0, 6), //left eye color
+                                '"},{"trait_type":"EyeColorRight","value":"',
+                                substring(eyeColor[_eyeColorIndexRight], 0, 6), //left eye color
+                                '"},{"trait_type":"ApeColor","value":"',
+                                _apeColor,
                                 '"}]}'
                             )
                         )
@@ -524,6 +537,19 @@ contract ApeGenerator is Ownable {
                 )
             )
         );
+    }
+
+    function substring(
+        string memory str,
+        uint256 startIndex,
+        uint256 endIndex
+    ) public pure returns (string memory) {
+        bytes memory strBytes = bytes(str);
+        bytes memory result = new bytes(endIndex - startIndex);
+        for (uint256 i = startIndex; i < endIndex; i++) {
+            result[i - startIndex] = strBytes[i];
+        }
+        return string(result);
     }
 
     function getTokenURI(uint8 _tokenId) public view returns (string memory) {
