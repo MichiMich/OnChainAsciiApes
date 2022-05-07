@@ -431,8 +431,13 @@ contract ApeGenerator is Ownable {
         uint8 _apeNameIndex
     ) public onlyOwner returns (bool) {
         st_apeDetails memory newApe;
+        console.log("\n###generateAndRegisterApe for tokenID: ", _tokenId);
         //svg creation + name
         if (_randomNumber == 0) {
+            console.log(
+                "\nspecial ape wanted, name: ",
+                ast_specialApeDetails[_specialApeIndex].name
+            );
             newApe.base64EncodedSvg = generateSpecialApeSvg(_specialApeIndex);
             newApe.name = ast_specialApeDetails[_specialApeIndex].name;
             //metadata todo: 1. reduce code by tmp var with indexes?
@@ -467,6 +472,10 @@ contract ApeGenerator is Ownable {
             );
         }
 
+        require(
+            bytes(id_to_apeDetails[_tokenId].metaData).length > 0,
+            "metadata gen failed"
+        );
         //register new ape
         return (true);
     }
@@ -482,12 +491,14 @@ contract ApeGenerator is Ownable {
         uint8 _eyeColorIndexRight
     ) private returns (string memory) {
         //build, register token
+        console.log("\n\nbuildTokenUri triggered");
         string memory faceSymmetry;
         if (_leftEyeIndex == _rightEyeIndex) {
             faceSymmetry = "100";
         } else {
             faceSymmetry = "50";
         }
+
         return (
             string(
                 abi.encodePacked(

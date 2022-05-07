@@ -120,9 +120,9 @@ describe("Mint and accessControl test", function () {
 
 
             queriedTokenUri = await nftContract.tokenURI(i);
-            console.log("\n\nqueried token uri: ", queriedTokenUri);
+            console.log("\n\nqueried token uri for nr: ", i, "\n", queriedTokenUri);
 
-            let fileName = "./GenApes/" + i + ".svg";
+            let fileName = "C:/Projects/BlockChainDev/_tmp/GenApes/" + i + ".svg";
             createSvgFromTokenURI(queriedTokenUri, fileName);
 
         };

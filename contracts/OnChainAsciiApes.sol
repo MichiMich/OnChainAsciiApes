@@ -193,7 +193,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     0,
                     0,
                     0,
-                    0,
+                    currentTokenId,
                     0
                 ),
                 "apeGen failed"
