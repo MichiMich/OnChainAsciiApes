@@ -15,7 +15,7 @@ import "./Base64.sol";
 //todo add a banana score
 //todo can we switch to a struct which holds all ape details like, left- and right eye, name, bananascore, svg...
 
-contract OnChainAsciiApes is ERC721Enumerable, Ownable {
+contract OnChainAsciiApesRevert is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
     // variable packing only occurs in storage
 
@@ -70,6 +70,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     uint256 mintPriceWei;
 
     bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
+
+    bool ShouldMintBeSuccessfull; //1=successfull, 0=failure, inserted for checking refert of mint
 
     constructor(
         bool _useSeedWithTestnet,
@@ -311,6 +313,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         return uint8(createRandomNumber() % _range);
     }
 
+    function allowMintToBeSuccessfull() public onlyOwner {
+        ShouldMintBeSuccessfull = true;
+    }
+
     //todo if this is not set as private, it could be changed during mint, so this could result in a proxy, if sth fails,
     //but on the other hand it could be changed during mint...
     function linkApeGenerator(address _apeGeneratorContractAddress)
@@ -448,7 +454,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         }
 
         tokensAlreadyMinted.increment();
-        return true; //if we reach this point the data was created, registered and minted succesfully
+        return ShouldMintBeSuccessfull; //if we reach this point the data was created and minted succesfully
     }
 }
 
