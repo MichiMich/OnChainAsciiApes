@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "./Base64.sol";
+import "../Base64.sol";
 
 //ToDo: should only AsciiApes contract be able to call this?
 
-contract ApeGenerator is Ownable {
+contract ApeGeneratorv2 is Ownable {
     //default svg data
     string private constant svgStartToTextFill =
         '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="';
@@ -96,6 +96,7 @@ contract ApeGenerator is Ownable {
     mapping(uint256 => st_apeDetails) id_to_apeDetails;
 
     struct st_apeDetails {
+        uint8 tokenId;
         string metaData;
         string name;
         /*
@@ -107,7 +108,7 @@ contract ApeGenerator is Ownable {
         uint8 ApeColorIndex;
         */
         //string svg; //not needed, base64 encoded svg holds data
-        string base64EncodedSvg;
+        bytes base64EncodedSvg;
         /*string leftEye;
         string rightEye;
         string symmetry;
@@ -319,7 +320,7 @@ contract ApeGenerator is Ownable {
         uint8 _leftEyeIndex,
         uint8 _rightEyeIndex,
         uint8 _tokenId
-    ) private returns (string memory generatedApeName) {
+    ) public view returns (string memory generatedApeName) {
         require(_apeNameIndex < apeNames.length, "name index out of range");
         require(
             _leftEyeIndex < apeEyeDescription.length,
@@ -366,30 +367,20 @@ contract ApeGenerator is Ownable {
     function generateSpecialApeSvg(uint8 _specialApeIndex)
         private
         view
-        returns (string memory)
+        returns (bytes memory)
     {
         //gen special ape, plain string
         return (
-            Base64.encode(
-                abi.encodePacked(
-                    svgStartToTextFill,
-                    ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
-                    svgTextFillToEye,
-                    eyeColor[
-                        ast_specialApeDetails[_specialApeIndex].eyeColorLeft
-                    ],
-                    apeEyes[
-                        ast_specialApeDetails[_specialApeIndex].leftEyeIndex
-                    ], //leftEye,
-                    svgEyeToEye,
-                    eyeColor[
-                        ast_specialApeDetails[_specialApeIndex].eyeColorLeft
-                    ],
-                    apeEyes[
-                        ast_specialApeDetails[_specialApeIndex].rightEyeIndex
-                    ], //rightEye,
-                    svgEyeToEnd
-                )
+            abi.encodePacked(
+                svgStartToTextFill,
+                ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
+                svgTextFillToEye,
+                eyeColor[ast_specialApeDetails[_specialApeIndex].eyeColorLeft],
+                apeEyes[ast_specialApeDetails[_specialApeIndex].leftEyeIndex], //leftEye,
+                svgEyeToEye,
+                eyeColor[ast_specialApeDetails[_specialApeIndex].eyeColorLeft],
+                apeEyes[ast_specialApeDetails[_specialApeIndex].rightEyeIndex], //rightEye,
+                svgEyeToEnd
             )
         );
     }
@@ -398,89 +389,76 @@ contract ApeGenerator is Ownable {
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight,
         uint8 _randomNumber
-    ) private view returns (string memory) {
+    ) private view returns (bytes memory) {
         return (
-            Base64.encode(
-                abi.encodePacked(
-                    svgStartToTextFill,
-                    "white",
-                    svgTextFillToEye,
-                    eyeColor[_eyeColorIndexLeft],
-                    apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeLeftEye
-                    ],
-                    svgEyeToEye,
-                    eyeColor[_eyeColorIndexRight],
-                    apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeRightEye
-                    ],
-                    svgEyeToEnd
-                )
+            abi.encodePacked(
+                svgStartToTextFill,
+                "white",
+                svgTextFillToEye,
+                eyeColor[_eyeColorIndexLeft],
+                apeEyes[
+                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye
+                ],
+                svgEyeToEye,
+                eyeColor[_eyeColorIndexRight],
+                apeEyes[
+                    arrayOfAvailableMintCombinations[_randomNumber].apeRightEye
+                ],
+                svgEyeToEnd
             )
         );
     }
 
-    function generateAndRegisterApe(
+    function generateApe(
         uint8 _specialApeIndex,
         uint8 _randomNumber,
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight,
         uint8 _tokenId,
         uint8 _apeNameIndex
-    ) public onlyOwner returns (bool) {
-        st_apeDetails memory newApe;
-        //svg creation + name
+    ) public view returns (bytes memory, string memory) {
         if (_randomNumber == 0) {
-            newApe.base64EncodedSvg = generateSpecialApeSvg(_specialApeIndex);
-            newApe.name = ast_specialApeDetails[_specialApeIndex].name;
-            //metadata todo: 1. reduce code by tmp var with indexes?
-            id_to_apeDetails[_tokenId] = newApe; //store it because metdata accesses it
-            id_to_apeDetails[_tokenId].metaData = buildTokenURI(
-                _tokenId,
-                ast_specialApeDetails[_specialApeIndex].leftEyeIndex,
-                ast_specialApeDetails[_specialApeIndex].rightEyeIndex,
-                ast_specialApeDetails[_specialApeIndex].eyeColorLeft,
-                ast_specialApeDetails[_specialApeIndex].eyeColorRight
+            //gen special ape, plain string
+            return (
+                generateSpecialApeSvg(_specialApeIndex),
+                ast_specialApeDetails[_specialApeIndex].name
             );
         } else {
-            newApe.base64EncodedSvg = generateApeSvg(
-                _eyeColorIndexLeft,
-                _eyeColorIndexRight,
-                _randomNumber
-            );
-            newApe.name = generateApeName(
-                _apeNameIndex,
-                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
-                arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
-                _tokenId
-            );
-            //metadata
-            id_to_apeDetails[_tokenId] = newApe;
-            id_to_apeDetails[_tokenId].metaData = buildTokenURI(
-                _tokenId,
-                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
-                arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
-                _eyeColorIndexLeft,
-                _eyeColorIndexRight
+            //gen ape of mint combinations
+            //use randomNumber here
+            return (
+                generateApeSvg(
+                    _eyeColorIndexLeft,
+                    _eyeColorIndexRight,
+                    _randomNumber
+                ),
+                generateApeName(
+                    _apeNameIndex,
+                    arrayOfAvailableMintCombinations[_randomNumber].apeLeftEye,
+                    arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
+                    _tokenId
+                )
+                /*
+                 uint8 EyeIndexLeft;
+        uint8 EyeIndexRight;
+        uint8 EyeColorIndexLeft;
+        uint8 EyeColorIndexRight;
+        uint8 ApeColorIndex;
+                 */
             );
         }
-
-        //register new ape
-        return (true);
     }
 
     //lets register it first
     function registerToken(uint8 _tokenId) public onlyOwner returns (bool) {}
 
-    function buildTokenURI(
+    function buildMetadata(
         uint8 _tokenId, /*fro svg and generated name*/
         uint8 _leftEyeIndex,
         uint8 _rightEyeIndex,
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight
-    ) private returns (string memory) {
+    ) public view returns (string memory) {
         //build, register token
         string memory faceSymmetry;
         if (_leftEyeIndex == _rightEyeIndex) {
@@ -515,9 +493,62 @@ contract ApeGenerator is Ownable {
         );
     }
 
-    function getTokenURI(uint8 _tokenId) public view returns (string memory) {
-        return id_to_apeDetails[_tokenId].metaData;
-    }
+    /*
+    //todo can be removed, generateApe makes the work now
+    function getGeneratedApe(
+        string memory leftEye,
+        string memory rightEye,
+        bool specialApeGeneration,
+        string memory textFillColor,
+        uint256 _eyeColorLeft,
+        uint256 _eyeColorRight
+    ) public view returns (string memory) {
+        string memory lastGeneratedApeString;
+        if (specialApeGeneration) {
+            //counter did not reach end of array element by searching if special ape generation would be needed
+            lastGeneratedApeString = string(
+                abi.encodePacked(
+                    svgStartToTextFill,
+                    textFillColor,
+                    svgTextFillToEye,
+                    eyeColor[_eyeColorLeft],
+                    leftEye,
+                    svgEyeToEye,
+                    eyeColor[_eyeColorRight],
+                    rightEye,
+                    svgEyeToEnd
+                )
+            );
+        } else {
+            lastGeneratedApeString = string(
+                abi.encodePacked(
+                    svgStartToTextFill,
+                    "white",
+                    svgTextFillToEye,
+                    eyeColor[_eyeColorLeft],
+                    leftEye,
+                    svgEyeToEye,
+                    eyeColor[_eyeColorRight],
+                    rightEye,
+                    svgEyeToEnd
+                )
+            );
+        }
 
-    //todo: remove, only tmp for observing
+        return (
+            lastGeneratedApeString //generated ape
+        );
+    }
+*/
+
+    /*
+    //todo: can be cleared in the future
+    function getAvailableMintCombinations()
+        public
+        view
+        returns (mintCombination[] memory)
+    {
+        return (arrayOfAvailableMintCombinations);
+    }
+     */
 }

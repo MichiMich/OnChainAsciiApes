@@ -29,44 +29,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     Counters.Counter private tokensAlreadyMinted;
     uint256 private lastGetRandomNumber;
 
-    // struct stringCreation {
-    //     string value;
-    //     uint256 nrUsedInSequence;
-    // }
-
-    //todo: is this still needed?
-    mapping(uint256 => uint256) createdCombinationMapping; //eyebrows and eyes for example
-
-    mapping(uint256 => st_apeDetails) id_to_apeDetails;
-    // mapping(uint256 => mapping(uint256 => uint256) would be with 3 values
-    //todo in apeGenerator already, could we get rid of this here?
-    struct st_ApeCoreElements {
-        uint8 tokenId;
-        string name;
-        uint8 leftEyeIndex;
-        uint8 rightEyeIndex;
-        uint8 eyeColorLeft;
-        uint8 eyeColorRight;
-        string apeColor;
-    }
-
-    struct st_apeDetails {
-        st_ApeCoreElements apeCoreElements;
-        //string svg; //not needed, base64 encoded svg holds data
-        bytes base64EncodedSvg;
-        string leftEye;
-        string rightEye;
-        string symmetry;
-        string[3] bananascore;
-    }
-
-    //only for testing, should be done in metadata then
-    uint256 randomNumEyebrowLeft;
-    uint256 randomNumEyebrowRight;
-    uint256 randomNumEyeLeft;
-    uint256 randomNumEyeRight;
-    uint256 randomNumMouthUpper;
-    uint256 randomNumMouthLower;
     uint256 mintPriceWei;
 
     bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
@@ -138,78 +100,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         return (apeGenerator.totalSupply() - tokensAlreadyMinted.current());
     }
 
-    /*
-    function getApe(uint256 _tokenId) public view returns (string memory) {
-        require(_exists(_tokenId), "nonexistent token");
-        // require(
-        //     _tokenId <= maxTokenSupply, //Todo do we want a zero ape? if yes it can be like it is, otherwise we need to check for >0
-        //     "given tokenId is invalid"
-        // );
-        return id_to_apeDetails[_tokenId].base64EncodedSvg;
-    }
-*/
-
-    function getNameOfApe(uint256 _tokenId)
-        public
-        view
-        returns (string memory)
-    {
-        //require(_tokenId <= maxTokenSupply, "given tokenId is invalid");
-        require(_exists(_tokenId), "nonexistent token");
-        return id_to_apeDetails[_tokenId].apeCoreElements.name;
-    }
-
     /* getters - end*/
-
-    //toDo: register should have st_apeDetails, non other needed
-    function registerGeneratedToken(
-        uint256 _tokenID,
-        st_apeDetails memory _apeDetails
-    ) private {
-        //todo: here this should become a struct with all data stored, maybe generatedData is not needed in there
-        if (
-            _apeDetails.apeCoreElements.leftEyeIndex ==
-            _apeDetails.apeCoreElements.rightEyeIndex
-        ) {
-            _apeDetails.symmetry = "100";
-        } else {
-            _apeDetails.symmetry = "50";
-        }
-        //todo: add banana score with random number
-
-        id_to_apeDetails[_tokenID] = _apeDetails;
-
-        console.log("\nMappingTokenId: ", _tokenID);
-
-        console.log(
-            "\nregistered apeName: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.name
-        );
-        console.log(
-            "\nregistered apeTokenId: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.tokenId
-        );
-        console.log(
-            "\nleftEyeIndex: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.leftEyeIndex
-        );
-        console.log(
-            "\nrightEyeIndex: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.rightEyeIndex
-        );
-        console.log(
-            "\neyeColorLeft: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.eyeColorLeft
-        );
-        console.log(
-            "\neyeColorRight: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.eyeColorRight
-        );
-        console.log(
-            "\napeColor: ",
-            id_to_apeDetails[_tokenID].apeCoreElements.apeColor
-        );
-    }
 
     function tokenURI(uint256 _tokenId)
         public
@@ -218,70 +109,11 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         override
         returns (string memory)
     {
-        // require(
-        //     _exists(_tokenId),
-        //     "ERC721Metadata: URI query for nonexistent token"
-        // );
-        /*todo: uncomment this again
         require(
-            bytes(id_to_apeDetails[_tokenId].apeCoreElements.name).length != 0,
-            "nonexistendtoken"
+            _exists(_tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
         );
-        */
-        return buildMetadata(_tokenId);
-    }
-
-    function buildMetadata(uint256 _tokenId)
-        public
-        view
-        returns (string memory)
-    {
-        require(_exists(_tokenId), "Nonexistent token"); //ToDo: this is already checked by tokenURI call, we could leave this out
-
-        return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(
-                        bytes(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                id_to_apeDetails[_tokenId].base64EncodedSvg,
-                                '","name":"',
-                                id_to_apeDetails[_tokenId].apeCoreElements.name,
-                                '","attributes":[{"trait_type":"Facesymmetry","value":"',
-                                //facesymmetry value
-                                id_to_apeDetails[_tokenId].symmetry,
-                                /*
-                                '"},{"trait_type":"EyeLeft","value":"',
-                                
-                                apeEyes[
-                                    id_to_apeDetails[_tokenId].leftEyeIndex
-                                ], //eye left value
-                                '"},{"trait_type":"EyeRight","value":"',
-                                apeEyes[
-                                    id_to_apeDetails[_tokenId]
-                                        .leftEyeIndex
-                                        .rightEyeindex
-                                ], //eye right value
-                                */
-                                //todo: add bananascore value
-                                '"}]}'
-                            )
-
-                            /*
-                        bytes(
-                            abi.encodePacked(
-                                '{"name": "',
-                                id_to_apeName[_tokenId],
-                                '", "description": "Fully onchain generated AsciiApe", "image": "data:image/svg+xml;base64,',
-                                id_to_asciiApe[_tokenId],
-                                '"}'
-                            )*/
-                        )
-                    )
-                )
-            );
+        return apeGenerator.getTokenURI(uint8(_tokenId));
     }
 
     function createRandomNumber() private returns (uint256) {
@@ -351,91 +183,38 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         uint8 randomCreatedMintCombinationIndex = createRandomNumberInRange(
             apeGenerator.nrOfAvailableMintCombinations()
         );
-
-        st_apeDetails memory currentUsedApeDetails;
         uint8 currentTokenId = uint8(tokensAlreadyMinted.current());
         uint8 specialApeIndex = apeGenerator.getSpecialApeIndex(currentTokenId);
 
         if (specialApeIndex != totalSupply() + 1) {
-            //special ape wanted, no random number needed
-            //currentUsedApeDetails.svg = apeGenerator.generateApe(currentTokenId, 0);
-            (
-                currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name
-            ) = apeGenerator.generateApe(specialApeIndex, 0, 0, 0, 0, 0);
-            /*
-            (
-                currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name,
-                currentUsedApeDetails.apeCoreElements.leftEyeIndex,
-                currentUsedApeDetails.apeCoreElements.rightEyeIndex
-            ) = apeGenerator.generateApe(specialApeIndex, 0, 0, 0, 0, 0);
-            */
-        } else {
-            currentUsedApeDetails.apeCoreElements.tokenId = currentTokenId;
-            currentUsedApeDetails
-                .apeCoreElements
-                .eyeColorLeft = createRandomNumberInRange(3);
-            currentUsedApeDetails
-                .apeCoreElements
-                .eyeColorRight = createRandomNumberInRange(3);
-
-            (
-                currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name
-            ) = apeGenerator.generateApe(
-                0,
-                randomCreatedMintCombinationIndex,
-                currentUsedApeDetails.apeCoreElements.eyeColorLeft,
-                currentUsedApeDetails.apeCoreElements.eyeColorRight,
-                currentUsedApeDetails.apeCoreElements.tokenId,
-                createRandomNumberInRange(
-                    apeGenerator.getLengthOfApeNamesArray()
-                )
+            require(
+                apeGenerator.generateAndRegisterApe(
+                    specialApeIndex,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ),
+                "apeGen failed"
             );
-            //create and call with random number in available range
-            /*
-            (
-                currentUsedApeDetails.base64EncodedSvg,
-                currentUsedApeDetails.apeCoreElements.name,
-                currentUsedApeDetails.apeCoreElements.leftEyeIndex,
-                currentUsedApeDetails.apeCoreElements.rightEyeIndex
-            ) = apeGenerator.generateApe(
-                0,
-                randomCreatedMintCombinationIndex,
-                currentUsedApeDetails.apeCoreElements.eyeColorLeft,
-                currentUsedApeDetails.apeCoreElements.eyeColorRight,
-                currentUsedApeDetails.apeCoreElements.tokenId,
-                createRandomNumberInRange(
-                    apeGenerator.getLengthOfApeNamesArray()
-                ) //apeNameIndex
-            );*/
+        } else {
+            require(
+                apeGenerator.generateAndRegisterApe(
+                    0,
+                    randomCreatedMintCombinationIndex,
+                    createRandomNumberInRange(3),
+                    createRandomNumberInRange(3),
+                    currentTokenId,
+                    createRandomNumberInRange(
+                        apeGenerator.getLengthOfApeNamesArray()
+                    )
+                ),
+                "apeGen failed"
+            );
         }
 
-        console.log(
-            "apeName in contract: ",
-            currentUsedApeDetails.apeCoreElements.name
-        );
-
-        currentUsedApeDetails.base64EncodedSvg = bytes(
-            Base64.encode(currentUsedApeDetails.base64EncodedSvg)
-        );
-
-        require(
-            bytes(currentUsedApeDetails.base64EncodedSvg).length != 0,
-            "ape creation failed"
-        );
-        //todo enable?
-        /*
-        require(
-            bytes(currentUsedApeDetails.apeCoreElements.name).length != 0,
-            "name creation failed"
-        );
-        */
-
         _safeMint(msg.sender, currentTokenId);
-
-        registerGeneratedToken(currentTokenId, currentUsedApeDetails);
 
         //todo: should we add requirement for removing so it needs to be removed before called again
         //removing only if all data generated, otherwise generated data does not fix with name and we could get access problems
@@ -474,35 +253,16 @@ abstract contract ApeGeneratorImpl {
         virtual
         returns (uint8);
 
-    function generateApe(
+    function generateAndRegisterApe(
         uint8 _specialApeIndex,
         uint8 _randomNumber,
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight,
         uint8 _tokenId,
         uint8 _apeNameIndex
-    ) public view virtual returns (bytes memory, string memory);
+    ) public virtual returns (bool);
 
-    /*
-    function getGeneratedApe(
-        string memory leftEye,
-        string memory rightEye,
-        bool specialApeGeneration,
-        string memory textFillColor,
-        uint256 _eyeColorLeft,
-        uint256 _eyeColorRight
-    ) public view virtual returns (string memory);
-*/
-    function generateApeName(
-        uint256 _apeNameIndex,
-        uint256 _leftEyeIndex,
-        uint256 _rightEyeIndex,
-        uint256 _tokenId
-    )
-        public
-        view
-        virtual
-        returns (string memory generatedApeName, bool success);
+    function getTokenURI(uint8) public view virtual returns (string memory);
 }
 
 abstract contract accessControlImpl {

@@ -17,7 +17,7 @@ describe("Mint and accessControl test", function () {
 
         //deploying contracts - start
         //apeGenerator
-        const ApeGenerator = await hre.ethers.getContractFactory("ApeGeneratorv2");
+        const ApeGenerator = await hre.ethers.getContractFactory("ApeGenerator");
         apeGenerator = await ApeGenerator.deploy();
         await apeGenerator.deployed();
         console.log("ApeGenerator deployed at: ", apeGenerator.address);
@@ -40,7 +40,7 @@ describe("Mint and accessControl test", function () {
             console.log("seed with testnet used");
             useSeedWithTestnet = true;
         }
-        const NftMintContract = await hre.ethers.getContractFactory("OnChainAsciiApesv2");
+        const NftMintContract = await hre.ethers.getContractFactory("OnChainAsciiApes");
         nftContract = await NftMintContract.deploy(useSeedWithTestnet, apeGenerator.address, accessControl.address, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
         await nftContract.deployed();
         console.log("nftMintContract deployed to:", nftContract.address);
@@ -55,7 +55,7 @@ describe("Mint and accessControl test", function () {
     })
 
 
-    it("MintV2, try minting ape", async function () {
+    it("MintV3, try minting ape", async function () {
         const totalSupplyOfNfts = await nftContract.totalSupply();
         console.log("total supply of nfts: ", totalSupplyOfNfts);
         let queriedTokenUri;
@@ -65,39 +65,6 @@ describe("Mint and accessControl test", function () {
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
 
-        /*
-        await nftContract.mint({ value: mintPrice });
-
-        let apeName = await nftContract.getNameOfApe(1);
-
-        console.log("apeName: ", apeName);
-
-        queriedTokenUri = await nftContract.tokenURI(1);
-
-        let ownerOf = await nftContract.ownerOf(1);
-        console.log("ownerOf: ", ownerOf);
-
-
-        console.log("queried tokenURI: ", queriedTokenUri);
-*/
-
-
-
-        function createSvgFromTokenURI(tokenURI, pathAndFilename) {
-            const jsonData = tokenURI_to_JSON(tokenURI);
-            const imageDataBase64 = jsonData.image;
-            const svgData = imageDataBase64.substring(26);
-            const decodedSvgData = atob(svgData);
-            //console.log("decoded svg: \n\n", decodedSvgData);
-
-            //write svg to file
-            fs.writeFile(pathAndFilename, decodedSvgData, err => {
-                if (err) {
-                    console.error(err);
-                }
-                // file written successfully
-            });
-        }
 
         function createAndAdaptSvgFromTokenURI(tokenURI, pathAndFilename, apeName) {
             const jsonData = tokenURI_to_JSON(tokenURI);
@@ -125,8 +92,24 @@ describe("Mint and accessControl test", function () {
         }
 
 
+        function createSvgFromTokenURI(tokenURI, pathAndFilename) {
+            const jsonData = tokenURI_to_JSON(tokenURI);
+            const imageDataBase64 = jsonData.image;
+            const svgData = imageDataBase64.substring(26);
+            const decodedSvgData = atob(svgData);
+            //console.log("decoded svg: \n\n", decodedSvgData);
+
+            //write svg to file
+            fs.writeFile(pathAndFilename, decodedSvgData, err => {
+                if (err) {
+                    console.error(err);
+                }
+                // file written successfully
+            });
+        }
+
         let filename;
-        for (let i = 0; i < totalSupplyOfNfts; i++) {
+        for (let i = 0; i < 5; i++) {
             console.log("\n\n");
             console.log("loop counter: ", i);
             console.log("left tokens before mint", await nftContract.getNrOfLeftTokens())
@@ -135,21 +118,12 @@ describe("Mint and accessControl test", function () {
 
             console.log("left tokens after mint", await nftContract.getNrOfLeftTokens())
 
-            let apeName = await nftContract.getNameOfApe(i);
-
-            console.log("apeName of : ", i, " ", apeName);
-
 
             queriedTokenUri = await nftContract.tokenURI(i);
+            console.log("\n\nqueried token uri: ", queriedTokenUri);
 
-            //console.log("\n\nfetched token: ", queriedTokenUri);
-
-            //filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes' + apeName + '.svg';
-
-            filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes/ApesWithName/' + apeName + '.svg';
-
-            //createSvgFromTokenURI(queriedTokenUri, filename);
-            createAndAdaptSvgFromTokenURI(queriedTokenUri, filename, apeName);
+            let fileName = "./GenApes/" + i + ".svg";
+            createSvgFromTokenURI(queriedTokenUri, fileName);
 
         };
 
