@@ -30,3 +30,243 @@ NftContract mint;12935947
 NftContract mint;13021459
 NftContract mint;13024157
 NftContract mint;12944126
+
+Date: 9.5.2022, 21:03:58 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;UseSeedWithTesnet removed
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935730
+NftContract mint;13044108
+NftContract mint;13022362
+NftContract mint;12943909
+
+Date: 9.5.2022, 21:10:59 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;Datatype Counters removed
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4103315
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;26631
+NftContract mint;12919159
+NftContract mint;13020902
+NftContract mint;13069808
+NftContract mint;12944438
+
+Date: 9.5.2022, 21:12:31 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;Counters removed
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4103315
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12917159
+NftContract mint;12995274
+NftContract mint;13021807
+NftContract mint;12942438
+
+Date: 9.5.2022, 21:13:26 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;Counters added back
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935730
+NftContract mint;13023278
+NftContract mint;12996507
+NftContract mint;12943909
+
+Date: 9.5.2022, 21:17:42 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;ApeGen variables put together
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935730
+NftContract mint;13067050
+NftContract mint;13022602
+NftContract mint;12943909
+
+Date: 9.5.2022, 21:18:34 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;Mapping id_to_apedetails datatype to uint8 changed
+
+ApeGenerator deployment;11159613
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935760
+NftContract mint;13022165
+NftContract mint;13046361
+NftContract mint;12943939
+
+Date: 9.5.2022, 21:20:37 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;reorganized storage variables
+
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935730
+NftContract mint;13022146
+NftContract mint;13046117
+NftContract mint;12943909
+
+Date: 9.5.2022, 21:30:26 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;private functions to public view changed
+
+ApeGenerator deployment;11239491
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935687
+NftContract mint;12987174
+NftContract mint;13022788
+NftContract mint;12943866
+
+Date: 9.5.2022, 21:32:29 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;web3 svg info of svg string removed
+
+ApeGenerator deployment;11231923
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12862194
+NftContract mint;12949503
+NftContract mint;12947503
+NftContract mint;12870382
+
+Date: 9.5.2022, 21:35:48 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;Ape eyes ^ and ` added instead of its codes
+
+ApeGenerator deployment;11231803
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12862194
+NftContract mint;12946827
+NftContract mint;12944831
+NftContract mint;12870382
+
+Date: 9.5.2022, 21:39:48 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;console log removed
+
+ApeGenerator deployment;11127195
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12859492
+NftContract mint;12949274
+NftContract mint;12950434
+NftContract mint;12867929
+
+Date: 9.5.2022, 21:40:40 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;all console.logs removed
+
+ApeGenerator deployment;10983630
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12854903
+NftContract mint;12964189
+NftContract mint;12918453
+NftContract mint;12863340
+
+Date: 9.5.2022, 21:46:58 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;standard ape eye color to hex value changed
+
+ApeGenerator deployment;10983654
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12854903
+NftContract mint;12966429
+NftContract mint;12966440
+NftContract mint;12863340
+
+Date: 9.5.2022, 21:48:12 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;tokenURI eye color to hex code changed
+
+ApeGenerator deployment;10983690
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12854903
+NftContract mint;12942779
+NftContract mint;12942790
+NftContract mint;12863340
+
+Date: 9.5.2022, 21:50:55 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;require states optimized
+
+ApeGenerator deployment;10948584
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12854903
+NftContract mint;12941937
+NftContract mint;12941036
+NftContract mint;12863340
+
+Date: 9.5.2022, 21:52:51 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;substring for specialApe eye color removed
+
+ApeGenerator deployment;10946196
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12851435
+NftContract mint;12942787
+NftContract mint;12943016
+NftContract mint;12860112
+
+Date: 9.5.2022, 21:54:57 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;substring removed, tmp apeEyeColor array  added
+
+ApeGenerator deployment;10806816
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12843312
+NftContract mint;12955823
+NftContract mint;12931508
+NftContract mint;12851749
+
+Date: 9.5.2022, 21:58:36 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;eyeColor storage array removed and local added
+
+ApeGenerator deployment;10788193
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839214
+NftContract mint;12893372
+NftContract mint;12952879
+NftContract mint;12847651
+
+Date: 9.5.2022, 22:03:05 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;storage apeEyes array moved to local, length to fix value changed
+
+ApeGenerator deployment;10997251
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839566
+NftContract mint;12926908
+NftContract mint;12926670
+NftContract mint;12848003
+
+Date: 9.5.2022, 22:04:36 github commit: 9c50c74dfadf6ed60e3239078ce5e6168dbde7e2;apeEyes storage brought back, local had only disadvantages
+
+ApeGenerator deployment;10788193
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839214
+NftContract mint;12928305
+NftContract mint;12927162
+NftContract mint;12847651

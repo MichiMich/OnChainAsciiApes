@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Base64.sol";
@@ -11,7 +10,7 @@ import "./Base64.sol";
 contract ApeGenerator is Ownable {
     //default svg data
     string private constant svgStartToTextFill =
-        '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="';
+        '<svg width="500" height="500"><rect height="500" width="500" fill="black"/><text y="10%" fill="';
 
     string private constant svgTextFillToEye =
         '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
@@ -34,18 +33,15 @@ contract ApeGenerator is Ownable {
         "&#x2665;", //♥
         "&#xac;", //¬
         "&#x2d8;", //˘
-        "&#x5e;", //^
+        "^", //^ , &#x5e;
         "X", //X
         "&#x20BF;", //₿
         "&#x39E;", //Ξ -> eth symbol
         "0", //the zero ape could be a special ape with the first mint
         "&#xD2;", //Ò
         "&#xB4;", //´
-        "&#x60;", //`
+        "`", //` , &#x60;
         "$"
-        //"&#x27E0;", //⟠ -> eth symbol does not work, borders moved, no 100% fit
-        //" ", "█","♥","¬","˘","^","X", ₿
-        //could think about adding flowers &#x2740; ->❀ but we have already flowers
     ];
 
     //todo need to update eye description
@@ -65,8 +61,6 @@ contract ApeGenerator is Ownable {
         "small", //`
         "dollar" //$
     ];
-
-    string[] eyeColor = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
 
     //fully onchain generated AsciiApes
     //available names for random linking during mint
@@ -90,29 +84,11 @@ contract ApeGenerator is Ownable {
         uint8 apeLeftEye;
         uint8 apeRightEye;
     }
-    //dynamical array, will created by constructor and elements deleted after mint
-    mintCombination[] arrayOfAvailableMintCombinations;
-
-    mapping(uint256 => st_apeDetails) id_to_apeDetails;
 
     struct st_apeDetails {
         string metaData;
         string name;
-        /*
-                //metadataElements
-        uint8 EyeIndexLeft;
-        uint8 EyeIndexRight;
-        uint8 EyeColorIndexLeft;
-        uint8 EyeColorIndexRight;
-        uint8 ApeColorIndex;
-        */
-        //string svg; //not needed, base64 encoded svg holds data
         string base64EncodedSvg;
-        /*string leftEye;
-        string rightEye;
-        string symmetry;
-        string[3] bananascore;
-        */
     }
 
     struct st_ApeCoreElements {
@@ -125,10 +101,15 @@ contract ApeGenerator is Ownable {
         string apeColor;
     }
 
+    mapping(uint256 => st_apeDetails) id_to_apeDetails;
+
     //special ape
     st_ApeCoreElements[] ast_specialApeDetails;
 
     uint8 private maxTokenSupply;
+
+    //dynamical array, will created by constructor and elements deleted after mint
+    mintCombination[] arrayOfAvailableMintCombinations;
 
     constructor() {
         defineMintCombinations();
@@ -155,19 +136,6 @@ contract ApeGenerator is Ownable {
             }
         }
         return (maxTokenSupply + 1);
-
-        //this avoids gas, because we dont need to change a value of a counter
-        //on a programmatic point of view it should be done with for loop
-        //the deployment would cost more gas if a lot of special apes
-        /*
-        if (
-            ast_specialApeDetails[0].tokenId == givenTokenID ||
-            ast_specialApeDetails[1].tokenId == givenTokenID ||
-            putotherIndizesHereAsWell
-        ) {
-            return true;
-        }
-        */
     }
 
     function defineMintCombinations() private {
@@ -187,7 +155,6 @@ contract ApeGenerator is Ownable {
         public
         onlyOwner
     {
-        console.log("wanted index to remove", _indexToRemove);
         require(
             _indexToRemove <= arrayOfAvailableMintCombinations.length ||
                 arrayOfAvailableMintCombinations.length > 0,
@@ -203,10 +170,6 @@ contract ApeGenerator is Ownable {
             ];
             arrayOfAvailableMintCombinations.pop();
         }
-        console.log(
-            "left mint combionations",
-            arrayOfAvailableMintCombinations.length
-        );
     }
 
     function addSpecialApes() private {
@@ -319,11 +282,11 @@ contract ApeGenerator is Ownable {
         uint8 _leftEyeIndex,
         uint8 _rightEyeIndex,
         uint8 _tokenId
-    ) private returns (string memory generatedApeName) {
-        require(_apeNameIndex < apeNames.length, "name index out of range");
+    ) public view returns (string memory generatedApeName) {
         require(
-            _leftEyeIndex < apeEyeDescription.length,
-            "eye index out of range"
+            _apeNameIndex < apeNames.length &&
+                _leftEyeIndex < apeEyeDescription.length,
+            "invalid index"
         );
         string memory eyePrefix;
 
@@ -368,6 +331,8 @@ contract ApeGenerator is Ownable {
         view
         returns (string memory)
     {
+        string[3] memory eyeColortmp = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
+
         //gen special ape, plain string
         return (
             Base64.encode(
@@ -375,14 +340,14 @@ contract ApeGenerator is Ownable {
                     svgStartToTextFill,
                     ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
                     svgTextFillToEye,
-                    eyeColor[
+                    eyeColortmp[
                         ast_specialApeDetails[_specialApeIndex].eyeColorLeft
                     ],
                     apeEyes[
                         ast_specialApeDetails[_specialApeIndex].leftEyeIndex
                     ], //leftEye,
                     svgEyeToEye,
-                    eyeColor[
+                    eyeColortmp[
                         ast_specialApeDetails[_specialApeIndex].eyeColorLeft
                     ],
                     apeEyes[
@@ -399,19 +364,20 @@ contract ApeGenerator is Ownable {
         uint8 _eyeColorIndexRight,
         uint8 _randomNumber
     ) private view returns (string memory) {
+        string[3] memory eyeColortmp = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
         return (
             Base64.encode(
                 abi.encodePacked(
                     svgStartToTextFill,
-                    "white",
+                    "#ffffff",
                     svgTextFillToEye,
-                    eyeColor[_eyeColorIndexLeft],
+                    eyeColortmp[_eyeColorIndexLeft],
                     apeEyes[
                         arrayOfAvailableMintCombinations[_randomNumber]
                             .apeLeftEye
                     ],
                     svgEyeToEye,
-                    eyeColor[_eyeColorIndexRight],
+                    eyeColortmp[_eyeColorIndexRight],
                     apeEyes[
                         arrayOfAvailableMintCombinations[_randomNumber]
                             .apeRightEye
@@ -431,13 +397,8 @@ contract ApeGenerator is Ownable {
         uint8 _apeNameIndex
     ) public onlyOwner returns (bool) {
         st_apeDetails memory newApe;
-        console.log("\n###generateAndRegisterApe for tokenID: ", _tokenId);
         //svg creation + name
         if (_randomNumber == 0) {
-            console.log(
-                "\nspecial ape wanted, name: ",
-                ast_specialApeDetails[_specialApeIndex].name
-            );
             newApe.base64EncodedSvg = generateSpecialApeSvg(_specialApeIndex);
             newApe.name = ast_specialApeDetails[_specialApeIndex].name;
             //metadata todo: 1. reduce code by tmp var with indexes?
@@ -448,11 +409,7 @@ contract ApeGenerator is Ownable {
                 ast_specialApeDetails[_specialApeIndex].rightEyeIndex,
                 ast_specialApeDetails[_specialApeIndex].eyeColorLeft,
                 ast_specialApeDetails[_specialApeIndex].eyeColorRight,
-                substring(
-                    ast_specialApeDetails[_specialApeIndex].apeColor,
-                    1,
-                    7
-                )
+                ast_specialApeDetails[_specialApeIndex].apeColor
             );
         } else {
             newApe.base64EncodedSvg = generateApeSvg(
@@ -474,13 +431,13 @@ contract ApeGenerator is Ownable {
                 arrayOfAvailableMintCombinations[_randomNumber].apeRightEye,
                 _eyeColorIndexLeft,
                 _eyeColorIndexRight,
-                "white"
+                "#ffffff"
             );
         }
 
         require(
             bytes(id_to_apeDetails[_tokenId].metaData).length > 0,
-            "metadata gen failed"
+            "metadata gen fail"
         );
         //register new ape
         return (true);
@@ -496,15 +453,16 @@ contract ApeGenerator is Ownable {
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight,
         string memory _apeColor
-    ) private returns (string memory) {
+    ) public view returns (string memory) {
         //build, register token
-        console.log("\n\nbuildTokenUri triggered");
         string memory faceSymmetry;
         if (_leftEyeIndex == _rightEyeIndex) {
             faceSymmetry = "100";
         } else {
             faceSymmetry = "50";
         }
+
+        string[3] memory eyeColortmp = ["#ff1414", "#ffd700", "#ff33cc"]; //red, gold, pink
 
         return (
             string(
@@ -525,9 +483,9 @@ contract ApeGenerator is Ownable {
                                 apeEyes[_rightEyeIndex], //eye right value
                                 //todo: add bananascore value
                                 '"},{"trait_type":"EyeColorLeft","value":"',
-                                substring(eyeColor[_eyeColorIndexLeft], 0, 6), //left eye color
+                                eyeColortmp[_eyeColorIndexLeft], //left eye color
                                 '"},{"trait_type":"EyeColorRight","value":"',
-                                substring(eyeColor[_eyeColorIndexRight], 0, 6), //left eye color
+                                eyeColortmp[_eyeColorIndexRight], //left eye color
                                 '"},{"trait_type":"ApeColor","value":"',
                                 _apeColor,
                                 '"}]}'
@@ -537,19 +495,6 @@ contract ApeGenerator is Ownable {
                 )
             )
         );
-    }
-
-    function substring(
-        string memory str,
-        uint256 startIndex,
-        uint256 endIndex
-    ) public pure returns (string memory) {
-        bytes memory strBytes = bytes(str);
-        bytes memory result = new bytes(endIndex - startIndex);
-        for (uint256 i = startIndex; i < endIndex; i++) {
-            result[i - startIndex] = strBytes[i];
-        }
-        return string(result);
     }
 
     function getTokenURI(uint8 _tokenId) public view returns (string memory) {

@@ -1,7 +1,10 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-//write gen svgs to file
+//work with file
 const fs = require('fs');
+//user input
+const readline = require('readline');
+
 
 describe("Mint and accessControl test", function () {
 
@@ -43,16 +46,35 @@ describe("Mint and accessControl test", function () {
         }
     }
 
+    function askQuestion(query) {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        return new Promise(resolve => rl.question(query, ans => {
+            rl.close();
+            resolve(ans);
+        }))
+    }
+
     //Deploying contract before running tests
     beforeEach(async function () {
-
         //get available accounts from hardhat
         accounts = await hre.ethers.getSigners();
 
+        let codeChangeDescription = await askQuestion("Please add a description of the code change");
+        let gasOptHeadline = "";
         //file write headline
-        const Headline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit(); + "\n";
-        addDataToFile(filePathForTaxLogging, Headline);
+        if (codeChangeDescription === "") {
+            //none given
+            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit(); + "\n";
+        }
+        else {
+            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit() + dataSeperator + codeChangeDescription + "\n";
+        }
 
+        addDataToFile(filePathForTaxLogging, gasOptHeadline);
 
         //deploying contracts - start
         //apeGenerator
@@ -60,32 +82,25 @@ describe("Mint and accessControl test", function () {
         apeGenerator = await ApeGenerator.deploy();
         await apeGenerator.deployed();
 
-        getTaxAppendToFile(filePathForTaxLogging, "\nApeGenerator deployment");
-
         console.log("ApeGenerator deployed at: ", apeGenerator.address);
-
+        getTaxAppendToFile(filePathForTaxLogging, "\nApeGenerator deployment");
 
         //deploy contract
         const AccessControl = await hre.ethers.getContractFactory("AccessControl");
         accessControl = await AccessControl.deploy();
         await accessControl.deployed();
-        console.log("AccessControl deployed to:", accessControl.address);
+        console.log("AccessControl deployed at:", accessControl.address);
         getTaxAppendToFile(filePathForTaxLogging, "\nAccessControl deployment");
 
         //nft mint contract specific
         const networkName = hre.network.name
         const chainId = hre.network.config.chainId
-        console.log("chainId: ", chainId);
-        let useSeedWithTestnet;
-        if (chainId == "4" || networkName === "rinkeby") {
-            //rinkeby
-            console.log("seed with testnet used");
-            useSeedWithTestnet = true;
-        }
+        console.log("chainId: ", chainId, "network name: ", networkName);
+
         const NftMintContract = await hre.ethers.getContractFactory("OnChainAsciiApes");
-        nftContract = await NftMintContract.deploy(true, apeGenerator.address, accessControl.address, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
+        nftContract = await NftMintContract.deploy(apeGenerator.address, accessControl.address, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
         await nftContract.deployed();
-        console.log("nftMintContract deployed to:", nftContract.address);
+        console.log("nftMintContract deployed at:", nftContract.address);
         getTaxAppendToFile(filePathForTaxLogging, "\nNftContract deployment");
 
         //transfer ownership of apeGenerator to nftContract, so he can remove MintCombinations
