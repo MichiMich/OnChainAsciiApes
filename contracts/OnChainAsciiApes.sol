@@ -193,9 +193,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     createRandomNumberInRange(3),
                     createRandomNumberInRange(3),
                     currentTokenId,
-                    createRandomNumberInRange(
+                    createRandomNumberInRange(13)
+                    /*before gas optimization of ApeGenerator createRandomNumberInRange(
                         apeGenerator.getLengthOfApeNamesArray()
-                    )
+                    )*/
                 ),
                 "apeGen failed"
             );
@@ -220,8 +221,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
 /*other contract implemenations - start*/
 abstract contract ApeGeneratorImpl {
-    function getLengthOfApeNamesArray() public view virtual returns (uint8);
-
     function totalSupply() public view virtual returns (uint256);
 
     function removeMintCombinationUnordered(uint256 _indexToRemove)

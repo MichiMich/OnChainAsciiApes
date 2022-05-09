@@ -270,3 +270,196 @@ NftContract mint;12839214
 NftContract mint;12928305
 NftContract mint;12927162
 NftContract mint;12847651
+
+Date: 9.5.2022, 22:08:58 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;apeNames storage variable to local changed, fixed array size input
+
+ApeGenerator deployment;10649005
+AccessControl deployment;1774868
+NftContract deployment;4086223
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839214
+NftContract mint;12952227
+NftContract mint;12927663
+NftContract mint;12847651
+
+
+Date: 9.5.2022, 22:14:13 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;function getLengthOfApeNamesArray at apeGenerator removed, fixed number to nftmint contract added
+
+ApeGenerator deployment;10634651
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839279
+NftContract mint;12926815
+NftContract mint;12926815
+NftContract mint;12847716
+
+Date: 9.5.2022, 22:17:03 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;apeEyeDescription removed from storage to local, length to fixed value adapted
+
+ApeGenerator deployment;10487469
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839279
+NftContract mint;12947646
+NftContract mint;12923550
+NftContract mint;12847716
+
+Date: 9.5.2022, 22:19:13 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;tmp prefix removed
+
+ApeGenerator deployment;10487469
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839279
+NftContract mint;12923766
+NftContract mint;12922156
+NftContract mint;12847716
+
+Date: 9.5.2022, 22:19:58 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;generateApeName public view to pure changed
+
+ApeGenerator deployment;10487469
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839279
+NftContract mint;12923995
+NftContract mint;12947635
+NftContract mint;12847716
+
+Date: 9.5.2022, 22:24:16 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;storage svgStartToTextFill made to memory
+
+ApeGenerator deployment;10489893
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12839292
+NftContract mint;12922407
+NftContract mint;12924008
+NftContract mint;12847729
+
+Date: 9.5.2022, 22:25:45 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;array for svgStart removed
+
+ApeGenerator deployment;10487673
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838855
+NftContract mint;12920704
+NftContract mint;12923580
+NftContract mint;12847292
+
+Date: 9.5.2022, 22:27:05 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;storage svgEyeToEye changed to local
+
+ApeGenerator deployment;10486737
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838503
+NftContract mint;12946629
+NftContract mint;12922760
+NftContract mint;12846940
+
+Date: 9.5.2022, 22:29:33 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;storage textfillToEye changed to local
+
+ApeGenerator deployment;10537184
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12835864
+NftContract mint;12920336
+NftContract mint;12920098
+NftContract mint;12844301
+
+Date: 9.5.2022, 22:32:38 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;textFilltoEye string as input for ape generation, handover twice, declared once
+
+ApeGenerator deployment;10483056
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838521
+NftContract mint;12946885
+NftContract mint;12923005
+NftContract mint;12846958
+
+Date: 9.5.2022, 22:37:23 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;startToTextfill handover generation of ape
+
+ApeGenerator deployment;10483725
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838950
+NftContract mint;12923435
+NftContract mint;12923435
+NftContract mint;12847387
+
+Date: 9.5.2022, 22:39:30 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;startTotextfill svg back to memory use at apeGenerators, stack too deep compiler error if adapted as textFilltoEye
+
+ApeGenerator deployment;10483056
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838521
+NftContract mint;12923007
+NftContract mint;12921406
+NftContract mint;12846958
+
+Date: 9.5.2022, 22:41:07 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;storage svgEyeToEnd changed to local
+
+ApeGenerator deployment;10662270
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12829615
+NftContract mint;12912677
+NftContract mint;12889959
+NftContract mint;12838053
+
+Date: 9.5.2022, 22:42:11 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;locla svgEyeToEnd back to storage variable
+
+ApeGenerator deployment;10483056
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12838521
+NftContract mint;12923007
+NftContract mint;12923016
+NftContract mint;12846958
+
+Date: 9.5.2022, 22:45:35 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;xmlns svg info added back in
+
+ApeGenerator deployment;10499138
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12911391
+NftContract mint;12996358
+NftContract mint;12972027
+NftContract mint;12919859
+
+Date: 9.5.2022, 22:47:07 github commit: 1e3c87340f94096d609b86141aea2c1d835c6c79;typo in svg updated
+
+ApeGenerator deployment;10499150
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12911869
+NftContract mint;13042827
+NftContract mint;12996129
+NftContract mint;12920306
