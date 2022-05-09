@@ -19,7 +19,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     address accessControlContractAddress;
     ApeGeneratorImpl apeGenerator;
-    bool UseSeedWithTestnet; //1=seed with hash calc, 0=seed just given with example value in program
     bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     using Counters for Counters.Counter;
@@ -30,26 +29,21 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     uint256 mintPriceWei;
 
     constructor(
-        bool _useSeedWithTestnet,
         address _apeGeneratorContractAddress,
         address _accessControlContractAddress,
         uint256 _mintPriceWei
     ) ERC721("OnChainAsciiApes", "^.^") {
         //create seed on contract deploying, this is used for random generation later ToDo
-        UseSeedWithTestnet = _useSeedWithTestnet;
-        if (UseSeedWithTestnet) {
-            lastGetRandomNumber = uint256(
-                keccak256(
-                    abi.encodePacked(
-                        msg.sender,
-                        blockhash(block.number - 1),
-                        block.timestamp
-                    )
+
+        lastGetRandomNumber = uint256(
+            keccak256(
+                abi.encodePacked(
+                    msg.sender,
+                    blockhash(block.number - 1),
+                    block.timestamp
                 )
-            );
-        } else {
-            lastGetRandomNumber = 1;
-        }
+            )
+        );
 
         mintPriceWei = _mintPriceWei;
 
@@ -114,22 +108,19 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     function createRandomNumber() private returns (uint256) {
         //idea of creating a random number by using a value from the wallet address and mix it up with modulo
-        if (UseSeedWithTestnet) {
-            lastGetRandomNumber = uint256(
-                (
-                    keccak256(
-                        abi.encodePacked(
-                            msg.sender,
-                            blockhash(block.number - 1),
-                            block.timestamp,
-                            lastGetRandomNumber
-                        )
+
+        lastGetRandomNumber = uint256(
+            (
+                keccak256(
+                    abi.encodePacked(
+                        msg.sender,
+                        blockhash(block.number - 1),
+                        block.timestamp,
+                        lastGetRandomNumber
                     )
                 )
-            );
-        } else {
-            lastGetRandomNumber = lastGetRandomNumber + 7;
-        }
+            )
+        );
 
         return lastGetRandomNumber;
     }

@@ -1,1 +1,32 @@
-Date: 7.5.2022, 21:44:30 GasUsed: 11154445 github commit: c34d8f6e0260dfd95fd905e5a3577cdfeb8ebd35
+Date: 9.5.2022, 20:29:01 github commit: c547ad2a930ef7a27b417cc26b000f378b74a94a
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4098697
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935003
+tokenURI;12935003
+
+
+
+Date: 9.5.2022, 20:34:57 github commit: c547ad2a930ef7a27b417cc26b000f378b74a94a
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4099678
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935947
+NftContract mint;13022383
+NftContract mint;12999602
+NftContract mint;12944126
+
+Date: 9.5.2022, 20:35:33 github commit: c547ad2a930ef7a27b417cc26b000f378b74a94a
+ApeGenerator deployment;11154445
+AccessControl deployment;1774868
+NftContract deployment;4099678
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12935947
+NftContract mint;13021459
+NftContract mint;13024157
+NftContract mint;12944126
