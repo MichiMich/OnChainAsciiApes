@@ -463,3 +463,27 @@ NftContract mint;12911869
 NftContract mint;13042827
 NftContract mint;12996129
 NftContract mint;12920306
+
+Date: 10.5.2022, 20:13:42 github commit: 943b066b9df9410cfedffc01fb2c56a3d0fa85d4;removed unicode for space and inserted plain space
+
+ApeGenerator deployment;10416330
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12258529
+NftContract mint;12366750
+NftContract mint;12318899
+NftContract mint;12244733
+
+Date: 10.5.2022, 20:18:54 github commit: 943b066b9df9410cfedffc01fb2c56a3d0fa85d4;apeEyes all with html entity,metadata properties similiar on all apes
+
+ApeGenerator deployment;10416690
+AccessControl deployment;1774868
+NftContract deployment;4052150
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12305911
+NftContract mint;12366521
+NftContract mint;12366750
+NftContract mint;12292318
