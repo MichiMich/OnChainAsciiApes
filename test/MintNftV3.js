@@ -1,9 +1,5 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-//work with file
-const fs = require('fs');
-//user input
-const readline = require('readline');
 
 
 describe("Mint and accessControl test", function () {
@@ -16,65 +12,13 @@ describe("Mint and accessControl test", function () {
 
     const filePathForTaxLogging = "./createdData/GasOptimization.txt";
 
-    async function getUsedTaxForLastBlock() {
-        const block = await hre.ethers.provider.getBlock();
-        console.log("GasUsed", parseInt(block.gasUsed._hex, 16));
-        return (parseInt(block.gasUsed._hex, 16));
-    }
-
-    function addDataToFile(pathAndFilename, data) {
-        fs.appendFile(pathAndFilename, data, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });
-    }
-
-    async function getTaxAppendToFile(pathAndFilename, data) {
-        const gasData = await getUsedTaxForLastBlock();
-        const fileData = data + dataSeperator + gasData;
-        addDataToFile(pathAndFilename, fileData);
-    }
-
-    function getLastGithubCommit() {
-        const rev = fs.readFileSync('.git/HEAD').toString().trim();
-        if (rev.indexOf(':') === -1) {
-            return rev;
-        } else {
-            return fs.readFileSync('.git/' + rev.substring(5)).toString().trim();
-        }
-    }
-
-    function askQuestion(query) {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
-
-        return new Promise(resolve => rl.question(query, ans => {
-            rl.close();
-            resolve(ans);
-        }))
-    }
 
     //Deploying contract before running tests
     beforeEach(async function () {
         //get available accounts from hardhat
         accounts = await hre.ethers.getSigners();
 
-        let codeChangeDescription = await askQuestion("Please add a description of the code change");
-        let gasOptHeadline = "";
-        //file write headline
-        if (codeChangeDescription === "") {
-            //none given
-            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit(); + "\n";
-        }
-        else {
-            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit() + dataSeperator + codeChangeDescription + "\n";
-        }
 
-        addDataToFile(filePathForTaxLogging, gasOptHeadline);
 
         //deploying contracts - start
         //apeGenerator
@@ -83,14 +27,14 @@ describe("Mint and accessControl test", function () {
         await apeGenerator.deployed();
 
         console.log("ApeGenerator deployed at: ", apeGenerator.address);
-        getTaxAppendToFile(filePathForTaxLogging, "\nApeGenerator deployment");
+
 
         //deploy contract
         const AccessControl = await hre.ethers.getContractFactory("AccessControl");
         accessControl = await AccessControl.deploy();
         await accessControl.deployed();
         console.log("AccessControl deployed at:", accessControl.address);
-        getTaxAppendToFile(filePathForTaxLogging, "\nAccessControl deployment");
+
 
         //nft mint contract specific
         const networkName = hre.network.name
@@ -101,15 +45,13 @@ describe("Mint and accessControl test", function () {
         nftContract = await NftMintContract.deploy(apeGenerator.address, accessControl.address, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
         await nftContract.deployed();
         console.log("nftMintContract deployed at:", nftContract.address);
-        getTaxAppendToFile(filePathForTaxLogging, "\nNftContract deployment");
+
 
         //transfer ownership of apeGenerator to nftContract, so he can remove MintCombinations
         await apeGenerator.transferOwnership(nftContract.address)
         console.log("new owner of apeGenerator is now nftContract");
-        getTaxAppendToFile(filePathForTaxLogging, "\nApeGenerator transfer Ownership");
 
         //deploying contracts - end
-        //todo: transfer ownership of apeGenerator, so contract NftMintcontract is now owner
 
     })
 
@@ -134,20 +76,85 @@ describe("Mint and accessControl test", function () {
 
     }
 
-    it("DeployAndMint, deploy all needed contracts, mint", async function () {
+
+    function tokenURI_to_JSON(tokenURI) {
+        const json = atob(tokenURI.substring(29));
+        return (JSON.parse(json));
+    }
+
+    function seperateMetadata(tokenURI) {
+        return (tokenURI_to_JSON(tokenURI));
+    }
+
+    function getAttributesOftokenURI(tokenURI) {
+        const attributesOfTokenURI = seperateMetadata(tokenURI).attributes;
+        //console.log(attributesOfTokenURI);
+        return (attributesOfTokenURI);
+    }
+
+    function getNameOfTokenURI(tokenURI) {
+        const nameOfTokenURI = seperateMetadata(tokenURI).name;
+        console.log(nameOfTokenURI);
+    }
+
+
+
+    function createStatisticOfTokenURI(tokenURI) {
+
+        const FaceSymmetry = getAttributesOftokenURI(tokenURI)[0].value;
+        const eyeLeft = getAttributesOftokenURI(tokenURI)[1].value;
+        const eyeRight = getAttributesOftokenURI(tokenURI)[2].value;
+        const EyeColorLeft = getAttributesOftokenURI(tokenURI)[3].value;
+        const EyeColorRight = getAttributesOftokenURI(tokenURI)[4].value;
+        const ApeColor = getAttributesOftokenURI(tokenURI)[5].value;
+
+        statisticsOfFaceSymmetry.push(FaceSymmetry);
+        statisticsOfEyeLeft.push(eyeLeft);
+        statisticsOfEyeRight.push(eyeRight);
+        statisticsOfEyeColorLeft.push(EyeColorLeft);
+        statisticsOfEyeColorRight.push(EyeColorRight);
+        statisticsOfApeColor.push(ApeColor);
+
+
+        /*
+        console.log("FaceSymmetry: ", FaceSymmetry);
+        console.log("eyeLeft: ", eyeLeft);
+        console.log("eyeRight: ", eyeRight);
+        console.log("EyeColorLeft: ", EyeColorLeft);
+        console.log("EyeColorRight: ", EyeColorRight);
+        console.log("ApeColor: ", ApeColor);
+        */
+
+    }
+
+
+    let statisticsOfFaceSymmetry = [];
+    let statisticsOfEyeLeft = [];
+    let statisticsOfEyeRight = [];
+    let statisticsOfEyeColorLeft = [];
+    let statisticsOfEyeColorRight = [];
+    let statisticsOfApeColor = [];
+
+    it("MintAndSeperateMetadata, deploy all needed contracts, mint, seperate metadata", async function () {
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
-        getTaxAppendToFile(filePathForTaxLogging, "\nNftContract enablePublicMint");
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 10; i++) {
             await nftContract.mint({ value: mintPrice });
 
-            getTaxAppendToFile(filePathForTaxLogging, "\nNftContract mint");
-
             queriedTokenUri = await nftContract.tokenURI(i);
-
-            console.log(queriedTokenUri);
+            // getNameOfTokenURI(queriedTokenUri);
+            // getAttributesOftokenURI(queriedTokenUri);
+            createStatisticOfTokenURI(queriedTokenUri);
         }
+
+
+        console.log(statisticsOfFaceSymmetry);
+        console.log(statisticsOfEyeLeft);
+        console.log(statisticsOfEyeRight);
+        console.log(statisticsOfEyeColorLeft);
+        console.log(statisticsOfEyeColorRight);
+        console.log(statisticsOfApeColor);
 
     });
 
