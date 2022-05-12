@@ -608,3 +608,88 @@ NftContract mint;12421352
 NftContract mint;12421832
 NftContract mint;12344622
 
+
+
+Date: 12.5.2022, 12:42:05 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;specialApecolors array only used once, stack to deep with constant for test changed
+
+ApeGenerator deployment;10452612
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335095
+NftContract mint;12421109
+NftContract mint;12421338
+NftContract mint;12343799
+
+Date: 12.5.2022, 12:43:25 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;string for special ape used, no index
+
+ApeGenerator deployment;10405272
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12421110
+NftContract mint;12420881
+NftContract mint;12344144
+
+Date: 12.5.2022, 14:55:15 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;struct mintCombination handover to generateApeName
+
+ApeGenerator deployment;10414937
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29021
+NftContract enablePublicMint;28631
+NftContract mint;12335396
+NftContract mint;12420776
+NftContract mint;12420776
+NftContract mint;12344100
+
+Date: 12.5.2022, 14:56:42 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;generateName with plain data
+
+ApeGenerator deployment;10405284
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12420892
+NftContract mint;12420652
+NftContract mint;12344144
+
+Date: 12.5.2022, 15:01:05 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;generateApeName abi.encode code optimized
+
+ApeGenerator deployment;10418249
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12420817
+NftContract mint;12421046
+NftContract mint;12344144
+
+Date: 12.5.2022, 15:02:03 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;nothing
+
+ApeGenerator deployment;10418249
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12421046
+NftContract mint;12420806
+NftContract mint;12344144
+
+Date: 12.5.2022, 15:02:58 github commit: 1a3bff81df492c5363ca5604d91bc9843263f974;back to abi.encode with "eyed ascii ape"
+
+ApeGenerator deployment;10405284
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12421817
+NftContract mint;12420892
+NftContract mint;12344144
