@@ -34,18 +34,25 @@ async function main() {
     console.log("AccessControl deployed at: ", accessControl.address);
 
     //nftContract
-    const OnChainAsciiApes = await hre.ethers.getContractFactory("OnChainAsciiApes"); //ChainApes
-    const onChainAsciiApes = await OnChainAsciiApes.deploy(false, apeGenerator.address, accessControl.address, 1e15);
-    await onChainAsciiApes.deployed();
-    console.log("OnChainAsciiApes deployed at: ", onChainAsciiApes.address);
+    const NftContract = await hre.ethers.getContractFactory("OnChainAsciiApes"); //ChainApes
+    const nftContract = await NftContract.deploy(apeGenerator.address, accessControl.address, 1e15);
+    await nftContract.deployed();
+    console.log("OnChainAsciiApes deployed at: ", nftContract.address);
 
     //deploying contracts - end
 
-    //contract linking - start
-    accessControl_contract.linkNftContractAddress(onChainAsciiApes.address);
-    //contract linking - end
+    //transfer ownership of apeGenerator to nftContract, so he can remove MintCombinations
+    await apeGenerator.transferOwnership(nftContract.address)
+    console.log("new owner of apeGenerator is now onChainAsciiApes");
 
+    //enable public mint
+    await nftContract.enablePublicMint();
+    console.log("public mint enabled");
 
+    //try minting one
+    await nftContract.mint({ value: mintPrice });
+    queriedTokenUri = await nftContract.tokenURI(0);
+    console.log(queriedTokenUri);
 }
 
 main()

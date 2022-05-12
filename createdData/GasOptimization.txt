@@ -693,3 +693,15 @@ NftContract mint;12335440
 NftContract mint;12421817
 NftContract mint;12420892
 NftContract mint;12344144
+
+Date: 12.5.2022, 15:43:27 github commit: 48fb01cf434e9701263df6840222556105535a76;name from apeDetails removed
+
+ApeGenerator deployment;10426934
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12267895
+NftContract mint;12353313
+NftContract mint;12353542
+NftContract mint;12298859

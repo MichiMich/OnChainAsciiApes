@@ -55,7 +55,6 @@ contract ApeGenerator is Ownable {
 
     struct st_apeDetails {
         string metaData;
-        string name;
         string base64EncodedSvg;
     }
 
@@ -450,11 +449,11 @@ contract ApeGenerator is Ownable {
                 _specialApeIndex
             );
 
-            newApe.name = ast_specialApeDetails[_specialApeIndex].name;
             //metadata todo: 1. reduce code by tmp var with indexes?
             id_to_apeDetails[tokenId] = newApe; //store it because metdata accesses it
             id_to_apeDetails[tokenId].metaData = buildTokenURI(
-                _apeGenAndRegisterDetails
+                _apeGenAndRegisterDetails,
+                ast_specialApeDetails[_specialApeIndex].name
             );
         } else {
             newApe.base64EncodedSvg = generateApeSvg(
@@ -477,17 +476,19 @@ contract ApeGenerator is Ownable {
                 bananascore,
                 255
             );
-            newApe.name = generateApeName(
-                _apeNameIndex,
-                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
-                arrayOfAvailableMintCombinations[_randomNumber]
-                    .apeRightEyeIndex,
-                tokenId
-            );
+
             //metadata
             id_to_apeDetails[tokenId] = newApe;
             id_to_apeDetails[tokenId].metaData = buildTokenURI(
-                _apeGenAndRegisterDetails
+                _apeGenAndRegisterDetails,
+                generateApeName(
+                    _apeNameIndex,
+                    arrayOfAvailableMintCombinations[_randomNumber]
+                        .apeLeftEyeIndex,
+                    arrayOfAvailableMintCombinations[_randomNumber]
+                        .apeRightEyeIndex,
+                    tokenId
+                )
             );
         }
 
@@ -503,7 +504,8 @@ contract ApeGenerator is Ownable {
     function registerToken(uint8 tokenId) public onlyOwner returns (bool) {}
 
     function buildTokenURI(
-        st_apeGenAndRegisterDetails memory _apeGenAndRegisterDetails
+        st_apeGenAndRegisterDetails memory _apeGenAndRegisterDetails,
+        string memory _apeName
     ) public view returns (string memory) {
         //build, register token
         string memory faceSymmetry;
@@ -541,11 +543,7 @@ contract ApeGenerator is Ownable {
                                         .tokenId
                                 ].base64EncodedSvg,
                                 '","name":"',
-                                id_to_apeDetails[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .tokenId
-                                ].name,
+                                _apeName,
                                 '","attributes":[{"trait_type":"Facesymmetry","value":"',
                                 faceSymmetry,
                                 '"},{"trait_type":"EyeLeft","value":"',
