@@ -7,7 +7,7 @@ import "./Base64.sol";
 
 //ToDo: should only AsciiApes contract be able to call this?
 
-contract ApeGenerator is Ownable {
+contract ApeGeneratorWithStrings is Ownable {
     //default svg data
 
     // string private constant svgStartToEye =
@@ -62,7 +62,7 @@ contract ApeGenerator is Ownable {
     struct st_SpecialApe {
         st_apeCoreElements apeCoreElements;
         string name;
-        uint8 apeColorIndex;
+        string apeColor;
     }
 
     mapping(uint256 => st_apeDetails) id_to_apeDetails;
@@ -162,7 +162,7 @@ contract ApeGenerator is Ownable {
                     0
                 ), //red eye color right
                 "Zero the first ever minted 0 eyed ape #0",
-                0 //banana yellow //todo: define another color?
+                "#c7ba00" //banana yellow //todo: define another color?
             )
         );
 
@@ -176,7 +176,7 @@ contract ApeGenerator is Ownable {
                     0
                 ),
                 "Harry the banana power love eyed ape #11",
-                0 //banana yellow
+                "#c7ba00" //banana yellow
             )
         );
 
@@ -190,7 +190,7 @@ contract ApeGenerator is Ownable {
                     1
                 ), //eye color right
                 "Piu the golden empty eyed ape #3",
-                1 //golden
+                "#ffd900" //golden
             )
         );
 
@@ -204,7 +204,7 @@ contract ApeGenerator is Ownable {
                     0
                 ),
                 "ApeNorris the angry eyed rarest toughest mf ape #4",
-                2 //red
+                "#ff230a" //red
             )
         );
 
@@ -218,7 +218,7 @@ contract ApeGenerator is Ownable {
                     2
                 ), //pink right eye
                 "Carl the dead invisible ape #6",
-                3 //black->invisible
+                "#000000" //black->invisible
             )
         );
 
@@ -232,7 +232,7 @@ contract ApeGenerator is Ownable {
                     1
                 ), //gold right eye
                 "Satoshi the btc eyed ape #7",
-                4 //pink
+                "#ff33cc" //pink
             )
         );
 
@@ -246,7 +246,7 @@ contract ApeGenerator is Ownable {
                     2
                 ), //pink right eye
                 "Vitalik the eth eyed ape #8",
-                1 //gold
+                "#ffd900" //gold
             )
         );
 
@@ -260,7 +260,7 @@ contract ApeGenerator is Ownable {
                     0
                 ), //red right eye
                 "Dollari the inflationary dollar eyed ape #9",
-                2 //red
+                "#ff0000" //red
             )
         );
 
@@ -356,21 +356,13 @@ contract ApeGenerator is Ownable {
         string memory textFillToEye
     ) private view returns (string memory) {
         string[3] memory eyeColor = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
-        string[5] memory specialApeColors = [
-            "#c7ba00", //Banana yellow
-            "#ffd900", //golden
-            "#ff230a", //red
-            "#000000", //black (invisible)
-            "#ff33cc" //pink
-        ];
+
         //gen special ape, plain string
         return (
             Base64.encode(
                 abi.encodePacked(
                     '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="',
-                    specialApeColors[
-                        ast_specialApeDetails[_specialApeIndex].apeColorIndex
-                    ], //use color of special ape
+                    ast_specialApeDetails[_specialApeIndex].apeColor, //use color of special ape
                     textFillToEye,
                     eyeColor[
                         ast_specialApeDetails[_specialApeIndex]
@@ -545,21 +537,12 @@ contract ApeGenerator is Ownable {
         string[3] memory eyeColor = ["#ff1414", "#ffd700", "#ff33cc"]; //red, gold, pink
         string memory apeColor;
 
-        string[5] memory specialApeColors = [
-            "#c7ba00", //Banana yellow
-            "#ffd900", //golden
-            "#ff230a", //red
-            "#000000", //black (invisible)
-            "#ff33cc" //pink
-        ];
-
         if (_apeGenAndRegisterDetails.specialApeIndex == 255) {
             apeColor = "#ffffff";
         } else {
-            apeColor = specialApeColors[
-                ast_specialApeDetails[_apeGenAndRegisterDetails.specialApeIndex]
-                    .apeColorIndex
-            ];
+            apeColor = ast_specialApeDetails[
+                _apeGenAndRegisterDetails.specialApeIndex
+            ].apeColor;
         }
 
         return (

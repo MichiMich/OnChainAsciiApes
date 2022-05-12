@@ -559,3 +559,52 @@ NftContract mint;12337513
 NftContract mint;12394799
 NftContract mint;12421066
 NftContract mint;12346205
+
+Date: 12.5.2022, 11:57:48 github commit: c740b247d1f1e58b800692cbc51e50696e905228;struct apeCoreElements added, implemented at apeGenAndRegisterDetails
+
+ApeGenerator deployment;10592652
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12337715
+NftContract mint;12421073
+NftContract mint;12420833
+NftContract mint;12346407
+
+Date: 12.5.2022, 12:07:08 github commit: c740b247d1f1e58b800692cbc51e50696e905228;struct apeCoreElements at specialApe struct integrated
+
+ApeGenerator deployment;10405272
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335440
+NftContract mint;12421110
+NftContract mint;12420881
+NftContract mint;12344144
+
+Date: 12.5.2022, 12:23:06 github commit: c740b247d1f1e58b800692cbc51e50696e905228;array for specialApeColors at storage defined, special ape has now access index instead of string
+
+ApeGenerator deployment;10508841
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12337782
+NftContract mint;12420652
+NftContract mint;12420881
+NftContract mint;12346486
+
+Date: 12.5.2022, 12:25:11 github commit: c740b247d1f1e58b800692cbc51e50696e905228;storage apeColors to memory at tokenUri and svg creation
+
+ApeGenerator deployment;10492684
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12335918
+NftContract mint;12421352
+NftContract mint;12421832
+NftContract mint;12344622
+
