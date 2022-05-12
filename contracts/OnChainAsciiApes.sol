@@ -56,6 +56,12 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //tokensAlreadyMinted.increment();
     }
 
+    function endMint() public onlyOwner {
+        apeGenerator.endMintReduceTotalSupply(
+            uint8(tokensAlreadyMinted.current())
+        );
+    }
+
     function withdraw() public payable onlyOwner {
         require(address(this).balance > 0, "contract balance=0");
         payable(msg.sender).transfer(address(this).balance);
@@ -148,9 +154,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     }
 
     function createAssignMint() private returns (bool success) {
-        //at first we should check if enough money was sent to mint nft
-        //ToDo: outcomment this line and define mint price
-        //require(msg.value >= 1e15, "insufficient amount for nft minting given"); //0.001 eth
         // pre work for mint - start
         require(
             getNrOfLeftTokens() > 0,
@@ -172,7 +175,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         );
         uint8 currentTokenId = uint8(tokensAlreadyMinted.current());
         uint8 specialApeIndex = apeGenerator.getSpecialApeIndex(currentTokenId);
-
+        string memory apeGeneratorErrorMessage = "apeGen failed";
         if (specialApeIndex != totalSupply() + 1) {
             require(
                 apeGenerator.generateAndRegisterApe(
@@ -181,9 +184,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     0,
                     0,
                     currentTokenId,
-                    0
+                    0,
+                    (60 + createRandomNumberInRange(40)) //banana score
                 ),
-                "apeGen failed"
+                apeGeneratorErrorMessage
             );
         } else {
             require(
@@ -193,12 +197,10 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                     createRandomNumberInRange(3),
                     createRandomNumberInRange(3),
                     currentTokenId,
-                    createRandomNumberInRange(13)
-                    /*before gas optimization of ApeGenerator createRandomNumberInRange(
-                        apeGenerator.getLengthOfApeNamesArray()
-                    )*/
+                    createRandomNumberInRange(13),
+                    (60 + createRandomNumberInRange(40)) //bananascore
                 ),
-                "apeGen failed"
+                apeGeneratorErrorMessage
             );
         }
 
@@ -245,8 +247,11 @@ abstract contract ApeGeneratorImpl {
         uint8 _eyeColorIndexLeft,
         uint8 _eyeColorIndexRight,
         uint8 _tokenId,
-        uint8 _apeNameIndex
+        uint8 _apeNameIndex,
+        uint8 _bananascore
     ) public virtual returns (bool);
+
+    function endMintReduceTotalSupply(uint8) public virtual returns (uint8);
 
     function getTokenURI(uint8) public view virtual returns (string memory);
 }

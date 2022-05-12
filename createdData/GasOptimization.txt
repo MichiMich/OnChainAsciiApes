@@ -487,3 +487,75 @@ NftContract mint;12305911
 NftContract mint;12366521
 NftContract mint;12366750
 NftContract mint;12292318
+
+Date: 12.5.2022, 10:40:48 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;check current gas status
+
+ApeGenerator deployment;10485703
+AccessControl deployment;1774868
+NftContract deployment;4129304
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12305802
+NftContract mint;12366652
+NftContract mint;12366423
+NftContract mint;12292209
+
+Date: 12.5.2022, 10:46:05 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;require error message added string for apegen failed
+
+ApeGenerator deployment;10485703
+AccessControl deployment;1774868
+NftContract deployment;4120488
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12305876
+NftContract mint;12366715
+NftContract mint;12366966
+NftContract mint;12292283
+
+Date: 12.5.2022, 11:20:18 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;bananaScore and struct for apeGenDetailsAdded
+
+ApeGenerator deployment;10610405
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12334504
+NftContract mint;12417369
+NftContract mint;12417816
+NftContract mint;12342957
+
+Date: 12.5.2022, 11:28:40 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;bananaScore converted to bytes for correct display
+
+ApeGenerator deployment;10638699
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12334987
+NftContract mint;12418070
+NftContract mint;12392474
+NftContract mint;12343439
+
+Date: 12.5.2022, 11:30:32 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;bananaScore to string with strings.toString()
+
+ApeGenerator deployment;10600280
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12337468
+NftContract mint;12420344
+NftContract mint;12420562
+NftContract mint;12346160
+
+Date: 12.5.2022, 11:43:51 github commit: 62cb385b3791f7f8f637847315773e52f89a10a2;string for apeColor at struct for apeDetails removed
+
+ApeGenerator deployment;10562321
+AccessControl deployment;1774868
+NftContract deployment;4148361
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;12337513
+NftContract mint;12394799
+NftContract mint;12421066
+NftContract mint;12346205

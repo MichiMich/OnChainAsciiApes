@@ -15,8 +15,6 @@ describe("Mint and accessControl test", function () {
         //get available accounts from hardhat
         accounts = await hre.ethers.getSigners();
 
-
-
         //deploying contracts - start
         //apeGenerator
         const ApeGenerator = await hre.ethers.getContractFactory("ApeGenerator");
@@ -53,31 +51,29 @@ describe("Mint and accessControl test", function () {
     })
 
 
-    function createAndAdaptSvgFromTokenURI(tokenURI, pathAndFilename, apeName) {
-        const jsonData = tokenURI_to_JSON(tokenURI);
-        const imageDataBase64 = jsonData.image;
-        const svgData = imageDataBase64.substring(26);
-        const decodedSvgData = atob(svgData);
-
-        const SvgDataPart1 = decodedSvgData.substring(0, decodedSvgData.indexOf("</text>"));
-        const AddedSvgNamePart = '<tspan x="0%" y="92%">' + apeName + '</tspan>';
-        const SvgWithName = SvgDataPart1 + AddedSvgNamePart + '</text></svg>'
-
-        //write svg to file
-        fs.writeFile(pathAndFilename, SvgWithName, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });
-
+    function disableNetworkLogging() {
+        hre.config.networks.hardhat.loggingEnabled = false;
+        console.log("network logging of hardhat chain disabled");
     }
 
+    it("MintOut, deploy all needed contracts, mint", async function () {
+        const totalSupplyOfNfts = await nftContract.totalSupply();
+
+        await nftContract.enablePublicMint();
+        console.log("public mint enabled");
+
+        for (let i = 0; i < totalSupplyOfNfts; i++) {
+            await nftContract.mint({ value: mintPrice });
+
+            queriedTokenUri = await nftContract.tokenURI(i);
+        }
+    });
 
     function tokenURI_to_JSON(tokenURI) {
         const json = atob(tokenURI.substring(29));
         return (JSON.parse(json));
     }
+
 
     function seperateMetadata(tokenURI) {
         return (tokenURI_to_JSON(tokenURI));
@@ -94,64 +90,33 @@ describe("Mint and accessControl test", function () {
         console.log(nameOfTokenURI);
     }
 
+    it("EndMintBeforeMintOut, deploy all needed contracts, mint", async function () {
 
 
-    function createStatisticOfTokenURI(tokenURI) {
-
-        const FaceSymmetry = getAttributesOftokenURI(tokenURI)[0].value;
-        const eyeLeft = getAttributesOftokenURI(tokenURI)[1].value;
-        const eyeRight = getAttributesOftokenURI(tokenURI)[2].value;
-        const EyeColorLeft = getAttributesOftokenURI(tokenURI)[3].value;
-        const EyeColorRight = getAttributesOftokenURI(tokenURI)[4].value;
-        const ApeColor = getAttributesOftokenURI(tokenURI)[5].value;
-
-        statisticsOfFaceSymmetry.push(FaceSymmetry);
-        statisticsOfEyeLeft.push(eyeLeft);
-        statisticsOfEyeRight.push(eyeRight);
-        statisticsOfEyeColorLeft.push(EyeColorLeft);
-        statisticsOfEyeColorRight.push(EyeColorRight);
-        statisticsOfApeColor.push(ApeColor);
-
-
-        /*
-        console.log("FaceSymmetry: ", FaceSymmetry);
-        console.log("eyeLeft: ", eyeLeft);
-        console.log("eyeRight: ", eyeRight);
-        console.log("EyeColorLeft: ", EyeColorLeft);
-        console.log("EyeColorRight: ", EyeColorRight);
-        console.log("ApeColor: ", ApeColor);
-        */
-
-    }
-
-
-    let statisticsOfFaceSymmetry = [];
-    let statisticsOfEyeLeft = [];
-    let statisticsOfEyeRight = [];
-    let statisticsOfEyeColorLeft = [];
-    let statisticsOfEyeColorRight = [];
-    let statisticsOfApeColor = [];
-
-    it("MintAndSeperateMetadata, deploy all needed contracts, mint, seperate metadata", async function () {
+        let totalSupplyOfNfts = await nftContract.totalSupply();
+        console.log("total supply of nfts at mint start: ", totalSupplyOfNfts);
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 1; i++) {
             await nftContract.mint({ value: mintPrice });
 
             queriedTokenUri = await nftContract.tokenURI(i);
-            // getNameOfTokenURI(queriedTokenUri);
-            // getAttributesOftokenURI(queriedTokenUri);
-            createStatisticOfTokenURI(queriedTokenUri);
+            getNameOfTokenURI(queriedTokenUri);
         }
 
+        //end mint, it was not minted out
+        //let txMintEnded = await nftContract.endMint();
 
-        console.log(statisticsOfFaceSymmetry);
-        console.log(statisticsOfEyeLeft);
-        console.log(statisticsOfEyeRight);
-        console.log(statisticsOfEyeColorLeft);
-        console.log(statisticsOfEyeColorRight);
-        console.log(statisticsOfApeColor);
+        //end mint and expect event gets fired
+        await expect(nftContract.endMint())
+            .to.emit(apeGenerator, 'mintEndedSupplyReduced')
+            .withArgs(1);
+
+        totalSupplyOfNfts = await nftContract.totalSupply();
+        console.log("total supply after mint was ended: ", totalSupplyOfNfts);
+
+        await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
 
     });
 
