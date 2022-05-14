@@ -17,9 +17,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
     // variable packing only occurs in storage
 
-    address accessControlContractAddress;
+    address s_accessControlContractAddress;
     ApeGeneratorImpl apeGenerator;
-    bool publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
+    bool s_publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     using Counters for Counters.Counter;
 
@@ -50,7 +50,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         //link other contracts
         linkApeGenerator(_apeGeneratorContractAddress);
 
-        accessControlContractAddress = _accessControlContractAddress;
+        s_accessControlContractAddress = _accessControlContractAddress;
 
         //define tokenId start with 1, so first ape = tokenId1
         //tokensAlreadyMinted.increment();
@@ -79,13 +79,13 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         returns (bool)
     {
         accessControlImpl accessControl = accessControlImpl(
-            accessControlContractAddress
+            s_accessControlContractAddress
         );
         return (accessControl.isAccessGranted(_addressToBeChecked));
     }
 
     function enablePublicMint() public onlyOwner {
-        publicMintActive = true;
+        s_publicMintActive = true;
     }
 
     function totalSupply() public view override returns (uint256) {
@@ -163,7 +163,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             msg.value >= mintPriceWei,
             "given eth amount too low for minting"
         );
-        if (!publicMintActive) {
+        if (!s_publicMintActive) {
             //check if access is granted
             require(checkIfWhitelisted(msg.sender), "not whitelisted");
         }
