@@ -1,61 +1,22 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-//work with file
-const fs = require('fs');
-//user input
-const readline = require('readline');
+const helpfulScript = require("../scripts/helpful_script.js");
 
+const fs = require('fs');
+//file logging specific
+const filePathForTaxLogging = "./createdData/GasOptimization.txt";
+const dataSeperator = ";";
 
 describe("Mint and accessControl test", function () {
-
     let apeGenerator;
     let accessControl;
     let nftContract;
     const mintPrice = ethers.utils.parseUnits("1", 15);
-    const dataSeperator = ";";
-
-    const filePathForTaxLogging = "./createdData/GasOptimization.txt";
-
-    async function getUsedTaxForLastBlock() {
-        const block = await hre.ethers.provider.getBlock();
-        console.log("GasUsed", parseInt(block.gasUsed._hex, 16));
-        return (parseInt(block.gasUsed._hex, 16));
-    }
-
-    function addDataToFile(pathAndFilename, data) {
-        fs.appendFile(pathAndFilename, data, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });
-    }
 
     async function getTaxAppendToFile(pathAndFilename, data) {
-        const gasData = await getUsedTaxForLastBlock();
+        const gasData = await helpfulScript.getUsedTaxForLastBlock();
         const fileData = data + dataSeperator + gasData;
-        addDataToFile(pathAndFilename, fileData);
-    }
-
-    function getLastGithubCommit() {
-        const rev = fs.readFileSync('.git/HEAD').toString().trim();
-        if (rev.indexOf(':') === -1) {
-            return rev;
-        } else {
-            return fs.readFileSync('.git/' + rev.substring(5)).toString().trim();
-        }
-    }
-
-    function askQuestion(query) {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
-
-        return new Promise(resolve => rl.question(query, ans => {
-            rl.close();
-            resolve(ans);
-        }))
+        helpfulScript.addDataToFile(pathAndFilename, fileData);
     }
 
     //Deploying contract before running tests
@@ -63,18 +24,18 @@ describe("Mint and accessControl test", function () {
         //get available accounts from hardhat
         accounts = await hre.ethers.getSigners();
 
-        let codeChangeDescription = await askQuestion("Please add a description of the code change");
+        let codeChangeDescription = await helpfulScript.getUserInput("Please add a description of the code change");
         let gasOptHeadline = "";
         //file write headline
         if (codeChangeDescription === "") {
             //none given
-            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit(); + "\n";
+            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + helpfulScript.getLastGithubCommit(); + "\n";
         }
         else {
-            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + getLastGithubCommit() + dataSeperator + codeChangeDescription + "\n";
+            gasOptHeadline = "\n\nDate: " + new Date().toLocaleString() + " github commit: " + helpfulScript.getLastGithubCommit() + dataSeperator + codeChangeDescription + "\n";
         }
 
-        addDataToFile(filePathForTaxLogging, gasOptHeadline);
+        helpfulScript.addDataToFile(filePathForTaxLogging, gasOptHeadline);
 
         //deploying contracts - start
         //apeGenerator
