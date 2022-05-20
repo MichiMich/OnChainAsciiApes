@@ -91,7 +91,7 @@ describe("Mint and accessControl test", function () {
 
             //filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes' + apeName + '.svg';
 
-            filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes/ApesWithName/' + apeName + '.svg';
+            filename = 'C:/Projects/BlockChainDev/OnChainAsciiApes_Documentation/GenApes/ApesWithName/' + i + '.svg';
 
             //createSvgFromTokenURI(queriedTokenUri, filename);
             helpfulScript.createAndAdaptSvgFromTokenURI(queriedTokenUri, filename, apeName);
@@ -100,6 +100,7 @@ describe("Mint and accessControl test", function () {
 
         console.log("\n\n Mint done, left tokens: ", await nftContract.getNrOfLeftTokens());
 
+        await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
 
 
         const totalStatisticData = JSON.stringify(statisticsOfFaceSymmetry) + dataSeperator + JSON.stringify(statisticsOfEyeLeft) + dataSeperator + JSON.stringify(statisticsOfEyeRight) + dataSeperator + JSON.stringify(statisticsOfEyeColorLeft) + dataSeperator + JSON.stringify(statisticsOfEyeColorRight) + dataSeperator + JSON.stringify(statisticsOfApeColor);

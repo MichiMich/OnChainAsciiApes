@@ -496,7 +496,7 @@ contract ApeGenerator is Ownable {
             bytes(id_to_apeDetails[tokenId].metaData).length > 0,
             "metadata gen fail"
         );
-        //register new ape
+        //generated and registered
         return (true);
     }
 

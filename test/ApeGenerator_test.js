@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+const helpfulScript = require("../scripts/helpful_script.js");
 const fs = require('fs');
 
 describe("ApeGenerator test", function () {
@@ -33,77 +34,86 @@ describe("ApeGenerator test", function () {
 
 
     it("ApeGeneratorGenApeSpecial ape, getGenApe", async function () {
-        const genApe = await apeGenerator.getGeneratedApe("&#x60;", "&#xB4;", true, "#ff230a", 1, 1);  //lefteye, righteye, special ape generation, textfillcolor, eyecolorleft, eyecolorright
-        //console.log("genApe: ", genApe);
-        //we want some string getting back
-        expect(genApe).to.not.equal("");
-        //write data to file
-        fs.writeFile('./GenApes/genape.svg', genApe, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });
+        const usedTokenID = 0;
+        const specialApeIndex = await apeGenerator.getSpecialApeIndex(usedTokenID); //0 is a special ape
+        const randomBananaScore = 60 + Math.floor(Math.random() * 40);
+        const genApe = await apeGenerator.generateAndRegisterApe(
+            specialApeIndex,
+            0,
+            0,
+            0,
+            usedTokenID,
+            0,
+            randomBananaScore //banana score
+        );
+        console.log("genApe: ", genApe);
+        //true return means contract function call was successful
+        //expect(genApe).to.be.true;
+
+        const tokenURI = await apeGenerator.getTokenURI(usedTokenID);
+        const apeName = helpfulScript.getNameOfTokenURI(tokenURI);
+
+        const pathAndFilename = './GenApes/' + apeName + '.svg';
+        expect(tokenURI).to.not.equal("");
+
+        //create svg of file and save it to
+        helpfulScript.createAndAdaptSvgFromTokenURI(tokenURI, pathAndFilename, apeName);
+
     });
+
+    function numberInRange(_range) {
+        return Math.floor(Math.random() * _range);
+    };
 
     it("ApeGeneratorGenApeStandard ape, getGenApe", async function () {
-        const genApe = await apeGenerator.getGeneratedApe("&#x3C;", "&#x3E;", false, "", 0, 0);  //lefteye, righteye, special ape generation, textfillcolor, eyecolorleft, eyecolorright
-        //console.log("genApe: ", genApe);
-        //we want some string getting back
-        expect(genApe).to.not.equal("");
-        //write data to file
-        fs.writeFile('./GenApes/genape.svg', genApe, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });
-    });
 
-    it("ApeGenerator, check specific ape names", async function () {
-        let randomApeNameIndex = Math.floor(Math.random() * nrOfApeNames);
-        let randomeApeId = Math.floor(Math.random() * tokenIdLimit);
-        let randomApeLeftEyeIndex = Math.floor(Math.random() * eyeIndexLimit);
-        let randomApeRightEyeIndex = Math.floor(Math.random() * eyeIndexLimit);
-
-        const genApeName = await apeGenerator.generateApeName(6, randomApeLeftEyeIndex, randomApeRightEyeIndex, randomeApeId); //uint256 _apeNameIndex currently in range to 4,uint256 _leftEyeIndex,uint256 _rightEyeIndex,uint256 _tokenId
-        console.log("genApeName: ", genApeName);
-    });
-
-
-    it("ApeGenerator, check random ape names", async function () {
-        const nrOfRandomGenerations = 20;
-        for (let i = 0; i < nrOfRandomGenerations; i++) {
-            let randomApeNameIndex = Math.floor(Math.random() * nrOfApeNames);
-            let randomApeLeftEyeIndex = Math.floor(Math.random() * eyeIndexLimit);
-            let randomApeRightEyeIndex = Math.floor(Math.random() * eyeIndexLimit);
-            let randomeApeId = Math.floor(Math.random() * tokenIdLimit);
-            //console.log("randomApeNameIndex: ", randomApeNameIndex);
-
-            const genApe = await apeGenerator.getGeneratedApe("&#x2665;", "&#xac;", false, "", 1, 2);  //lefteye, righteye, special ape generation, textfillcolor, eyecolorleft, eyecolorright
-            //console.log("genApe: ", genApe);
-            const genApeName = await apeGenerator.generateApeName(randomApeNameIndex, randomApeLeftEyeIndex, randomApeRightEyeIndex, randomeApeId); //uint256 _apeNameIndex currently in range to 4,uint256 _leftEyeIndex,uint256 _rightEyeIndex,uint256 _tokenId
-            console.log("genApeName: ", genApeName);
-            //we want some string getting back
-            expect(genApe).to.not.equal("");
-
-            //identical eyes need to lead to a full argument in the name
-            if (randomApeLeftEyeIndex == randomApeRightEyeIndex) {
-                expect(JSON.stringify(genApeName).search("full")).to.not.equal(-1);
-            }
-
-
-        }
+        //Bingo the half dollar half btc eyec ape #1: dollar = index 13, btc = index 7->mint combination 176?
         /*
-        fs.writeFile('./GenApes/genape.svg', genApe, err => {
-            if (err) {
-                console.error(err);
-            }
-            // file written successfully
-        });*/
+        generateAndRegisterApe(
+            0,
+            189,
+            eyecolorleft,
+            eyecolorright,
+            1,
+            3, //bingo
+        )
+        */
+
+        const usedTokenID = 1;
+        const randomBananaScore = 60 + Math.floor(Math.random() * 40);
+        const randomCreatedMintCombinationIndex = numberInRange(await apeGenerator.nrOfAvailableMintCombinations());
+
+        //log values to be able to track if sth goes wrong
+        const eyecolorleft = numberInRange(3);
+        const eyecolorright = numberInRange(3);
+        const apeNameIndex = numberInRange(13);
+        console.log("\nUsedValuesForGeneration: \n", "eyecolorleft: ", eyecolorleft, "\neyecolorright: ", eyecolorright, "\napeNameIndex: ", apeNameIndex, "\nrandomBananaScore: ", randomBananaScore, "\nrandomCreatedMintCombinationIndex: ", randomCreatedMintCombinationIndex);
+
+        const genApe = await apeGenerator.generateAndRegisterApe(
+            0,
+            randomCreatedMintCombinationIndex, //mint combination number
+            eyecolorleft, //eyecolor left
+            eyecolorright, //eyecolor right
+            usedTokenID,
+            apeNameIndex, //apeNameIndex
+            randomBananaScore //bananascore
+        );
+
+
+        console.log("genApe: ", genApe);
+        //true return means contract function call was successful
+        //expect(genApe).to.be.true;
+
+        const tokenURI = await apeGenerator.getTokenURI(usedTokenID);
+        const apeName = helpfulScript.getNameOfTokenURI(tokenURI);
+
+        const pathAndFilename = './GenApes/' + apeName + '.svg';
+        expect(tokenURI).to.not.equal("");
+
+        //create svg of file and save it to
+        helpfulScript.createAndAdaptSvgFromTokenURI(tokenURI, pathAndFilename, apeName);
 
     });
-
 
 
 

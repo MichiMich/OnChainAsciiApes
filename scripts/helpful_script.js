@@ -78,7 +78,7 @@ exports.createAndAdaptSvgFromTokenURI = function (tokenURI, pathAndFilename, ape
 
 exports.getNameOfTokenURI = function (tokenURI) {
     const nameOfTokenURI = seperateMetadata(tokenURI).name;
-    console.log(nameOfTokenURI);
+    return (nameOfTokenURI);
 }
 
 
@@ -146,6 +146,12 @@ exports.getLastGithubCommit = function () {
 
 exports.getUsedTaxForLastBlock = async function () {
     const block = await hre.ethers.provider.getBlock();
-    console.log("GasUsed", parseInt(block.gasUsed._hex, 16));
-    return (parseInt(block.gasUsed._hex, 16));
+    const gasUsed = parseInt(block.gasUsed._hex, 16);
+    return (gasUsed);
+}
+
+exports.getSentValueOfLastBlock = async function () {
+    const block = await hre.ethers.provider.getBlockWithTransactions();
+    const valueTransmitted = parseInt(block.transactions[0].value._hex, 16);
+    return (valueTransmitted);
 }

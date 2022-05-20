@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-
+const contractDeployment = require("../scripts/contractDeployment.js");
+const helpfulScript = require("../scripts/helpful_script.js");
 
 describe("Mint and accessControl test", function () {
 
@@ -11,40 +12,18 @@ describe("Mint and accessControl test", function () {
 
     //Deploying contract before running tests
     beforeEach(async function () {
-        //get available accounts from hardhat
+        [apeGenerator, accessControl, nftContract] = await contractDeployment.deployMintContractsWithAccessControl(mintPrice);
+
+        //transfer ownership of apeGenerator to nftContract, so he can remove MintCombinations
+        await apeGenerator.transferOwnership(nftContract.address)
+        console.log("new owner of apeGenerator is now nftContract");
+
+
+        await nftContract.enablePublicMint();
+        console.log("public mint enabled");
+
         accounts = await hre.ethers.getSigners();
 
-        //deploying contracts - start
-        //apeGenerator
-        const ApeGenerator = await hre.ethers.getContractFactory("ApeGenerator");
-        apeGenerator = await ApeGenerator.deploy();
-        await apeGenerator.deployed();
-        console.log("ApeGenerator deployed at: ", apeGenerator.address);
-
-
-        //deploy contract
-        const AccessControl = await hre.ethers.getContractFactory("AccessControl");
-        accessControl = await AccessControl.deploy();
-        await accessControl.deployed();
-        console.log("AccessControl deployed to:", accessControl.address);
-
-
-        //nft mint contract specific
-        const networkName = hre.network.name
-        const chainId = hre.network.config.chainId
-        console.log("chainId: ", chainId);
-        let useSeedWithTestnet;
-        if (chainId == "4" || networkName === "rinkeby") {
-            //rinkeby
-            console.log("seed with testnet used");
-            useSeedWithTestnet = true;
-        }
-        const NftMintContract = await hre.ethers.getContractFactory("OnChainAsciiApes");
-        nftContract = await NftMintContract.deploy(useSeedWithTestnet, apeGenerator.address, accessControl.address, mintPrice); //mint price set to 1e15 = 1 finney = 0.001 eth
-        await nftContract.deployed();
-        console.log("nftMintContract deployed to:", nftContract.address);
-
-        //deploying contracts - end
     })
 
 
@@ -55,7 +34,7 @@ describe("Mint and accessControl test", function () {
     });
 
     it("AllowOne, link, add address, check access", async function () {
-        await accessControl.linkNftContractAddress(nftContract.address);
+        await accessControl.linkHandshakeContract(nftContract.address);
         //add address, by owner
         await accessControl.addAddressToAccessAllowed(accounts[1].address, 1);
         //check if address is allowed to access
@@ -68,7 +47,7 @@ describe("Mint and accessControl test", function () {
     it("MintAndAccess, add multiple, mint, check nr and access again", async function () {
         const allowedNrOfMints = 3;
 
-        await accessControl.linkNftContractAddress(nftContract.address);
+        await accessControl.linkHandshakeContract(nftContract.address);
         //add address, by owner
         await accessControl.addAddressToAccessAllowed(accounts[2].address, allowedNrOfMints);
         //check if address is allowed to access
@@ -110,11 +89,12 @@ describe("Mint and accessControl test", function () {
 
         await nftContract.mint({ value: mintPrice });
 
-        let apeName = await nftContract.getNameOfApe(1);
+
+        queriedTokenUri = await nftContract.tokenURI(1);
+        let apeName = helpfulScript.getNameOfApeByTokenURI(queriedTokenUri);
 
         console.log("apeName: ", apeName);
 
-        queriedTokenUri = await nftContract.tokenURI(1);
 
         let ownerOf = await nftContract.ownerOf(1);
         console.log("ownerOf: ", ownerOf);

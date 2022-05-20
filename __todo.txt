@@ -1,1 +1,7 @@
-1. on deployment of accessControl at constructor should nftContract address be expected and be linked
+
+open:
+- mint all except 3 who go to the most donating ones
+
+done:
+- withdraw contract balance
+- parallel minting tests (there is no such thing as parallel, evm transactions are processed sequentially)

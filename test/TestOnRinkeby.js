@@ -40,31 +40,8 @@ describe("Mint and accessControl test", function () {
         await nftContract.mint({ value: mintPrice });
         console.log("mint should be done");
 
-        /*
-                let apeName = await nftContract.getNameOfApe(1);
-        
-                console.log("apeName: ", apeName);
-        
-                queriedTokenUri = await nftContract.tokenURI(1);
-        
-                let ownerOf = await nftContract.ownerOf(1);
-                console.log("ownerOf: ", ownerOf);
-        */
-
 
         console.log("queried tokenURI: ", queriedTokenUri);
-        /*
-        for (let i = 0; i < 1; i++) {
-            await nftContract.mint({ value: mintPrice });
-
-            //queriedTokenUri = await nftContract.tokenURI(i);
-
-            //console.log("fetched token: ", queriedTokenUri);
-
-
-        };
-        */
-
 
 
     });
