@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 //todo the eye array need to fix with the ApeGenerator name assertion
 //todo check if creator fees are available
 
-contract OnChainAsciiApes is ERC721Enumerable, Ownable {
+contract OnChainAsciiApesv1 is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
     // variable packing only occurs in storage
 
@@ -59,7 +59,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         );
     }
 
-    function withdraw() public onlyOwner {
+    function withdraw() public payable onlyOwner {
         require(address(this).balance > 0, "contract balance=0");
         payable(msg.sender).transfer(address(this).balance);
     }
@@ -175,7 +175,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         string memory apeGeneratorErrorMessage = "apeGen failed";
         if (specialApeIndex != totalSupply() + 1) {
             require(
-                apeGenerator.registerApe(
+                apeGenerator.generateAndRegisterApe(
                     specialApeIndex,
                     0,
                     0,
@@ -188,7 +188,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             );
         } else {
             require(
-                apeGenerator.registerApe(
+                apeGenerator.generateAndRegisterApe(
                     specialApeIndex, //=totalSupply()+1
                     randomCreatedMintCombinationIndex,
                     createRandomNumberInRange(3),
@@ -238,7 +238,7 @@ abstract contract ApeGeneratorImpl {
         virtual
         returns (uint8);
 
-    function registerApe(
+    function generateAndRegisterApe(
         uint8 _specialApeIndex,
         uint8 _randomNumber,
         uint8 _eyeColorIndexLeft,
