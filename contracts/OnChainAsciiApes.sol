@@ -189,7 +189,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         } else {
             require(
                 apeGenerator.registerApe(
-                    0,
+                    specialApeIndex, //=totalSupply()+1
                     randomCreatedMintCombinationIndex,
                     createRandomNumberInRange(3),
                     createRandomNumberInRange(3),

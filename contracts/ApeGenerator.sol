@@ -50,13 +50,19 @@ contract ApeGenerator is Ownable {
     }
 
     struct st_apeDefiningElements {
-        uint8 specialApeIndex;
-        uint8 randomNumber;
+        uint8 specialApeIndex; //in range 0-maxTokenSupply=special ape, maxTokenSupply + 1 = regular ape
+        uint8 apeLeftEyeIndex;
+        uint8 apeRightEyeIndex;
         uint8 eyeColorIndexLeft;
         uint8 eyeColorIndexRight;
         uint8 tokenId;
         uint8 apeNameIndex;
         uint8 bananascore;
+        bool isRegistered;
+        /*
+        todo: maybe remove, currently needed for checking if getTokenUri is called with registered ape
+        we could as well check if it is forbidden to call all with 0 value?
+        */
     }
 
     struct mintCombination {
@@ -285,17 +291,32 @@ contract ApeGenerator is Ownable {
         return maxTokenSupply;
     }
 
-    function generateApeName(
-        uint8 _apeNameIndex,
-        uint8 _leftEyeIndex,
-        uint8 _rightEyeIndex,
-        uint8 tokenId
-    ) public pure returns (string memory generatedApeName) {
+    function genNameAndSymmetry(uint8 _tokenId)
+        public
+        view
+        returns (bytes memory)
+    {
         require(
-            _apeNameIndex < 13 && /*gas optimized, not apeName.length used */
-                _leftEyeIndex < 14, /*gas optimized, not apeEyes.length used */
+            id_to_apeDefiningElements[_tokenId].apeNameIndex < 13 && /*gas optimized, not apeName.length used */
+                id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex < 14, /*gas optimized, not apeEyes.length used */
             "invalid index"
         );
+
+        if (
+            id_to_apeDefiningElements[_tokenId].specialApeIndex <=
+            maxTokenSupply
+        ) {
+            //special ape
+            return (
+                abi.encodePacked(
+                    ast_specialApeDetails[
+                        id_to_apeDefiningElements[_tokenId].specialApeIndex
+                    ].name,
+                    '","attributes":[{"trait_type":"Facesymmetry","value":"',
+                    "100"
+                )
+            );
+        }
 
         string[13] memory apeNames = [
             "Arti",
@@ -331,35 +352,46 @@ contract ApeGenerator is Ownable {
         ];
 
         string memory eyePrefix;
-
-        if (_leftEyeIndex == _rightEyeIndex) {
+        string memory faceSymmetry;
+        if (
+            id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex ==
+            id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+        ) {
             eyePrefix = string(
                 abi.encodePacked(
                     " the full ",
-                    apeEyeDescription[_leftEyeIndex],
+                    apeEyeDescription[
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                    ],
                     " eyed ascii ape"
                 )
             );
+            faceSymmetry = "100";
         } else {
             eyePrefix = string(
                 abi.encodePacked(
                     " the half ",
-                    apeEyeDescription[_leftEyeIndex],
+                    apeEyeDescription[
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                    ],
                     " half ",
-                    apeEyeDescription[_rightEyeIndex],
+                    apeEyeDescription[
+                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+                    ],
                     " eyed ascii ape"
                 )
             );
+            faceSymmetry = "50";
         }
 
         return (
-            string(
-                abi.encodePacked(
-                    apeNames[_apeNameIndex],
-                    eyePrefix,
-                    " #",
-                    Strings.toString(tokenId)
-                )
+            abi.encodePacked(
+                apeNames[id_to_apeDefiningElements[_tokenId].apeNameIndex],
+                eyePrefix,
+                " #",
+                Strings.toString(_tokenId),
+                '","attributes":[{"trait_type":"Facesymmetry","value":"',
+                faceSymmetry
             )
         );
     }
@@ -404,12 +436,11 @@ contract ApeGenerator is Ownable {
         );
     }
 
-    function generateApeSvg(
-        uint8 eyeColorIndexLeft,
-        uint8 eyeColorIndexRight,
-        uint8 _randomNumber,
-        string memory textFillToEye
-    ) private view returns (string memory) {
+    function generateApeSvg(uint8 _tokenId, string memory textFillToEye)
+        private
+        view
+        returns (string memory)
+    {
         string[3] memory eyeColor = ['ff1414">', 'ffd700">', 'ff33cc">']; //red, gold, pink
 
         return (
@@ -418,16 +449,18 @@ contract ApeGenerator is Ownable {
                     '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="', //start to textFill
                     "#ffffff",
                     textFillToEye, //text fill to eye
-                    eyeColor[eyeColorIndexLeft],
+                    eyeColor[
+                        id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft
+                    ],
                     apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeLeftEyeIndex
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
                     ],
                     '</tspan>&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#',
-                    eyeColor[eyeColorIndexRight],
+                    eyeColor[
+                        id_to_apeDefiningElements[_tokenId].eyeColorIndexRight
+                    ],
                     apeEyes[
-                        arrayOfAvailableMintCombinations[_randomNumber]
-                            .apeRightEyeIndex
+                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
                     ],
                     svgEyeToEnd
                 )
@@ -448,12 +481,14 @@ contract ApeGenerator is Ownable {
         require(tokenId >= 0 && tokenId < maxTokenSupply, "invalid tokenId");
         id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
             _specialApeIndex,
-            _randomNumber,
+            arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
+            arrayOfAvailableMintCombinations[_randomNumber].apeRightEyeIndex,
             eyeColorIndexLeft,
             eyeColorIndexRight,
             tokenId,
             _apeNameIndex,
-            bananascore
+            bananascore,
+            true
         );
         return (true);
     }
@@ -461,9 +496,17 @@ contract ApeGenerator is Ownable {
     function getTokenURI(uint8 tokenId) public view returns (string memory) {
         //todo: no saving of any data at storage variables, simple string combining and returning
         //add functionality here, need to differ if we have special ape
-        if (id_to_apeDefiningElements[tokenId].randomNumber == 0) {
-            string
-                memory textFillToEye = '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
+        require(
+            id_to_apeDefiningElements[tokenId].isRegistered,
+            "invalid tokenId"
+        ); //ape not registered/minted or tokenId invalid
+        string
+            memory textFillToEye = '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
+
+        if (
+            id_to_apeDefiningElements[tokenId].specialApeIndex <= maxTokenSupply
+        ) {
+            //special ape
 
             return (
                 string(
@@ -471,13 +514,13 @@ contract ApeGenerator is Ownable {
                         "data:application/json;base64,",
                         Base64.encode(
                             abi.encodePacked(
-                                '{"image":"data:image/svg+xml;base64,',
+                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
                                 generateSpecialApeSvg(
                                     id_to_apeDefiningElements[tokenId]
                                         .specialApeIndex,
                                     textFillToEye
                                 ),
-                                '"}'
+                                apeAttributes(tokenId) //todo need to differ between standard and special ape
                             )
                         )
                     )
@@ -485,10 +528,61 @@ contract ApeGenerator is Ownable {
             );
         } else {
             return (
-                //return ape with mint combination
-                "standardApe"
+                string(
+                    abi.encodePacked(
+                        "data:application/json;base64,",
+                        Base64.encode(
+                            abi.encodePacked(
+                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
+                                generateApeSvg(tokenId, textFillToEye),
+                                apeAttributes(tokenId) //todo need to differ between standard and special ape
+                            )
+                        )
+                    )
+                )
             );
         }
+    }
+
+    function apeAttributes(uint8 _tokenId) public view returns (bytes memory) {
+        bytes memory nameAndSymmetry; //todo check if bytes is better or string, cause name of special ape is converted to bytes 7 lines under this
+        string memory apeColor;
+        if (
+            id_to_apeDefiningElements[_tokenId].specialApeIndex <=
+            maxTokenSupply
+        ) {
+            //special ape
+            apeColor = ast_specialApeDetails[
+                id_to_apeDefiningElements[_tokenId].specialApeIndex
+            ].apeColor;
+        } else {
+            apeColor = "#ffffff";
+        }
+        nameAndSymmetry = genNameAndSymmetry(_tokenId);
+
+        string[3] memory eyeColor = ["#ff1414", "#ffd700", "#ff33cc"]; //red, gold, pink
+        return (
+            abi.encodePacked(
+                '","name":"',
+                nameAndSymmetry,
+                '"},{"trait_type":"EyeLeft","value":"',
+                apeEyes[id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex], //eye left value
+                '"},{"trait_type":"EyeRight","value":"',
+                apeEyes[id_to_apeDefiningElements[_tokenId].apeRightEyeIndex], //eye right value
+                //todo: add bananascore value
+                '"},{"trait_type":"EyeColorLeft","value":"',
+                eyeColor[id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft], //left eye color
+                '"},{"trait_type":"EyeColorRight","value":"',
+                eyeColor[
+                    id_to_apeDefiningElements[_tokenId].eyeColorIndexRight
+                ], //left eye color
+                '"},{"trait_type":"ApeColor","value":"',
+                apeColor,
+                '"},{"trait_type":"BananaScore","value":"',
+                Strings.toString(22), //todo: add bananascore value by random generation
+                '"}]}'
+            )
+        );
     }
 
     /*

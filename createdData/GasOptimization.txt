@@ -916,3 +916,68 @@ NftContract deployment;4148361
 ApeGenerator transfer Ownership;29043
 NftContract enablePublicMint;28631
 NftContract mint;184999
+
+Date: 28.5.2022, 14:09:16 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;d
+
+ApeGenerator deployment;10445152
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+
+Date: 28.5.2022, 14:11:30 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;tokenUri in development change
+
+ApeGenerator deployment;10445404
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+
+Date: 28.5.2022, 14:25:35 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;change apegen
+
+ApeGenerator deployment;10561254
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+
+Date: 28.5.2022, 14:29:14 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;test
+
+ApeGenerator deployment;10506561
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+
+Date: 28.5.2022, 14:33:25 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;test
+
+ApeGenerator deployment;10506525
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+
+Date: 28.5.2022, 14:39:40 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;mint2
+
+ApeGenerator deployment;10701620
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+NftContract mint;250908
+
+Date: 28.5.2022, 14:41:47 github commit: c34711717dc84ad79e90b662a57c0277674fbb86;mint2
+
+ApeGenerator deployment;10732735
+AccessControl deployment;1671780
+NftContract deployment;4148157
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;188329
+NftContract mint;250908

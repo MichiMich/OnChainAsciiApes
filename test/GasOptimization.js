@@ -80,7 +80,7 @@ describe("Mint and accessControl test", function () {
         console.log("public mint enabled");
         getTaxAppendToFile(filePathForTaxLogging, "\nNftContract enablePublicMint");
 
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 2; i++) {
             await nftContract.mint({ value: mintPrice });
 
             getTaxAppendToFile(filePathForTaxLogging, "\nNftContract mint");
