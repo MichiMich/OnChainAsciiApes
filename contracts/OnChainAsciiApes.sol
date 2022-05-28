@@ -6,12 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 //todo need to check if special apes have always same eye types and colors, if we dont need to transfer both eyes and adapt special ape generation
-//todo need to add properties
-//todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
+
 //todo the eye array need to fix with the ApeGenerator name assertion
 //todo check if creator fees are available
-//todo add a banana score
-//todo can we switch to a struct which holds all ape details like, left- and right eye, name, bananascore, svg...
 
 contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas

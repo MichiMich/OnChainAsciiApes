@@ -28,7 +28,7 @@ async function main() {
     console.log("ApeGenerator deployed at: ", apeGenerator.address);
 
     //accessControl
-    const AccessControl = await hre.ethers.getContractFactory("AccessControl");
+    const AccessControl = await hre.ethers.getContractFactory("AccessUnitControl");
     const accessControl = await AccessControl.deploy();
     await accessControl.deployed();
     console.log("AccessControl deployed at: ", accessControl.address);

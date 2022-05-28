@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Base64.sol";
 
 //ToDo: should only AsciiApes contract be able to call this?
+//todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
 
 contract ApeGenerator is Ownable {
     //default svg data

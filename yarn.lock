@@ -2960,7 +2960,7 @@
     "idna-uts46-hx" "^2.3.1"
     "js-sha3" "^0.5.7"
 
-"eth-gas-reporter@^0.2.24":
+"eth-gas-reporter@^0.2.24", "eth-gas-reporter@^0.2.25":
   "integrity" "sha512-1fRgyE4xUB8SoqLgN3eDfpDfwEfRxh2Sz1b7wzFbyQA+9TekMmvSjjoRu9SKcSVyK+vLkLIsVbJDsTWjw195OQ=="
   "resolved" "https://registry.npmjs.org/eth-gas-reporter/-/eth-gas-reporter-0.2.25.tgz"
   "version" "0.2.25"

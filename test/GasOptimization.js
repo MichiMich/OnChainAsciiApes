@@ -47,7 +47,7 @@ describe("Mint and accessControl test", function () {
         getTaxAppendToFile(filePathForTaxLogging, "\nApeGenerator deployment");
 
         //deploy contract
-        const AccessControl = await hre.ethers.getContractFactory("AccessControl");
+        const AccessControl = await hre.ethers.getContractFactory("AccessUnitControl");
         accessControl = await AccessControl.deploy();
         await accessControl.deployed();
         console.log("AccessControl deployed at:", accessControl.address);
@@ -80,7 +80,7 @@ describe("Mint and accessControl test", function () {
         console.log("public mint enabled");
         getTaxAppendToFile(filePathForTaxLogging, "\nNftContract enablePublicMint");
 
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 1; i++) {
             await nftContract.mint({ value: mintPrice });
 
             getTaxAppendToFile(filePathForTaxLogging, "\nNftContract mint");

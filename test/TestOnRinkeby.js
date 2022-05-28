@@ -21,7 +21,7 @@ describe("Mint and accessControl test", function () {
         accounts = await hre.ethers.getSigners();
 
         apeGenerator = await hre.ethers.getContractAt("ApeGenerator", apeGeneratorAddress);
-        accessControl = await hre.ethers.getContractAt("AccessControl", accessControlAddress);
+        accessControl = await hre.ethers.getContractAt("AccessUnitControl", accessControlAddress);
         nftContract = await hre.ethers.getContractAt("OnChainAsciiApes", nftContractAddress);
 
     })
