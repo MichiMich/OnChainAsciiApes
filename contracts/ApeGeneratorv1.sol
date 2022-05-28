@@ -8,7 +8,7 @@ import "./Base64.sol";
 //ToDo: should only AsciiApes contract be able to call this?
 //todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
 
-contract ApeGenerator is Ownable {
+contract ApeGeneratorv1 is Ownable {
     //default svg data
 
     // string private constant svgStartToEye =
@@ -49,16 +49,6 @@ contract ApeGenerator is Ownable {
         uint8 eyeColorIndexRight;
     }
 
-    struct st_apeDefiningElements {
-        uint8 specialApeIndex;
-        uint8 randomNumber;
-        uint8 eyeColorIndexLeft;
-        uint8 eyeColorIndexRight;
-        uint8 tokenId;
-        uint8 apeNameIndex;
-        uint8 bananascore;
-    }
-
     struct mintCombination {
         uint8 apeLeftEyeIndex;
         uint8 apeRightEyeIndex;
@@ -76,9 +66,6 @@ contract ApeGenerator is Ownable {
     }
 
     mapping(uint256 => st_apeDetails) id_to_apeDetails;
-
-    //holds all data which is needed to get the ape svg data
-    mapping(uint256 => st_apeDefiningElements) id_to_apeDefiningElements;
 
     //special ape
     st_SpecialApe[] ast_specialApeDetails;
@@ -435,63 +422,6 @@ contract ApeGenerator is Ownable {
         );
     }
 
-    function registerApe(
-        uint8 _specialApeIndex,
-        uint8 _randomNumber,
-        uint8 eyeColorIndexLeft,
-        uint8 eyeColorIndexRight,
-        uint8 tokenId,
-        uint8 _apeNameIndex,
-        uint8 bananascore
-    ) public onlyOwner returns (bool) {
-        //todo check if needed for gas optimizations, if fetched from nft contract, we wont need it here
-        require(tokenId >= 0 && tokenId < maxTokenSupply, "invalid tokenId");
-        id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
-            _specialApeIndex,
-            _randomNumber,
-            eyeColorIndexLeft,
-            eyeColorIndexRight,
-            tokenId,
-            _apeNameIndex,
-            bananascore
-        );
-        return (true);
-    }
-
-    function getTokenURI(uint8 tokenId) public view returns (string memory) {
-        //todo: no saving of any data at storage variables, simple string combining and returning
-        //add functionality here, need to differ if we have special ape
-        if (id_to_apeDefiningElements[tokenId].randomNumber == 0) {
-            string
-                memory textFillToEye = '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
-
-            return (
-                string(
-                    abi.encodePacked(
-                        "data:application/json;base64,",
-                        Base64.encode(
-                            abi.encodePacked(
-                                '{"image":"data:image/svg+xml;base64,',
-                                generateSpecialApeSvg(
-                                    id_to_apeDefiningElements[tokenId]
-                                        .specialApeIndex,
-                                    textFillToEye
-                                ),
-                                '"}'
-                            )
-                        )
-                    )
-                )
-            );
-        } else {
-            return (
-                //return ape with mint combination
-                "standardApe"
-            );
-        }
-    }
-
-    /*
     function generateAndRegisterApe(
         uint8 _specialApeIndex,
         uint8 _randomNumber,
@@ -569,7 +499,7 @@ contract ApeGenerator is Ownable {
         );
         //generated and registered
         return (true);
-    }*/
+    }
 
     //lets register it first
     function registerToken(uint8 tokenId) public onlyOwner returns (bool) {}
@@ -656,9 +586,8 @@ contract ApeGenerator is Ownable {
             )
         );
     }
-    /*
+
     function getTokenURI(uint8 tokenId) public view returns (string memory) {
         return id_to_apeDetails[tokenId].metaData;
     }
-    */
 }

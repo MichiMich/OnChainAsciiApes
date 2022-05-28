@@ -15,7 +15,7 @@ const dataSeperator = ";";
 
 arryToCsv = async function () {
     var CsvString = "";
-    /*Results.forEach(function (RowItem, RowIndex) {
+    Results.forEach(function (RowItem, RowIndex) {
         RowItem.forEach(function (ColItem, ColIndex) {
             CsvString += ColItem + dataSeperator;
         });
@@ -23,7 +23,6 @@ arryToCsv = async function () {
     });
     //CsvString = "data:application/csv," + encodeURIComponent(CsvString);
     console.log(CsvString);
-    */
     helpfulScript.addDataToFile(filePathAndName, "123");
 
 

@@ -175,7 +175,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         string memory apeGeneratorErrorMessage = "apeGen failed";
         if (specialApeIndex != totalSupply() + 1) {
             require(
-                apeGenerator.generateAndRegisterApe(
+                apeGenerator.registerApe(
                     specialApeIndex,
                     0,
                     0,
@@ -188,7 +188,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
             );
         } else {
             require(
-                apeGenerator.generateAndRegisterApe(
+                apeGenerator.registerApe(
                     0,
                     randomCreatedMintCombinationIndex,
                     createRandomNumberInRange(3),
@@ -238,7 +238,7 @@ abstract contract ApeGeneratorImpl {
         virtual
         returns (uint8);
 
-    function generateAndRegisterApe(
+    function registerApe(
         uint8 _specialApeIndex,
         uint8 _randomNumber,
         uint8 _eyeColorIndexLeft,
