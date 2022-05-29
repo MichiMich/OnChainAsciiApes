@@ -569,7 +569,6 @@ contract ApeGenerator is Ownable {
                 apeEyes[id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex], //eye left value
                 '"},{"trait_type":"EyeRight","value":"',
                 apeEyes[id_to_apeDefiningElements[_tokenId].apeRightEyeIndex], //eye right value
-                //todo: add bananascore value
                 '"},{"trait_type":"EyeColorLeft","value":"',
                 eyeColor[id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft], //left eye color
                 '"},{"trait_type":"EyeColorRight","value":"',
@@ -579,7 +578,9 @@ contract ApeGenerator is Ownable {
                 '"},{"trait_type":"ApeColor","value":"',
                 apeColor,
                 '"},{"trait_type":"BananaScore","value":"',
-                Strings.toString(22), //todo: add bananascore value by random generation
+                Strings.toString(
+                    id_to_apeDefiningElements[_tokenId].bananascore
+                ),
                 '"}]}'
             )
         );
