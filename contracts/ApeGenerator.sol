@@ -11,10 +11,6 @@ import "./Base64.sol";
 contract ApeGenerator is Ownable {
     //default svg data
 
-    // string private constant svgStartToEye =
-    //     '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="white" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
-    // //'<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg"><rect height="500" width="500" fill="black"/><text y="10%" fill="white" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">                    &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</tspan><tspan x="4%" dy="1.2em">                  &#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;</tspan><tspan x="4%" dy="1.2em">                &#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;</tspan><tspan x="4%" dy="1.2em">              &#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;</tspan><tspan x="4%" dy="1.2em">              &#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
-
     string private constant svgEyeToEnd =
         '</tspan>&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="12%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;        &#x2588;&#x2588;&#x2593;&#x2593;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="8%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;        &#x2588;&#x2588;&#x2591;&#x2591;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="4%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;      &#x2588;&#x2588;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;      &#xd;</tspan><tspan x="4%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;    &#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;        &#xd;</tspan><tspan x="4%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;        &#xd;</tspan><tspan x="8%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;    &#xd;</tspan><tspan x="12%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;    &#xd;</tspan><tspan x="32%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="28%" dy="1.2em">&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="28%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</tspan></text></svg>';
 
@@ -35,12 +31,6 @@ contract ApeGenerator is Ownable {
         "&#x24;" //$
     ];
 
-    struct st_apeGenAndRegisterDetails {
-        st_apeCoreElements apeCoreElements;
-        uint8 bananascore;
-        uint8 specialApeIndex;
-    }
-
     struct st_apeCoreElements {
         uint8 tokenId;
         uint8 eyeIndexLeft;
@@ -57,12 +47,7 @@ contract ApeGenerator is Ownable {
         uint8 eyeColorIndexRight;
         uint8 tokenId;
         uint8 apeNameIndex;
-        uint8 bananascore;
-        bool isRegistered;
-        /*
-        todo: maybe remove, currently needed for checking if getTokenUri is called with registered ape
-        we could as well check if it is forbidden to call all with 0 value?
-        */
+        uint8 bananascore; //value between 60-100 with random gen value
     }
 
     struct mintCombination {
@@ -70,18 +55,11 @@ contract ApeGenerator is Ownable {
         uint8 apeRightEyeIndex;
     }
 
-    struct st_apeDetails {
-        string metaData;
-        string base64EncodedSvg;
-    }
-
     struct st_SpecialApe {
         st_apeCoreElements apeCoreElements;
         string name;
         string apeColor;
     }
-
-    mapping(uint256 => st_apeDetails) id_to_apeDetails;
 
     //holds all data which is needed to get the ape svg data
     mapping(uint256 => st_apeDefiningElements) id_to_apeDefiningElements;
@@ -244,13 +222,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    7,
+                    201,
                     7, //₿
                     7, //₿
                     1, //gold left eye
                     1
                 ), //gold right eye
-                "Satoshi the btc eyed ape #7",
+                "Satoshi the btc eyed ape #201",
                 "#ff33cc" //pink
             )
         );
@@ -258,13 +236,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    8,
+                    202,
                     8, //Ξ
                     8, //Ξ
                     2, //pink left eye
                     2
                 ), //pink right eye
-                "Vitalik the eth eyed ape #8",
+                "Vitalik the eth eyed ape #202",
                 "#ffd900" //gold
             )
         );
@@ -272,13 +250,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    9,
+                    203,
                     13,
                     13,
                     0, //red left eye
                     0
                 ), //red right eye
-                "Dollari the inflationary dollar eyed ape #9",
+                "Dollari the inflationary dollar eyed ape #203",
                 "#ff0000" //red
             )
         );
@@ -479,17 +457,31 @@ contract ApeGenerator is Ownable {
     ) public onlyOwner returns (bool) {
         //todo check if needed for gas optimizations, if fetched from nft contract, we wont need it here
         require(tokenId >= 0 && tokenId < maxTokenSupply, "invalid tokenId");
-        id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
-            _specialApeIndex,
-            arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
-            arrayOfAvailableMintCombinations[_randomNumber].apeRightEyeIndex,
-            eyeColorIndexLeft,
-            eyeColorIndexRight,
-            tokenId,
-            _apeNameIndex,
-            bananascore,
-            true
-        );
+        if (_specialApeIndex <= maxTokenSupply) {
+            //special ape
+            id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
+                _specialApeIndex,
+                0,
+                0,
+                0,
+                0,
+                tokenId,
+                0,
+                bananascore
+            );
+        } else {
+            id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
+                _specialApeIndex,
+                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
+                arrayOfAvailableMintCombinations[_randomNumber]
+                    .apeRightEyeIndex,
+                eyeColorIndexLeft,
+                eyeColorIndexRight,
+                tokenId,
+                _apeNameIndex,
+                bananascore
+            );
+        }
         return (true);
     }
 
@@ -497,7 +489,7 @@ contract ApeGenerator is Ownable {
         //todo: no saving of any data at storage variables, simple string combining and returning
         //add functionality here, need to differ if we have special ape
         require(
-            id_to_apeDefiningElements[tokenId].isRegistered,
+            id_to_apeDefiningElements[tokenId].bananascore != 0,
             "invalid tokenId"
         ); //ape not registered/minted or tokenId invalid
         string
@@ -586,174 +578,6 @@ contract ApeGenerator is Ownable {
         );
     }
 
-    /*
-    function generateAndRegisterApe(
-        uint8 _specialApeIndex,
-        uint8 _randomNumber,
-        uint8 eyeColorIndexLeft,
-        uint8 eyeColorIndexRight,
-        uint8 tokenId,
-        uint8 _apeNameIndex,
-        uint8 bananascore
-    ) public onlyOwner returns (bool) {
-        st_apeDetails memory newApe;
-
-        string
-            memory textFillToEye = '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
-
-        st_apeGenAndRegisterDetails memory _apeGenAndRegisterDetails;
-        //svg creation + name
-        if (_randomNumber == 0) {
-            newApe.base64EncodedSvg = generateSpecialApeSvg(
-                _specialApeIndex,
-                textFillToEye
-            );
-
-            _apeGenAndRegisterDetails = st_apeGenAndRegisterDetails(
-                ast_specialApeDetails[_specialApeIndex].apeCoreElements,
-                bananascore,
-                _specialApeIndex
-            );
-
-            //metadata todo: 1. reduce code by tmp var with indexes?
-            id_to_apeDetails[tokenId] = newApe; //store it because metdata accesses it
-            id_to_apeDetails[tokenId].metaData = buildTokenURI(
-                _apeGenAndRegisterDetails,
-                ast_specialApeDetails[_specialApeIndex].name
-            );
-        } else {
-            newApe.base64EncodedSvg = generateApeSvg(
-                eyeColorIndexLeft,
-                eyeColorIndexRight,
-                _randomNumber,
-                textFillToEye
-            );
-
-            _apeGenAndRegisterDetails = st_apeGenAndRegisterDetails(
-                st_apeCoreElements(
-                    tokenId,
-                    arrayOfAvailableMintCombinations[_randomNumber]
-                        .apeLeftEyeIndex,
-                    arrayOfAvailableMintCombinations[_randomNumber]
-                        .apeRightEyeIndex,
-                    eyeColorIndexLeft,
-                    eyeColorIndexRight
-                ),
-                bananascore,
-                255
-            );
-
-            //metadata
-            id_to_apeDetails[tokenId] = newApe;
-            id_to_apeDetails[tokenId].metaData = buildTokenURI(
-                _apeGenAndRegisterDetails,
-                generateApeName(
-                    _apeNameIndex,
-                    arrayOfAvailableMintCombinations[_randomNumber]
-                        .apeLeftEyeIndex,
-                    arrayOfAvailableMintCombinations[_randomNumber]
-                        .apeRightEyeIndex,
-                    tokenId
-                )
-            );
-        }
-
-        require(
-            bytes(id_to_apeDetails[tokenId].metaData).length > 0,
-            "metadata gen fail"
-        );
-        //generated and registered
-        return (true);
-    }*/
-
     //lets register it first
     function registerToken(uint8 tokenId) public onlyOwner returns (bool) {}
-
-    function buildTokenURI(
-        st_apeGenAndRegisterDetails memory _apeGenAndRegisterDetails,
-        string memory _apeName
-    ) public view returns (string memory) {
-        //build, register token
-        string memory faceSymmetry;
-        if (
-            _apeGenAndRegisterDetails.apeCoreElements.eyeIndexLeft ==
-            _apeGenAndRegisterDetails.apeCoreElements.eyeIndexRight
-        ) {
-            faceSymmetry = "100";
-        } else {
-            faceSymmetry = "50";
-        }
-
-        string[3] memory eyeColor = ["#ff1414", "#ffd700", "#ff33cc"]; //red, gold, pink
-        string memory apeColor;
-
-        if (_apeGenAndRegisterDetails.specialApeIndex == 255) {
-            apeColor = "#ffffff";
-        } else {
-            apeColor = ast_specialApeDetails[
-                _apeGenAndRegisterDetails.specialApeIndex
-            ].apeColor;
-        }
-
-        return (
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(
-                        bytes(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                id_to_apeDetails[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .tokenId
-                                ].base64EncodedSvg,
-                                '","name":"',
-                                _apeName,
-                                '","attributes":[{"trait_type":"Facesymmetry","value":"',
-                                faceSymmetry,
-                                '"},{"trait_type":"EyeLeft","value":"',
-                                apeEyes[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .eyeIndexLeft
-                                ], //eye left value
-                                '"},{"trait_type":"EyeRight","value":"',
-                                apeEyes[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .eyeIndexRight
-                                ], //eye right value
-                                //todo: add bananascore value
-                                '"},{"trait_type":"EyeColorLeft","value":"',
-                                eyeColor[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .eyeColorIndexLeft
-                                ], //left eye color
-                                '"},{"trait_type":"EyeColorRight","value":"',
-                                eyeColor[
-                                    _apeGenAndRegisterDetails
-                                        .apeCoreElements
-                                        .eyeColorIndexRight
-                                ], //left eye color
-                                '"},{"trait_type":"ApeColor","value":"',
-                                apeColor,
-                                '"},{"trait_type":"BananaScore","value":"',
-                                Strings.toString(
-                                    _apeGenAndRegisterDetails.bananascore
-                                ),
-                                '"}]}'
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    }
-    /*
-    function getTokenURI(uint8 tokenId) public view returns (string memory) {
-        return id_to_apeDetails[tokenId].metaData;
-    }
-    */
 }

@@ -152,24 +152,22 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
 
     function createAssignMint() private returns (bool success) {
         // pre work for mint - start
-        require(
-            getNrOfLeftTokens() > 0,
-            "already minted out, check secondary market"
-        );
+        require(getNrOfLeftTokens() > 0, "minted out, check secondary market");
         require(
             msg.value >= mintPriceWei,
             "given eth amount too low for minting"
         );
-        if (!s_publicMintActive) {
-            //check if access is granted
+        if (
+            !s_publicMintActive ||
+            tokensAlreadyMinted.current() >= totalSupply() - 3 //todo: change to 3
+        ) {
+            //check if access is granted, either per wl or last 3 tokens for highest donators
             require(checkIfWhitelisted(msg.sender), "not whitelisted");
         }
 
         //check if current id should lead to special ape
 
-        uint8 randomCreatedMintCombinationIndex = createRandomNumberInRange(
-            apeGenerator.nrOfAvailableMintCombinations()
-        );
+        uint8 randomCreatedMintCombinationIndex;
         uint8 currentTokenId = uint8(tokensAlreadyMinted.current());
         uint8 specialApeIndex = apeGenerator.getSpecialApeIndex(currentTokenId);
         string memory apeGeneratorErrorMessage = "apeGen failed";
@@ -187,6 +185,9 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
                 apeGeneratorErrorMessage
             );
         } else {
+            randomCreatedMintCombinationIndex = createRandomNumberInRange(
+                apeGenerator.nrOfAvailableMintCombinations()
+            );
             require(
                 apeGenerator.registerApe(
                     specialApeIndex, //=totalSupply()+1

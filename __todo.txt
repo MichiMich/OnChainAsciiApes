@@ -1,6 +1,8 @@
 
 open:
-- mint all except 3 who go to the most donating ones
+- mint all except 3 who go to the most donating ones - connect with top3 donators, enable that only they can redeem it, or use AccessUnitControl for this for the last 3, addresses will be inserted by owner
+or automatic and then only them can redeem the last 3 apes
+- set correct mint price before deploying to mainnet
 
 done:
 - withdraw contract balance
