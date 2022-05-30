@@ -14,7 +14,7 @@ exports.deployApeGenerator = async function () {
 }
 
 exports.deployAccessControl = async function () {
-    const AccessControl = await hre.ethers.getContractFactory("AccessControl");
+    const AccessControl = await hre.ethers.getContractFactory("AccessUnitControl");
     const accessControl = await AccessControl.deploy();
     await accessControl.deployed();
     console.log("AccessControl deployed to:", accessControl.address);

@@ -223,13 +223,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    200,
+                    201,
                     9, //X
                     9, //X
                     2, //pink left eye
                     2
                 ), //pink right eye
-                "Carl the dead invisible ape #200",
+                "Carl the dead invisible ape #201",
                 "#000000" //black->invisible
             )
         );
@@ -237,13 +237,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    201,
+                    202,
                     7, //₿
                     7, //₿
                     1, //gold left eye
                     1
                 ), //gold right eye
-                "Satoshi the btc eyed ape #201",
+                "Satoshi the btc eyed ape #202",
                 "#ff33cc" //pink
             )
         );
@@ -251,13 +251,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    202,
+                    203,
                     8, //Ξ
                     8, //Ξ
                     2, //pink left eye
                     2
                 ), //pink right eye
-                "Vitalik the eth eyed ape #202",
+                "Vitalik the eth eyed ape #203",
                 "#ffd900" //gold
             )
         );
@@ -265,13 +265,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    203,
+                    204,
                     13,
                     13,
                     0, //red left eye
                     0
                 ), //red right eye
-                "Dollari the inflationary dollar eyed ape #203",
+                "Dollari the inflationary dollar eyed ape #204",
                 "#ff0000" //red
             )
         );

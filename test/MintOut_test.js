@@ -23,10 +23,12 @@ describe("Mint and statistic test", function () {
     let accessControl;
     let nftContract;
     const mintPrice = ethers.utils.parseUnits("1", 15);
-
+    const apesLeftForDonators = 3;
+    let accounts;
 
     //Deploying contract before running tests
     beforeEach(async function () {
+        accounts = await hre.ethers.getSigners();
 
         let codeChangeDescription = await helpfulScript.getUserInput("Please add a description of the code change");
         let fileHeadLine = "";
@@ -70,7 +72,10 @@ describe("Mint and statistic test", function () {
         console.log("total supply of nfts: ", totalSupplyOfNfts);
         let queriedTokenUri;
         console.log("total supply: ", totalSupplyOfNfts);
-
+        //lets link accessControl to nftContract, needed for the last3 to be minted by the highest donators
+        await accessControl.linkHandshakeContract(nftContract.address);
+        console.log("accessControl linked to nftContract");
+        await accessControl.addAddressToAccessAllowed(accounts[1].address, 3); //allowed to mint the last 3 ones
 
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
@@ -91,7 +96,13 @@ describe("Mint and statistic test", function () {
             console.log("loop counter: ", i);
             console.log("left tokens before mint", await nftContract.getNrOfLeftTokens())
 
-            await nftContract.mint({ value: mintPrice });
+            if (i >= nrOfWantedMints - apesLeftForDonators) {
+                //last 3 reserverd for top3 donators, here it would be account1 for test reasons
+                await nftContract.connect(accounts[1]).mint(1, { value: mintPrice });
+            }
+            else {
+                await nftContract.mint(1, { value: mintPrice });
+            }
 
             console.log("left tokens after mint", await nftContract.getNrOfLeftTokens())
 
@@ -111,7 +122,7 @@ describe("Mint and statistic test", function () {
         console.log("\n\n Mint done, left tokens: ", await nftContract.getNrOfLeftTokens());
 
         if (nrOfWantedMints == totalSupplyOfNfts) {
-            await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
+            await expect(nftContract.mint(1, { value: mintPrice })).to.be.reverted;
         }
 
         helpfulScript.addDataToFile(filePathAndName, dataFormat.arrayToCsvString([tokenIds,

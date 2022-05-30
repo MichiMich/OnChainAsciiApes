@@ -7,7 +7,7 @@ const fs = require('fs');
 const filePathForTaxLogging = "./createdData/GasOptimization.txt";
 const dataSeperator = ";";
 
-const apesLeftForDonators = 3; //todo: set to 3 if works
+const apesLeftForDonators = 3;
 
 describe("Mint and accessControl test", function () {
     let apeGenerator;
