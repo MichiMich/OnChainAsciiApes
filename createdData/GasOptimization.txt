@@ -3187,3 +3187,527 @@ AccessControl deployment;1671780
 NftContract deployment;4244128
 ApeGenerator transfer Ownership;29043
 NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:54:50 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;apegencopy test
+
+
+Date: 30.5.2022, 21:55:18 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;apegencopy gas test
+
+ApeGenerator deployment;10401068
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:01:44 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;unneeded fcts removed
+
+ApeGenerator deployment;10337419
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:07:28 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;check color
+
+ApeGenerator deployment;10381939
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:08:23 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;check ape color
+
+ApeGenerator deployment;10381939
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:17:21 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;frozen special ape added
+
+ApeGenerator deployment;10502734
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:24:50 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;tset icy
+
+ApeGenerator deployment;10502670
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:26:06 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;t
+
+ApeGenerator deployment;10502766
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 22:39:56 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;access control
+
+ApeGenerator deployment;10502754
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;46398
+
+Date: 30.5.2022, 22:52:04 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;d
+
+ApeGenerator deployment;10502754
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+
+Date: 30.5.2022, 22:52:47 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;j
+
+ApeGenerator deployment;10502754
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+
+Date: 30.5.2022, 22:53:26 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;j
+
+ApeGenerator deployment;10502754
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+
+Date: 30.5.2022, 22:56:44 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;test on rinkeby
+
+ApeGenerator deployment;21112099
+AccessControl deployment;9032218
+NftContract deployment;14070192
+ApeGenerator transfer Ownership;5977864
+NftContract enablePublicMint;5796950
+
+Date: 30.5.2022, 23:15:20 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;try minting out
+
+ApeGenerator deployment;10502766
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 23:16:18 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;try minting out
+
+ApeGenerator deployment;10502766
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;184906
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;215888
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;218570
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;221252
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;274984
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;223934
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;226616
+NftContract mint;229298
+
+Date: 30.5.2022, 23:18:45 github commit: a42c44aeacedadfe317e76506b5790ed8c350eb5;try minting out
+
+ApeGenerator deployment;10502766
+AccessControl deployment;1671780
+NftContract deployment;4244344
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+NftContract mint;184906
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;215888
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;218570
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;221252
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;274984
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;223934
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;257884
+NftContract mint;257884
+NftContract mint;251495
+NftContract mint;226616
+NftContract mint;229298

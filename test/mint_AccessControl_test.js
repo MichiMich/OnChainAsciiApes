@@ -91,7 +91,7 @@ describe("Mint and accessControl test", function () {
         let i = 0;
         for (i = 0; i < totalSupply - apesLeftForDonators; i++) {
             //anyone is able to mint first apes
-            await nftContract.connect(accounts[1]).mint({ value: mintPrice });
+            await nftContract.connect(accounts[1]).mint(1, { value: mintPrice });
 
             getTaxAppendToFile(filePathForTaxLogging, "\nNftContract mint");
 
@@ -105,7 +105,7 @@ describe("Mint and accessControl test", function () {
 
 
         //now only certain addresses are allowed to mint the last existing apes
-        await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
+        await expect(nftContract.mint(1, { value: mintPrice })).to.be.reverted;
 
         console.log("\n\nnr of left tokens where allowed addresses where set: ", await nftContract.getNrOfLeftTokens());
         //add the allowed addresses to the AccessUnitControl, this should be the addresses of the highest donators
@@ -114,45 +114,45 @@ describe("Mint and accessControl test", function () {
         await accessControl.addAddressToAccessAllowed(accounts[4].address, 1);
 
         //no one except 2,3,4 are allowed, not even the owner
-        await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
-        await expect(nftContract.connect(accounts[1]).mint({ value: mintPrice })).to.be.reverted;
+        await expect(nftContract.mint(1, { value: mintPrice })).to.be.reverted;
+        await expect(nftContract.connect(accounts[1]).mint(1, { value: mintPrice })).to.be.reverted;
 
         //get tokenId of last minted one
-        await nftContract.connect(accounts[2]).mint({ value: mintPrice }); //allowed
+        await nftContract.connect(accounts[2]).mint(1, { value: mintPrice }); //allowed
 
         wantedTokenId = i;
         console.log("\n\nleft tokens: ", await nftContract.getNrOfLeftTokens(), "query token of ", wantedTokenId);
         queriedTokenUri = await nftContract.tokenURI(wantedTokenId);
         console.log("tokenURI of id: ", wantedTokenId, queriedTokenUri);
 
-        await expect(nftContract.connect(accounts[2]).mint({ value: mintPrice })).to.be.reverted; //only 1 nft was allowed
+        await expect(nftContract.connect(accounts[2]).mint(1, { value: mintPrice })).to.be.reverted; //only 1 nft was allowed
 
-        await nftContract.connect(accounts[3]).mint({ value: mintPrice }); //allowed
+        await nftContract.connect(accounts[3]).mint(1, { value: mintPrice }); //allowed
         wantedTokenId += 1;
         console.log("\n\nleft tokens: ", await nftContract.getNrOfLeftTokens(), "query token of ", wantedTokenId);
         queriedTokenUri = await nftContract.tokenURI(wantedTokenId);
         console.log("tokenURI of id: ", wantedTokenId, queriedTokenUri);
 
 
-        await expect(nftContract.connect(accounts[3]).mint({ value: mintPrice })).to.be.reverted; //only 1 nft was allowed
+        await expect(nftContract.connect(accounts[3]).mint(1, { value: mintPrice })).to.be.reverted; //only 1 nft was allowed
 
-        await nftContract.connect(accounts[4]).mint({ value: mintPrice }); //allowed
+        await nftContract.connect(accounts[4]).mint(1, { value: mintPrice }); //allowed
         wantedTokenId += 1;
         console.log("\n\nleft tokens: ", await nftContract.getNrOfLeftTokens(), "query token of ", wantedTokenId);
         queriedTokenUri = await nftContract.tokenURI(wantedTokenId);
         console.log("tokenURI of id: ", wantedTokenId, queriedTokenUri);
 
-        await expect(nftContract.connect(accounts[4]).mint({ value: mintPrice })).to.be.reverted; //only 1 nft was allowed
+        await expect(nftContract.connect(accounts[4]).mint(1, { value: mintPrice })).to.be.reverted; //only 1 nft was allowed
 
 
         console.log("\n\nnr of left tokens where", (totalSupply - await nftContract.getNrOfLeftTokens()), " have been minted: ", await nftContract.getNrOfLeftTokens());
         //minted out if apesLeftForDonators=3
         if (apesLeftForDonators == 3) {
             //Check if we get statement minted out back
-            await expect(nftContract.mint({ value: mintPrice })).to.be.revertedWith("minted out, check secondary market");
+            await expect(nftContract.mint(1, { value: mintPrice })).to.be.revertedWith("minted out, check secondary market");
         }
         else {
-            await expect(nftContract.mint({ value: mintPrice })).to.be.reverted;
+            await expect(nftContract.mint(1, { value: mintPrice })).to.be.reverted;
         }
 
 

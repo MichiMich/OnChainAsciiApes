@@ -159,20 +159,35 @@ contract ApeGenerator is Ownable {
                     0
                 ), //red eye color right
                 "Zero the first ever minted 0 eyed ape #0",
-                "#c7ba00" //banana yellow //todo: define another color?
+                "#6fd1c4" //downy colored
+            )
+        );
+
+        //ice ape #00bdc7
+        ast_specialApeDetails.push(
+            st_SpecialApe(
+                st_apeCoreElements(
+                    40, //todo adapt when he should appear
+                    5, //^
+                    5, //^
+                    0, //red eye color
+                    0
+                ),
+                "Icy the glowing happy eyed frozen ape #40",
+                "#00bdc7" //ice blue
             )
         );
 
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    11,
+                    80,
                     2, //♥
                     2, //♥
                     0, //red eye color
                     0
                 ),
-                "Harry the banana power love eyed ape #11",
+                "Harry the banana power love eyed ape #80",
                 "#c7ba00" //banana yellow
             )
         );
@@ -180,13 +195,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    3,
+                    120,
                     0,
                     0,
                     1, //eye color left
                     1
                 ), //eye color right
-                "Piu the golden empty eyed ape #3",
+                "Piu the golden empty eyed ape #120",
                 "#ffd900" //golden
             )
         );
@@ -194,13 +209,13 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    4,
+                    160,
                     12, //`
                     11, //´ -> leads to ` ´
                     0, //
                     0
                 ),
-                "ApeNorris the angry eyed rarest toughest mf ape #4",
+                "ApeNorris the angry eyed rarest toughest mf ape #160",
                 "#ff230a" //red
             )
         );
@@ -208,17 +223,17 @@ contract ApeGenerator is Ownable {
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
-                    6,
+                    200,
                     9, //X
                     9, //X
                     2, //pink left eye
                     2
                 ), //pink right eye
-                "Carl the dead invisible ape #6",
+                "Carl the dead invisible ape #200",
                 "#000000" //black->invisible
             )
         );
-
+        //last 3 special apes, mintable only from top3 donators
         ast_specialApeDetails.push(
             st_SpecialApe(
                 st_apeCoreElements(
@@ -481,8 +496,6 @@ contract ApeGenerator is Ownable {
     }
 
     function getTokenURI(uint8 tokenId) public view returns (string memory) {
-        //todo: no saving of any data at storage variables, simple string combining and returning
-        //add functionality here, need to differ if we have special ape
         require(
             id_to_apeDefiningElements[tokenId].bananascore != 0,
             "invalid tokenId"
@@ -510,49 +523,12 @@ contract ApeGenerator is Ownable {
                         abi.encodePacked(
                             '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
                             generatedApeSvg,
-                            apeAttributes(tokenId) //todo need to differ between standard and special ape
+                            apeAttributes(tokenId)
                         )
                     )
                 )
             )
         );
-
-        /*
-            return (
-                string(
-                    abi.encodePacked(
-                        "data:application/json;base64,",
-                        Base64.encode(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                generateSpecialApeSvg(
-                                    id_to_apeDefiningElements[tokenId]
-                                        .specialApeIndex,
-                                    textFillToEye
-                                ),
-                                apeAttributes(tokenId) //todo need to differ between standard and special ape
-                            )
-                        )
-                    )
-                )
-            );
-        } else {
-            return (
-                string(
-                    abi.encodePacked(
-                        "data:application/json;base64,",
-                        Base64.encode(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                generateApeSvg(tokenId, textFillToEye),
-                                apeAttributes(tokenId) //todo need to differ between standard and special ape
-                            )
-                        )
-                    )
-                )
-            );
-        }
-        */
     }
 
     function apeAttributes(uint8 _tokenId) public view returns (bytes memory) {
@@ -596,7 +572,4 @@ contract ApeGenerator is Ownable {
             )
         );
     }
-
-    //lets register it first
-    function registerToken(uint8 tokenId) public onlyOwner returns (bool) {}
 }

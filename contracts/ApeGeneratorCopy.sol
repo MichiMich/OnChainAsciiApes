@@ -155,7 +155,7 @@ contract ApeGeneratorCopy is Ownable {
                     0
                 ), //red eye color right
                 "Zero the first ever minted 0 eyed ape #0",
-                "#c7ba00" //banana yellow //todo: define another color?
+                "#6fd1c4" //downy colored //todo: define another color?
             )
         );
 
@@ -507,45 +507,32 @@ contract ApeGeneratorCopy is Ownable {
         string
             memory textFillToEye = '" text-anchor="start" font-size="18" xml:space="preserve" font-family="monospace"><tspan x="43.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="39.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2588;&#x2588;&#x2588;&#x2588;&#xd;</tspan><tspan x="35.75%" dy="1.2em">&#x2588;&#x2588;&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2588;&#x2588;&#xd;</tspan><tspan x="31.75%" dy="1.2em">&#x2588;&#x2588;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2593;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#';
 
+        string memory generatedApeSvg;
         if (
             id_to_apeDefiningElements[tokenId].specialApeIndex <= maxTokenSupply
         ) {
             //special ape
-            //todo gas optimization only ghe svg gen differs, make tmp string here which is assigned then
-            return (
-                string(
-                    abi.encodePacked(
-                        "data:application/json;base64,",
-                        Base64.encode(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                generateSpecialApeSvg(
-                                    id_to_apeDefiningElements[tokenId]
-                                        .specialApeIndex,
-                                    textFillToEye
-                                ),
-                                apeAttributes(tokenId) //todo need to differ between standard and special ape
-                            )
-                        )
-                    )
-                )
+            generatedApeSvg = generateSpecialApeSvg(
+                id_to_apeDefiningElements[tokenId].specialApeIndex,
+                textFillToEye
             );
         } else {
-            return (
-                string(
-                    abi.encodePacked(
-                        "data:application/json;base64,",
-                        Base64.encode(
-                            abi.encodePacked(
-                                '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
-                                generateApeSvg(tokenId, textFillToEye),
-                                apeAttributes(tokenId) //todo need to differ between standard and special ape
-                            )
+            generatedApeSvg = generateApeSvg(tokenId, textFillToEye);
+        }
+        return (
+            string(
+                abi.encodePacked(
+                    "data:application/json;base64,",
+                    Base64.encode(
+                        abi.encodePacked(
+                            '{"description":"Fully onchain generated AsciiApe","image":"data:image/svg+xml;base64,',
+                            generatedApeSvg,
+                            apeAttributes(tokenId) //todo need to differ between standard and special ape
                         )
                     )
                 )
-            );
-        }
+            )
+        );
     }
 
     function apeAttributes(uint8 _tokenId) public view returns (bytes memory) {

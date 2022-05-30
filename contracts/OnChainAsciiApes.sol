@@ -147,6 +147,8 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     }
 
     function mint(uint256 _wantedQuantity) public payable {
+        // pre work for mint - start
+        require(getNrOfLeftTokens() > 0, "minted out, check secondary market");
         require(
             _wantedQuantity > 0 &&
                 _wantedQuantity <= 8 &&
@@ -163,8 +165,6 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     }
 
     function createAssignMint() private returns (bool success) {
-        // pre work for mint - start
-        require(getNrOfLeftTokens() > 0, "minted out, check secondary market");
         if (
             !s_publicMintActive ||
             tokensAlreadyMinted.current() >= totalSupply() - 3 //todo: change to 3

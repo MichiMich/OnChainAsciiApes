@@ -2,7 +2,9 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const helpfulScript = require("../scripts/helpful_script.js");
 
+
 const fs = require('fs');
+const { exec } = require("child_process");
 //file logging specific
 const filePathForTaxLogging = "./createdData/GasOptimization.txt";
 const dataSeperator = ";";
@@ -90,12 +92,50 @@ describe("Mint and accessControl test", function () {
         let wantedTokenId;
         let i = 0;
         let maxNrOfAllowedMints = 8;
-        let nrOfWantedMints = 7;
+        let nrOfWantedMints = 3;
 
 
         //trying to mint multiple apes
-        await expect(nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: mintPrice })).to.be.reverted; //too less eth for too much wanted mints
+        if (nrOfWantedMints > 1) {
+            await expect(nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: mintPrice })).to.be.reverted; //too less eth for too much wanted mints
+        }
+        if (nrOfWantedMints > maxNrOfAllowedMints) {
+            await expect(nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: nrOfWantedMints * mintPrice })).to.be.reverted; //too less eth for too much wanted mints
+        }
+        else {
+            await nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: nrOfWantedMints * mintPrice });
 
+            for (i = 0; i < nrOfWantedMints; i++) {
+                queriedTokenUri = await nftContract.tokenURI(i);
+                console.log("queriedTokenUri: ", queriedTokenUri, "\n\n");
+            }
+        }
+
+
+        console.log("nr of nfts of ", accounts[1].address, ": ", await nftContract.balanceOf(accounts[1].address));
+
+        console.log("eth balance of contract: ", await nftContract.getBalance());
+
+
+    });
+
+
+    it("test mint, accessControl active", async function () {
+
+        getTaxAppendToFile(filePathForTaxLogging, "\nNftContract enablePublicMint");
+        let wantedTokenId;
+        let i = 0;
+        let maxNrOfAllowedMints = 8;
+        let nrOfWantedMints = 3;
+
+        await accessControl.linkHandshakeContract(nftContract.address);
+        await accessControl.addAddressToAccessAllowed(accounts[1].address, nrOfWantedMints);
+        console.log(accounts[1].address, "for ", nrOfWantedMints, " nfts allowed to mint");
+
+        //trying to mint multiple apes
+        if (nrOfWantedMints > 1) {
+            await expect(nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: mintPrice })).to.be.reverted; //too less eth for too much wanted mints
+        }
         if (nrOfWantedMints > maxNrOfAllowedMints) {
             await expect(nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: nrOfWantedMints * mintPrice })).to.be.reverted; //too less eth for too much wanted mints
         }
