@@ -40,19 +40,15 @@ contract ApeGeneratorCopy is Ownable {
     }
 
     struct st_apeDefiningElements {
+        st_apeCoreElements apeCoreElements;
         uint8 specialApeIndex; //in range 0-maxTokenSupply=special ape, maxTokenSupply + 1 = regular ape
-        uint8 apeLeftEyeIndex;
-        uint8 apeRightEyeIndex;
-        uint8 eyeColorIndexLeft;
-        uint8 eyeColorIndexRight;
-        uint8 tokenId;
         uint8 apeNameIndex;
         uint8 bananascore; //value between 60-100 with random gen value
     }
 
     struct mintCombination {
-        uint8 apeLeftEyeIndex;
-        uint8 apeRightEyeIndex;
+        uint8 eyeIndexLeft;
+        uint8 eyeIndexRight;
     }
 
     struct st_SpecialApe {
@@ -276,7 +272,10 @@ contract ApeGeneratorCopy is Ownable {
     {
         require(
             id_to_apeDefiningElements[_tokenId].apeNameIndex < 13 && /*gas optimized, not apeName.length used */
-                id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex < 14, /*gas optimized, not apeEyes.length used */
+                id_to_apeDefiningElements[_tokenId]
+                    .apeCoreElements
+                    .eyeIndexLeft <
+                14, /*gas optimized, not apeEyes.length used */
             "invalid index"
         );
 
@@ -332,14 +331,16 @@ contract ApeGeneratorCopy is Ownable {
         string memory eyePrefix;
         string memory faceSymmetry;
         if (
-            id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex ==
-            id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+            id_to_apeDefiningElements[_tokenId].apeCoreElements.eyeIndexLeft ==
+            id_to_apeDefiningElements[_tokenId].apeCoreElements.eyeIndexRight
         ) {
             eyePrefix = string(
                 abi.encodePacked(
                     " the full ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeIndexLeft
                     ],
                     " eyed ascii ape"
                 )
@@ -350,11 +351,15 @@ contract ApeGeneratorCopy is Ownable {
                 abi.encodePacked(
                     " the half ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeIndexLeft
                     ],
                     " half ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeIndexRight
                     ],
                     " eyed ascii ape"
                 )
@@ -428,17 +433,25 @@ contract ApeGeneratorCopy is Ownable {
                     "#ffffff",
                     textFillToEye, //text fill to eye
                     eyeColor[
-                        id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeColorIndexLeft
                     ],
                     apeEyes[
-                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeIndexLeft
                     ],
                     '</tspan>&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#',
                     eyeColor[
-                        id_to_apeDefiningElements[_tokenId].eyeColorIndexRight
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeColorIndexRight
                     ],
                     apeEyes[
-                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+                        id_to_apeDefiningElements[_tokenId]
+                            .apeCoreElements
+                            .eyeIndexRight
                     ],
                     svgEyeToEnd
                 )
@@ -453,33 +466,32 @@ contract ApeGeneratorCopy is Ownable {
         uint8 eyeColorIndexRight,
         uint8 tokenId,
         uint8 _apeNameIndex,
-        uint8 bananascore
+        uint8 _bananascore
     ) public onlyOwner returns (bool) {
         //todo check if needed for gas optimizations, if fetched from nft contract, we wont need it here
         require(tokenId >= 0 && tokenId < maxTokenSupply, "invalid tokenId");
         if (_specialApeIndex <= maxTokenSupply) {
             //special ape
             id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
+                st_apeCoreElements(tokenId, 0, 0, 0, 0),
                 _specialApeIndex,
-                0,
-                0,
-                0,
-                0,
-                tokenId,
-                0,
-                bananascore
+                0, //apeNameIndex
+                _bananascore
             );
         } else {
             id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
+                st_apeCoreElements(
+                    tokenId,
+                    arrayOfAvailableMintCombinations[_randomNumber]
+                        .eyeIndexLeft, //eyeIndexLeft
+                    arrayOfAvailableMintCombinations[_randomNumber]
+                        .eyeIndexRight, //eyeIndexRight
+                    eyeColorIndexLeft, //eyeColorIndexLeft
+                    eyeColorIndexRight
+                ), //eyeColorIndexRight
                 _specialApeIndex,
-                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
-                arrayOfAvailableMintCombinations[_randomNumber]
-                    .apeRightEyeIndex,
-                eyeColorIndexLeft,
-                eyeColorIndexRight,
-                tokenId,
                 _apeNameIndex,
-                bananascore
+                _bananascore
             );
         }
         return (true);
@@ -499,7 +511,7 @@ contract ApeGeneratorCopy is Ownable {
             id_to_apeDefiningElements[tokenId].specialApeIndex <= maxTokenSupply
         ) {
             //special ape
-
+            //todo gas optimization only ghe svg gen differs, make tmp string here which is assigned then
             return (
                 string(
                     abi.encodePacked(
@@ -558,14 +570,28 @@ contract ApeGeneratorCopy is Ownable {
                 '","name":"',
                 nameAndSymmetry,
                 '"},{"trait_type":"EyeLeft","value":"',
-                apeEyes[id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex], //eye left value
+                apeEyes[
+                    id_to_apeDefiningElements[_tokenId]
+                        .apeCoreElements
+                        .eyeIndexLeft
+                ], //eye left value
                 '"},{"trait_type":"EyeRight","value":"',
-                apeEyes[id_to_apeDefiningElements[_tokenId].apeRightEyeIndex], //eye right value
+                apeEyes[
+                    id_to_apeDefiningElements[_tokenId]
+                        .apeCoreElements
+                        .eyeIndexRight
+                ], //eye right value
                 '"},{"trait_type":"EyeColorLeft","value":"',
-                eyeColor[id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft], //left eye color
+                eyeColor[
+                    id_to_apeDefiningElements[_tokenId]
+                        .apeCoreElements
+                        .eyeColorIndexLeft
+                ], //left eye color
                 '"},{"trait_type":"EyeColorRight","value":"',
                 eyeColor[
-                    id_to_apeDefiningElements[_tokenId].eyeColorIndexRight
+                    id_to_apeDefiningElements[_tokenId]
+                        .apeCoreElements
+                        .eyeColorIndexRight
                 ], //left eye color
                 '"},{"trait_type":"ApeColor","value":"',
                 apeColor,

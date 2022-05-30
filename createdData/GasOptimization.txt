@@ -3139,3 +3139,51 @@ AccessControl deployment;1671780
 NftContract deployment;4244128
 ApeGenerator transfer Ownership;29043
 NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:37:44 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;ApeGen gas
+
+ApeGenerator deployment;10397820
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:38:27 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;apeGenCopy test
+
+ApeGenerator deployment;10417249
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:41:54 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;test gas optimization of getTokenUri
+
+ApeGenerator deployment;10381627
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:45:00 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;tokenuritest
+
+ApeGenerator deployment;10381627
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:46:19 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;tokenuritest
+
+ApeGenerator deployment;10381627
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631
+
+Date: 30.5.2022, 21:48:40 github commit: 00b4594d9e9a4a0fcd24b45e889b20fbe9ffd92a;tokenuritest
+
+ApeGenerator deployment;10381627
+AccessControl deployment;1671780
+NftContract deployment;4244128
+ApeGenerator transfer Ownership;29043
+NftContract enablePublicMint;28631

@@ -83,14 +83,14 @@ describe("Mint and accessControl test", function () {
 
 
 
-    it("try multiple mints", async function () {
+    it("try multiple mints per mint call", async function () {
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
         getTaxAppendToFile(filePathForTaxLogging, "\nNftContract enablePublicMint");
         let wantedTokenId;
         let i = 0;
         let maxNrOfAllowedMints = 8;
-        let nrOfWantedMints = 9;
+        let nrOfWantedMints = 7;
 
 
         //trying to mint multiple apes
@@ -101,14 +101,22 @@ describe("Mint and accessControl test", function () {
         }
         else {
             await nftContract.connect(accounts[1]).mint(nrOfWantedMints, { value: nrOfWantedMints * mintPrice });
+
+            for (i = 0; i < nrOfWantedMints; i++) {
+                queriedTokenUri = await nftContract.tokenURI(i);
+                console.log("queriedTokenUri: ", queriedTokenUri, "\n\n");
+            }
         }
 
-        await nftContract.connect(accounts[1]).mint(1, { value: mintPrice })
 
         console.log("nr of nfts of ", accounts[1].address, ": ", await nftContract.balanceOf(accounts[1].address));
 
         console.log("eth balance of contract: ", await nftContract.getBalance());
 
+
     });
+
+
+
 
 });
