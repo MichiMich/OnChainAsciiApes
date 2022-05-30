@@ -146,17 +146,25 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         apeGenerator = ApeGeneratorImpl(_apeGeneratorContractAddress);
     }
 
-    function mint() public payable {
-        require(createAssignMint(), "mint failed");
+    function mint(uint256 _wantedQuantity) public payable {
+        require(
+            _wantedQuantity > 0 &&
+                _wantedQuantity <= 8 &&
+                getNrOfLeftTokens() >= _wantedQuantity,
+            "invalid quantity"
+        ); //todo check if 8 per mint fits
+        require(
+            msg.value >= _wantedQuantity * mintPriceWei,
+            "Sent eth amount too low"
+        );
+        for (uint256 i = 0; i < _wantedQuantity; i++) {
+            require(createAssignMint(), "mint failed");
+        }
     }
 
     function createAssignMint() private returns (bool success) {
         // pre work for mint - start
         require(getNrOfLeftTokens() > 0, "minted out, check secondary market");
-        require(
-            msg.value >= mintPriceWei,
-            "given eth amount too low for minting"
-        );
         if (
             !s_publicMintActive ||
             tokensAlreadyMinted.current() >= totalSupply() - 3 //todo: change to 3

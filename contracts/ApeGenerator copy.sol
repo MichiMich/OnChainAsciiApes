@@ -8,7 +8,7 @@ import "./Base64.sol";
 //ToDo: should only AsciiApes contract be able to call this?
 //todo the names of the special apes must fit with their index (#1) for example needs index 1, would be possible to do this by ApeGenerator as well
 
-contract ApeGenerator is Ownable {
+contract ApeGeneratorCopy is Ownable {
     //default svg data
 
     string private constant svgEyeToEnd =
@@ -41,8 +41,8 @@ contract ApeGenerator is Ownable {
 
     struct st_apeDefiningElements {
         uint8 specialApeIndex; //in range 0-maxTokenSupply=special ape, maxTokenSupply + 1 = regular ape
-        uint8 eyeIndexLeft;
-        uint8 eyeIndexRight;
+        uint8 apeLeftEyeIndex;
+        uint8 apeRightEyeIndex;
         uint8 eyeColorIndexLeft;
         uint8 eyeColorIndexRight;
         uint8 tokenId;
@@ -51,8 +51,8 @@ contract ApeGenerator is Ownable {
     }
 
     struct mintCombination {
-        uint8 eyeIndexLeft;
-        uint8 eyeIndexRight;
+        uint8 apeLeftEyeIndex;
+        uint8 apeRightEyeIndex;
     }
 
     struct st_SpecialApe {
@@ -276,7 +276,7 @@ contract ApeGenerator is Ownable {
     {
         require(
             id_to_apeDefiningElements[_tokenId].apeNameIndex < 13 && /*gas optimized, not apeName.length used */
-                id_to_apeDefiningElements[_tokenId].eyeIndexLeft < 14, /*gas optimized, not apeEyes.length used */
+                id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex < 14, /*gas optimized, not apeEyes.length used */
             "invalid index"
         );
 
@@ -332,14 +332,14 @@ contract ApeGenerator is Ownable {
         string memory eyePrefix;
         string memory faceSymmetry;
         if (
-            id_to_apeDefiningElements[_tokenId].eyeIndexLeft ==
-            id_to_apeDefiningElements[_tokenId].eyeIndexRight
+            id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex ==
+            id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
         ) {
             eyePrefix = string(
                 abi.encodePacked(
                     " the full ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].eyeIndexLeft
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
                     ],
                     " eyed ascii ape"
                 )
@@ -350,11 +350,11 @@ contract ApeGenerator is Ownable {
                 abi.encodePacked(
                     " the half ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].eyeIndexLeft
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
                     ],
                     " half ",
                     apeEyeDescription[
-                        id_to_apeDefiningElements[_tokenId].eyeIndexRight
+                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
                     ],
                     " eyed ascii ape"
                 )
@@ -430,12 +430,16 @@ contract ApeGenerator is Ownable {
                     eyeColor[
                         id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft
                     ],
-                    apeEyes[id_to_apeDefiningElements[_tokenId].eyeIndexLeft],
+                    apeEyes[
+                        id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex
+                    ],
                     '</tspan>&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;<tspan fill="#',
                     eyeColor[
                         id_to_apeDefiningElements[_tokenId].eyeColorIndexRight
                     ],
-                    apeEyes[id_to_apeDefiningElements[_tokenId].eyeIndexRight],
+                    apeEyes[
+                        id_to_apeDefiningElements[_tokenId].apeRightEyeIndex
+                    ],
                     svgEyeToEnd
                 )
             )
@@ -468,8 +472,9 @@ contract ApeGenerator is Ownable {
         } else {
             id_to_apeDefiningElements[tokenId] = st_apeDefiningElements(
                 _specialApeIndex,
-                arrayOfAvailableMintCombinations[_randomNumber].eyeIndexLeft,
-                arrayOfAvailableMintCombinations[_randomNumber].eyeIndexRight,
+                arrayOfAvailableMintCombinations[_randomNumber].apeLeftEyeIndex,
+                arrayOfAvailableMintCombinations[_randomNumber]
+                    .apeRightEyeIndex,
                 eyeColorIndexLeft,
                 eyeColorIndexRight,
                 tokenId,
@@ -553,9 +558,9 @@ contract ApeGenerator is Ownable {
                 '","name":"',
                 nameAndSymmetry,
                 '"},{"trait_type":"EyeLeft","value":"',
-                apeEyes[id_to_apeDefiningElements[_tokenId].eyeIndexLeft], //eye left value
+                apeEyes[id_to_apeDefiningElements[_tokenId].apeLeftEyeIndex], //eye left value
                 '"},{"trait_type":"EyeRight","value":"',
-                apeEyes[id_to_apeDefiningElements[_tokenId].eyeIndexRight], //eye right value
+                apeEyes[id_to_apeDefiningElements[_tokenId].apeRightEyeIndex], //eye right value
                 '"},{"trait_type":"EyeColorLeft","value":"',
                 eyeColor[id_to_apeDefiningElements[_tokenId].eyeColorIndexLeft], //left eye color
                 '"},{"trait_type":"EyeColorRight","value":"',
