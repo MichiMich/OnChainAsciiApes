@@ -68,6 +68,7 @@ contract ApeGenerator is Ownable {
     st_SpecialApe[] ast_specialApeDetails;
 
     uint8 private maxTokenSupply;
+    bool mintWasReduced;
 
     //dynamical array, will created by constructor and elements deleted after mint
     mintCombination[] arrayOfAvailableMintCombinations;
@@ -122,6 +123,7 @@ contract ApeGenerator is Ownable {
         onlyOwner
         returns (uint8)
     {
+        require(!mintWasReduced);
         //reducing the total supply leads to 0 nfts left->fires require statement
         maxTokenSupply = _TokensAlreadyMinted + 3; //+3 = leave 3 apes for the top3 donators, they need to be delivered
         //need to set the last 3 special apes to the next 3 tokenIds because they are reserved for the top3Donators
@@ -132,16 +134,8 @@ contract ApeGenerator is Ownable {
                 .tokenId = maxTokenSupply - i;
         }
         emit mintEndedSupplyReduced(maxTokenSupply);
+        mintWasReduced = true;
         return (maxTokenSupply);
-    }
-
-    //todo remove this, only for displaying during test
-    function showSpecialApesData()
-        public
-        view
-        returns (st_SpecialApe[] memory)
-    {
-        return (ast_specialApeDetails);
     }
 
     function removeMintCombinationUnordered(uint256 _indexToRemove)

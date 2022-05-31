@@ -12,7 +12,7 @@ describe("Mint and accessControl test", function () {
     let accounts;
     let counterMint;
     const mintPrice = ethers.utils.parseUnits("1", 15);
-    const nrRegularMints = 201;
+    const nrRegularMints = 10;
     const nrApesLeftFortTopDonators = 3;
 
 
@@ -67,17 +67,11 @@ describe("Mint and accessControl test", function () {
             console.log(helpfulScript.getNameOfTokenURI(queriedTokenUri), " with token Id ", counterMint, "\n\n");
         }
 
-        //end mint, it was not minted out
-        //let txMintEnded = await nftContract.endMint();
-
-        console.log("\n\ninitial specialApeDistribution: ", await apeGenerator.showSpecialApesData());
         //end mint and expect event gets fired
         await expect(nftContract.endMint())
             .to.emit(apeGenerator, 'mintEndedSupplyReduced')
             .withArgs(nrRegularMints + nrApesLeftFortTopDonators);
 
-        //show initial special ape distribution
-        console.log("\n\nspecialApeDistribution after mint ended: ", await apeGenerator.showSpecialApesData());
 
         console.log("left tokens after mint was ended early: ", await nftContract.getNrOfLeftTokens());
         expect(await nftContract.getNrOfLeftTokens()).to.be.equal(nrApesLeftFortTopDonators); //3 left for top3Donators
@@ -114,6 +108,8 @@ describe("Mint and accessControl test", function () {
         await accessControl.addAddressToAccessAllowed(accounts[1].address, 2); //update account1 to be theoretically able to mint one more
         //we should expect require firing with no more tokens available
         await expect(nftContract.connect(accounts[1]).mint(1, { value: mintPrice })).to.be.revertedWith("minted out, check secondary market");
+
+        await expect(nftContract.endMint()).to.be.reverted; //Cant be done twice
     });
 
 });
