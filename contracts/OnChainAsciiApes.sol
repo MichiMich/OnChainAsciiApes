@@ -167,7 +167,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
     function createAssignMint() private returns (bool success) {
         if (
             !s_publicMintActive ||
-            tokensAlreadyMinted.current() >= totalSupply() - 3 //todo: change to 3
+            tokensAlreadyMinted.current() >= totalSupply() - 3
         ) {
             //check if access is granted, either per wl or last 3 tokens for highest donators
             require(checkIfWhitelisted(msg.sender), "not whitelisted");
