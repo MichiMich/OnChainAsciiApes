@@ -12,7 +12,7 @@ describe("Mint and accessControl test", function () {
     let accounts;
     let counterMint;
     const mintPrice = ethers.utils.parseUnits("1", 15);
-    const nrRegularMints = 5;
+    const nrRegularMints = 201;
     const nrApesLeftFortTopDonators = 3;
 
 
@@ -58,6 +58,8 @@ describe("Mint and accessControl test", function () {
         await nftContract.enablePublicMint();
         console.log("public mint enabled");
 
+
+
         for (counterMint = 0; counterMint < nrRegularMints; counterMint++) {
             await nftContract.mint(1, { value: mintPrice });
 
@@ -68,10 +70,14 @@ describe("Mint and accessControl test", function () {
         //end mint, it was not minted out
         //let txMintEnded = await nftContract.endMint();
 
+        console.log("\n\ninitial specialApeDistribution: ", await apeGenerator.showSpecialApesData());
         //end mint and expect event gets fired
         await expect(nftContract.endMint())
             .to.emit(apeGenerator, 'mintEndedSupplyReduced')
             .withArgs(nrRegularMints + nrApesLeftFortTopDonators);
+
+        //show initial special ape distribution
+        console.log("\n\nspecialApeDistribution after mint ended: ", await apeGenerator.showSpecialApesData());
 
         console.log("left tokens after mint was ended early: ", await nftContract.getNrOfLeftTokens());
         expect(await nftContract.getNrOfLeftTokens()).to.be.equal(nrApesLeftFortTopDonators); //3 left for top3Donators
@@ -81,6 +87,8 @@ describe("Mint and accessControl test", function () {
 
         await expect(nftContract.mint(1, { value: mintPrice })).to.be.reverted;
         console.log("minting after mint was ended was reverted");
+
+
 
         //now allow only top3donators to claim the last 3 apes
         await accessControl.linkHandshakeContract(nftContract.address); //link handshake contract to nftContract
@@ -93,7 +101,7 @@ describe("Mint and accessControl test", function () {
             console.log("going on minting for donator: ", accounts[i].address);
             await nftContract.connect(accounts[i]).mint(1, { value: mintPrice })
             await expect(nftContract.connect(accounts[i]).mint(1, { value: mintPrice })).to.be.reverted;
-            console.log("tokenID: ", counterMint + i);
+            console.log("tokenID: ", counterMint + i - 1);
             queriedTokenUri = await nftContract.tokenURI(counterMint + i - 1);
             console.log(helpfulScript.getNameOfTokenURI(queriedTokenUri), "\n\n");
         }

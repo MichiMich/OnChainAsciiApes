@@ -124,8 +124,24 @@ contract ApeGenerator is Ownable {
     {
         //reducing the total supply leads to 0 nfts left->fires require statement
         maxTokenSupply = _TokensAlreadyMinted + 3; //+3 = leave 3 apes for the top3 donators, they need to be delivered
+        //need to set the last 3 special apes to the next 3 tokenIds because they are reserved for the top3Donators
+        uint256 nrOfExistingSpecialApes = ast_specialApeDetails.length;
+        for (uint8 i = 1; i <= 3; i++) {
+            ast_specialApeDetails[nrOfExistingSpecialApes - i]
+                .apeCoreElements
+                .tokenId = maxTokenSupply - i;
+        }
         emit mintEndedSupplyReduced(maxTokenSupply);
         return (maxTokenSupply);
+    }
+
+    //todo remove this, only for displaying during test
+    function showSpecialApesData()
+        public
+        view
+        returns (st_SpecialApe[] memory)
+    {
+        return (ast_specialApeDetails);
     }
 
     function removeMintCombinationUnordered(uint256 _indexToRemove)
