@@ -4,13 +4,14 @@ pragma solidity ^0.8.0; //>=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 //todo need to check if special apes have always same eye types and colors, if we dont need to transfer both eyes and adapt special ape generation
 
 //todo the eye array need to fix with the ApeGenerator name assertion
 //todo check if creator fees are available
 
-contract OnChainAsciiApes is ERC721Enumerable, Ownable {
+contract OnChainAsciiApes is ERC721Enumerable, Ownable, ReentrancyGuard {
     //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
     // variable packing only occurs in storage
 
@@ -146,7 +147,7 @@ contract OnChainAsciiApes is ERC721Enumerable, Ownable {
         apeGenerator = ApeGeneratorImpl(_apeGeneratorContractAddress);
     }
 
-    function mint(uint256 _wantedQuantity) public payable {
+    function mint(uint256 _wantedQuantity) public payable nonReentrant {
         // pre work for mint - start
         require(getNrOfLeftTokens() > 0, "minted out, check secondary market");
         require(
