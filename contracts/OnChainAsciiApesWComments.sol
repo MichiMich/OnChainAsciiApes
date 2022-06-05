@@ -6,7 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract OnChainAsciiApes is ERC721Enumerable, Ownable, ReentrancyGuard {
+contract OnChainAsciiApesWComments is
+    ERC721Enumerable,
+    Ownable,
+    ReentrancyGuard
+{
     /*
 OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain now and forever
                   ██████████████
@@ -28,9 +32,12 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
            ██████████████████████████
  */
 
+    //variable packing can put multiple variables in one slot (consists of 32byte->256bit) ->each storage slot costs gas
+    // variable packing only occurs in storage
+
     address s_accessControlContractAddress;
     ApeGeneratorImpl apeGenerator;
-    bool s_publicMintActive;
+    bool s_publicMintActive; //0=whitelist activated, 1=whitelist deactivated->public mint
 
     using Counters for Counters.Counter;
 
@@ -73,6 +80,8 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
         payable(msg.sender).transfer(address(this).balance);
     }
 
+    /* getters - start*/
+
     function getBalance() public view returns (uint256) {
         return (address(this).balance);
     }
@@ -100,6 +109,8 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
         return (apeGenerator.totalSupply() - tokensAlreadyMinted.current());
     }
 
+    /* getters - end*/
+
     function tokenURI(uint256 _tokenId)
         public
         view
@@ -115,6 +126,8 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
     }
 
     function createRandomNumber() private returns (uint256) {
+        //idea of creating a random number by using a value from the wallet address and mix it up with modulo
+
         lastGetRandomNumber = uint256(
             (
                 keccak256(
@@ -132,6 +145,7 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
     }
 
     function createRandomNumberInRange(uint8 _range) private returns (uint8) {
+        //the range varies under 255 so we can convert to uint8 without problems
         return uint8(createRandomNumber() % _range);
     }
 
@@ -173,6 +187,8 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
             require(checkIfWhitelisted(msg.sender), "not whitelisted");
         }
 
+        //check if current id should lead to special ape
+
         uint8 randomCreatedMintCombinationIndex;
         uint8 currentTokenId = uint8(tokensAlreadyMinted.current());
         uint8 specialApeIndex = apeGenerator.getSpecialApeIndex(currentTokenId);
@@ -186,7 +202,7 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
                     0,
                     currentTokenId,
                     0,
-                    (60 + createRandomNumberInRange(40))
+                    (60 + createRandomNumberInRange(40)) //banana score
                 ),
                 apeGeneratorErrorMessage
             );
@@ -196,13 +212,13 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
             );
             require(
                 apeGenerator.registerApe(
-                    specialApeIndex,
+                    specialApeIndex, //=totalSupply()+1
                     randomCreatedMintCombinationIndex,
                     createRandomNumberInRange(3),
                     createRandomNumberInRange(3),
                     currentTokenId,
                     createRandomNumberInRange(13),
-                    (60 + createRandomNumberInRange(40))
+                    (60 + createRandomNumberInRange(40)) //bananascore
                 ),
                 apeGeneratorErrorMessage
             );
@@ -210,14 +226,17 @@ OnChainAsciiApes - fully onchain, randomly assigned - living on the eth chain no
 
         _safeMint(msg.sender, currentTokenId);
 
+        //removing only if all data generated, otherwise generated data does not fix with name and we could get access problems
         if (specialApeIndex == totalSupply() + 1) {
+            //ape of mint combinations was wanted
+            //remove used mint combination from available ones
             apeGenerator.removeMintCombinationUnordered(
                 randomCreatedMintCombinationIndex
             );
         }
 
         tokensAlreadyMinted.increment();
-        return true;
+        return true; //if we reach this point the data was created, registered and minted succesfully
     }
 }
 
